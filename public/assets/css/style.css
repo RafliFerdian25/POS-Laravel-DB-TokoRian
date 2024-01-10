@@ -1,0 +1,180 @@
+
+
+/****************************************/
+/*               VARIABLE               */
+/****************************************/
+:root {
+    /*height and width*/
+
+    /*color*/
+    --white: rgba(255, 255, 255, 1);
+    --black: rgba(0, 0, 0, 1);
+    --light: rgba(247, 247, 247, 1);
+    --blight: rgb(227, 238, 237);
+    --footer: rgba(245, 243, 238, 1);
+    --orange: rgba(239, 132, 81, 1);
+    --green1: #93FFD8;
+    --green2: #CFFFDC;
+    --dark: rgba(16, 44, 47, 1);
+    --dark2: rgba(1, 37, 36, 1);
+    --red1: rgb(208, 53, 53);
+    --blue1: #548CFF;
+    --purple: #7900FF;
+    /*font and typography*/
+    --reg-size: 16px;
+    --medium-size: 18px;
+    --big-size: 24px;
+    /*--body-font: 'Maven Pro', sans-serif;*/
+    --body-font: "Raleway", sans-serif;
+    --head-font: "Oswald", sans-serif;
+
+    /*padding and margin*/
+    --m-lg: 112px 0;
+    --mb-lg: 112px;
+
+    /*utility-radius*/
+    --sm-rad: 3px;
+    --md-rad: 6px;
+    --lg-rad: 12px;
+  }
+
+
+/*********************************************/
+/*               GENERAL STYLE               */
+/*********************************************/
+a{
+    text-decoration: none !important;
+}
+.color__red1{
+    color: var(--red1) !important;
+}
+.color__green1{
+    color: var(--green1);
+}
+.btn-link{
+    background: transparent!important;
+    border: none !important;
+}
+/* Data Tabel */
+table.dataTable.no-footer{
+    border-bottom: rgb(227, 238, 237)!important;
+}
+li{
+    list-style-type: none;
+}
+.color__red1{
+    color: var(--red1);
+}
+.color__abu{
+    color: rgba(0, 0, 0, 0.5);
+}
+.garis__putus{
+    border-bottom: 2px dashed rgba(0, 0, 0, 0.5);
+}
+.rounded__10{
+    border-radius: 10px;
+}
+.h-150{
+    height: 150px;
+}
+.h-200{
+    height: 200px;
+}
+.h-250{
+    height: 250px;
+}
+.h-300{
+    height: 300px;
+}
+/*********************************************/
+/*               INDEX                       */
+/*********************************************/
+/* Card dsahboard */
+.widget__title{
+    align-self: center;
+}
+.laporan__bulanan .btn-link{
+    border: 1px solid blue !important;
+    text-decoration: none;
+    font-size: 13px;
+}
+.laporan__bulanan td{
+    padding: 8px 20px !important;
+}
+/*********************************************/
+/*               BARANG                      */
+/*********************************************/
+.table__barang td{
+    font-size: 13px;
+}
+
+/*********************************************/
+/*               TAMBAH BARANG               */
+/*********************************************/
+.tambah__content{
+    padding: 32px;
+}
+.title__card{
+    font-weight: 700;
+    font-size: 36px;
+    margin-bottom: 24px;
+}
+.tambah__body .card {
+    border-radius: 10px;
+}
+.jml__kasir{
+    border: 1px solid rgba(0, 0, 0, 0.056);
+    border-radius: 5px;
+    max-width: 50px;
+}
+
+/*********************************************/
+/*               UBAH BARANG                 */
+/*********************************************/
+.ubah__content{
+    padding: 32px;
+}
+.title__card{
+    font-weight: 700;
+    font-size: 36px;
+    margin-bottom: 24px;
+}
+.ubah__body .card {
+    border-radius: 10px;
+}
+.jml__kasir{
+    border: 1px solid rgba(0, 0, 0, 0.056);
+    border-radius: 5px;
+    max-width: 50px;
+}
+/*********************************************/
+/*               KASIR                      */
+/*********************************************/
+.checkout__barang ul{
+    padding: 0;
+}
+.checkout__barang__content{
+    font-weight: 500;
+}
+.checkout{
+    margin-bottom: 16px;
+}
+.pe-7s-trash{
+    font-size: 18px;
+}
+
+/* table produk */
+.table-produk td{
+    font-size: 12px;
+    font-weight: 700;
+    padding: 2px !important;
+}
+
+.table-produk .btn {
+    font-size: 10px;
+    padding: .1rem .475rem !important;
+}
+
+#modal-produk {
+    top: 50px;
+}
