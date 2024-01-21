@@ -21,14 +21,13 @@ use App\Http\Controllers\SaleDetailController;
 */
 
 /* Laporan */
+
 Route::get('/', function () {
     return redirect()->route('laporan.bulanan');
 });
 Route::get('/laporan/{sale}/show', [SaleController::class, 'showReport'])->name('laporan.show');
 Route::get('/laporan/keuangan', [SaleController::class, 'laporanBulanan'])->name('laporan.bulanan');
 Route::get('/laporan/barang/{barang:idBarang}', [SaleController::class, 'laporanBarangBulanan'])->name('laporan.barang.bulanan');
-Route::get('/laporan/kadaluarsa', [SaleController::class, 'productExpired'])->name('laporan.kadaluarsa');
-Route::get('/laporan/habis', [SaleController::class, 'productEmpty'])->name('laporan.habis');
 
 // Route::get('/transaksi/baru', [PenjualanController::class, 'create'])->name('transaksi.baru');
 Route::get('/transaksi/kasir', [SaleDetailController::class, 'index'])->name('penjualan.index');
@@ -38,11 +37,10 @@ Route::get('/transaksi/nota-kecil', [SaleController::class, 'notaKecil'])->name(
 Route::get('/transaksi/{id}/data', [SaleDetailController::class, 'data'])->name('transaksi.data');
 Route::get('/transaksi/loadform/{diskon}/{total}/{diterima}', [SaleDetailController::class, 'loadForm'])->name('transaksi.load_form');
 Route::resource('/transaksi', SaleDetailController::class)
-->except('create', 'show', 'edit');
+    ->except('create', 'show', 'edit');
 
 // Barang
 Route::get('/barang/data', [ProductController::class, 'data'])->name('barang.data');
-// Route::resource('/barang', ProductController::class)->except('show');
 Route::controller('ProductController')->group(function () {
     Route::get('/barang', [ProductController::class, 'index'])->name('barang.index');
     Route::get('/barang/create', [ProductController::class, 'create'])->name('barang.create');
@@ -50,6 +48,9 @@ Route::controller('ProductController')->group(function () {
     Route::get('/barang/{barang:idBarang}/edit/{type}', [ProductController::class, 'edit'])->name('barang.edit');
     Route::put('/barang/{barang:idBarang}', [ProductController::class, 'update'])->name('barang.update');
     Route::delete('/barang/{barang:idBarang}', [ProductController::class, 'destroy'])->name('barang.destroy');
+
+    Route::get('/barang/kadaluarsa', [ProductController::class, 'productExpired'])->name('barang.kadaluarsa');
+    Route::get('/barang/habis', [ProductController::class, 'productEmpty'])->name('barang.habis');
 });
 
 // Kategori
@@ -63,4 +64,3 @@ Route::resource('/supplier', SupplierController::class)->except('show');
 Route::get('/belanja/detail/{purchase}/create', [PurchaseController::class, 'createPurchaseDetails'])->name('belanja.create.purchase-details');
 Route::get('/belanja/detail/{purchase}', [PurchaseController::class, 'storePurchaseDetails'])->name('belanja.store.purchase-details');
 Route::resource('/belanja', PurchaseController::class);
-

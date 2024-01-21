@@ -78,7 +78,7 @@ class SaleController extends Controller
         $title = 'POS TOKO | Laporan';
         if ($request->laporan_bulan == null) {
             $tanggal = date('Y-m');
-        } else{
+        } else {
             // $tanggal = explode("-",$request->laporan_bulan);
             $tanggal = date('Y-m', strtotime($request->laporan_bulan));
         }
@@ -94,7 +94,7 @@ class SaleController extends Controller
             ->get();
         $report = Kasir::whereMonth('tanggal', $bulan)
             ->whereYear('tanggal', $tahun)
-            ->selectRaw('sum(total) as income, sum(laba) as profit, (select count(noUrut) from t_kasir where month(`tanggal`) = '. $bulan .' and year(`tanggal`) = '.$tahun.' and noUrut = 1) as total_transaction, sum(jumlah) as total_item')
+            ->selectRaw('sum(total) as income, sum(laba) as profit, (select count(noUrut) from t_kasir where month(`tanggal`) = ' . $bulan . ' and year(`tanggal`) = ' . $tahun . ' and noUrut = 1) as total_transaction, sum(jumlah) as total_item')
             ->get();
 
         $barangTerlaris = Kasir::selectRaw('nmBarang as namaBarang, sum(jumlah) as total, idBarang')
@@ -132,7 +132,7 @@ class SaleController extends Controller
         $title = 'POS TOKO | Laporan';
         if ($request->laporan_bulan == null) {
             $tanggal = date('Y-m');
-        } else{
+        } else {
             // $tanggal = explode("-",$request->laporan_bulan);
             $tanggal = date('Y-m', strtotime($request->laporan_bulan));
         }
@@ -180,46 +180,6 @@ class SaleController extends Controller
             'reportDays' => $reportDays,
         ];
         return view('report.product', $data);
-    }
-
-    public function productExpired()
-    {
-        $title = 'POS TOKO | Laporan';
-
-        $setting = Toko::first();
-
-        $query = Barang::select('IdBarang', 'nmBarang', 'expDate', 'stok')
-            ->where('expDate', '<', Carbon::now()->addDays(30))
-            ->orderBy('expDate', 'asc')
-            ->limit(1000);
-        $products = $query->get();
-            $countProduct = $query->count();
-        $data = [
-            'setting' => $setting,
-            'title' => $title,
-            'products' => $products,
-            'countProduct' => $countProduct,
-        ];
-        return view('report.expired', $data);
-    }
-
-    public function productEmpty()
-    {
-        $title = 'POS TOKO | Laporan';
-
-        $setting = Toko::first();
-
-        $query = Barang::where('stok', '<', 5)
-            ->orderBy('stok', 'asc');
-        $products = $query->get();
-            $countProduct = $query->count();
-        $data = [
-            'setting' => $setting,
-            'title' => $title,
-            'products' => $products,
-            'countProduct' => $countProduct,
-        ];
-        return view('report.empty', $data);
     }
 
     public function showReport($id)

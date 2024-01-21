@@ -8,6 +8,8 @@ use App\Models\Jenis;
 use App\Models\Merk;
 use App\Models\Product;
 use App\Models\Satuan;
+use App\Models\Toko;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use DataTables;
@@ -135,8 +137,6 @@ class ProductController extends Controller
                     'stok' => 'required',
                     'expDate' => 'required',
                     'jenis' => 'required',
-                    // 'merk_id' => 'required',
-                    // 'discount' => 'required|numeric|min:0|max:999999999',
                 ]);
             } else {
                 $validated = $request->validate([
@@ -160,17 +160,17 @@ class ProductController extends Controller
 
             // jika data berhasil ditambahkan, akan kembali ke halaman utama
             if ($request->type == 'expired') {
-                return redirect()->route('laporan.kadaluarsa')->with('success', 'Produk berhasil diupdate');
+                return redirect()->route('barang.kadaluarsa')->with('success', 'Produk berhasil diupdate');
             } else if ($request->type == 'empty') {
-                return redirect()->route('laporan.habis')->with('success', 'Produk berhasil diupdate');
+                return redirect()->route('barang.habis')->with('success', 'Produk berhasil diupdate');
             } else {
                 return redirect()->route('barang.index')->with('success', 'Produk berhasil diupdate');
             }
         } catch (\Illuminate\Validation\ValidationException $e) {
             if ($request->type == 'expired') {
-                return redirect()->route('laporan.kadaluarsa')->with('error', $e->validator->errors()->first());
+                return redirect()->route('barang.kadaluarsa')->with('error', $e->validator->errors()->first());
             } else if ($request->type == 'empty') {
-                return redirect()->route('laporan.habis')->with('error', $e->validator->errors()->first());
+                return redirect()->route('barang.habis')->with('error', $e->validator->errors()->first());
             } else {
                 return redirect()->route('barang.index')->with('error', $e->validator->errors()->first());
             }
@@ -186,9 +186,75 @@ class ProductController extends Controller
     public function destroy($id)
     {
         // menghapus data product berdasarkan id yang dipilih
-        Product::destroy($id);
+        Barang::destroy($id);
 
         // jika data berhasil dihapus, akan kembali ke halaman utama
         return response(null, 200);
+    }
+
+    /**
+     * Melihat produk yang telah/akan expired
+     */
+    public function productExpired()
+    {
+        $query = Barang::select('IdBarang', 'nmBarang', 'expDate', 'stok')
+            ->where('expDate', '<', Carbon::now()->addDays(30))
+            ->orderBy('expDate', 'asc')
+            ->limit(1000);
+
+        $products = $query->get();
+        $countProduct = $query->count();
+
+        $data = [
+            'setting' => Toko::first(),
+            'title' => 'POS TOKO | Laporan',
+            'products' => $products,
+            'countProduct' => $countProduct,
+        ];
+        return view('report.expired', $data);
+    }
+
+    /**
+     * Mnedapatkan data produk yang telah/akan expired
+     */
+    public function productExpiredData()
+    {
+        $query = Barang::select('IdBarang', 'nmBarang', 'expDate', 'stok')
+            ->where('expDate', '<', Carbon::now()->addDays(30))
+            ->orderBy('expDate', 'asc')
+            ->limit(1000);
+
+        $products = $query->get();
+        $countProduct = $query->count();
+
+        $data = [
+            'setting' => Toko::first(),
+            'title' => 'POS TOKO | Laporan',
+            'products' => $products,
+            'countProduct' => $countProduct,
+        ];
+        return response()->json($data);
+    }
+
+    /**
+     * Melihat produk yang stoknya kosong
+     */
+    public function productEmpty()
+    {
+        $title = 'POS TOKO | Laporan';
+
+        $setting = Toko::first();
+
+        $query = Barang::where('stok', '<', 5)
+            ->orderBy('stok', 'asc');
+        $products = $query->get();
+        $countProduct = $query->count();
+        $data = [
+            'setting' => $setting,
+            'title' => $title,
+            'products' => $products,
+            'countProduct' => $countProduct,
+        ];
+        return view('report.empty', $data);
     }
 }

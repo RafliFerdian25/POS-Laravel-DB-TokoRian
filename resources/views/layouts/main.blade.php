@@ -117,20 +117,6 @@
                                     Barang
                                 </a>
                             </li>
-                            <li class="">
-                                <a href="{{ url('/laporan/kadaluarsa') }}" id="navbar_laporan"
-                                    class="{{ Request::is('laporan/kadaluarsa*') ? 'mm-active' : '' }}">
-                                    <i class="metismenu-icon pe-7s-note2"></i>
-                                    Kadaluarsa
-                                </a>
-                            </li>
-                            <li class="">
-                                <a href="{{ url('/laporan/habis') }}" id="navbar_laporan"
-                                    class="{{ Request::is('laporan/habis*') ? 'mm-active' : '' }}">
-                                    <i class="metismenu-icon pe-7s-note2"></i>
-                                    Habis
-                                </a>
-                            </li>
                             <li class="app-sidebar__heading">Barang</li>
                             <li>
                                 <a href="{{ url('/barang') }}" id="navbar__barang">
@@ -142,6 +128,20 @@
                                 <a href="{{ url('/kategori') }}" id="navbar__kategori">
                                     <i class="metismenu-icon pe-7s-folder"></i>
                                     Kategori
+                                </a>
+                            </li>
+                            <li class="">
+                                <a href="{{ url('/barang/kadaluarsa') }}" id="navbar_laporan"
+                                    class="{{ Request::is('barang/kadaluarsa*') ? 'mm-active' : '' }}">
+                                    <i class="metismenu-icon pe-7s-note2"></i>
+                                    Kadaluarsa
+                                </a>
+                            </li>
+                            <li class="">
+                                <a href="{{ url('/laporan/habis') }}" id="navbar_laporan"
+                                    class="{{ Request::is('laporan/habis*') ? 'mm-active' : '' }}">
+                                    <i class="metismenu-icon pe-7s-note2"></i>
+                                    Habis
                                 </a>
                             </li>
 
