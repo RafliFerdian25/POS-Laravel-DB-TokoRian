@@ -232,6 +232,11 @@
             }, 1000);
         })
     </script>
+
+    {{-- loader --}}
+    <script src="{{ asset('assets/js/loader.js') }}"></script>
+    <script src="{{ asset('assets/js/empty.js') }}"></script>
+
     @stack('scripts')
 </body>
 
