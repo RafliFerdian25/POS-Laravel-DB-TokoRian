@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ResponseFormatter;
 use App\Models\Barang;
 use App\Models\Category;
 use App\Models\Jenis;
 use App\Models\Merk;
-use App\Models\Product;
 use App\Models\Satuan;
 use App\Models\Toko;
 use Carbon\Carbon;
@@ -25,12 +25,14 @@ class ProductController extends Controller
     public function index()
     {
         $title = 'POS TOKO | Barang';
-        $products = Product::Select("id", "name", "unit", "purchase_price", "selling_price", "wholesale_price", "stock", "expired_date")->get();
+        // $products = Barang::Select("id", "name", "unit", "purchase_price", "selling_price", "wholesale_price", "stock", "expired_date")->get();
+        $products = Barang::get();
+
         return view('product.product', compact('products', 'title'));
     }
     public function data()
     {
-        $product = Product::Select("id", "name", "unit", "purchase_price", "selling_price", "wholesale_price", "stock", "expired_date")->get();
+        $product = Barang::Select("id", "name", "unit", "purchase_price", "selling_price", "wholesale_price", "stock", "expired_date")->get();
         $data = array();
         foreach ($product as $item) {
             $row = array();
@@ -94,10 +96,10 @@ class ProductController extends Controller
 
         // menginput data ke table products
         // dd($validated);
-        Product::create($validated);
+        Barang::create($validated);
 
         // jika data berhasil ditambahkan, akan kembali ke halaman utama
-        return redirect()->route('barang.index')->with('success', 'Product created successfully.');
+        return redirect()->route('barang.index')->with('success', 'Barang created successfully.');
     }
 
 
@@ -135,7 +137,6 @@ class ProductController extends Controller
                     'hargaJual' => 'required|numeric|min:0|max:999999999',
                     'hargaGrosir' => 'required|numeric|min:0|max:999999999',
                     'stok' => 'required',
-                    'expDate' => 'required',
                     'jenis' => 'required',
                 ]);
             } else {
@@ -148,15 +149,23 @@ class ProductController extends Controller
                     'hargaJual' => 'required|numeric|min:0|max:999999999',
                     'hargaGrosir' => 'required|numeric|min:0|max:999999999',
                     'stok' => 'required',
-                    'expDate' => 'required',
                     'jenis' => 'required',
                 ]);
             }
 
-
             // mengupdate data di table products
-            Barang::where('IdBarang', $barang->IdBarang)->update($validated);
-            // dd($validated);
+            Barang::where('IdBarang', $barang->IdBarang)->update([
+                'IdBarang' => $validated['IdBarang'],
+                'nmBarang' => $validated['nmBarang'],
+                'satuan' => $validated['satuan'],
+                'isi' => $validated['isi'],
+                'hargaPokok' => $validated['hargaPokok'],
+                'hargaJual' => $validated['hargaJual'],
+                'hargaGrosir' => $validated['hargaGrosir'],
+                'stok' => $validated['stok'],
+                'jenis' => $validated['jenis'],
+                'expDate' => $request->expDate,
+            ]);
 
             // jika data berhasil ditambahkan, akan kembali ke halaman utama
             if ($request->type == 'expired') {
@@ -197,19 +206,9 @@ class ProductController extends Controller
      */
     public function productExpired()
     {
-        $query = Barang::select('IdBarang', 'nmBarang', 'expDate', 'stok')
-            ->where('expDate', '<', Carbon::now()->addDays(30))
-            ->orderBy('expDate', 'asc')
-            ->limit(1000);
-
-        $products = $query->get();
-        $countProduct = $query->count();
-
         $data = [
             'setting' => Toko::first(),
             'title' => 'POS TOKO | Laporan',
-            'products' => $products,
-            'countProduct' => $countProduct,
         ];
         return view('report.expired', $data);
     }
@@ -217,23 +216,28 @@ class ProductController extends Controller
     /**
      * Mnedapatkan data produk yang telah/akan expired
      */
-    public function productExpiredData()
+    public function productExpiredData(Request $request)
     {
+        $expDate = $request->filterDate ? $request->filterDate : Carbon::now()->addDays(90);
         $query = Barang::select('IdBarang', 'nmBarang', 'expDate', 'stok')
-            ->where('expDate', '<', Carbon::now()->addDays(30))
+            ->where('expDate', '<', $expDate)
+            // ->where('expDate', '>', Carbon::now()->subYears(5))
+            ->when($request->has('filterName'), function ($query) use ($request) {
+                return $query->where('nmBarang', 'LIKE', '%' . $request->filterName . '%');
+            })
             ->orderBy('expDate', 'asc')
-            ->limit(1000);
+            ->limit(100);
 
         $products = $query->get();
         $countProduct = $query->count();
 
-        $data = [
-            'setting' => Toko::first(),
-            'title' => 'POS TOKO | Laporan',
-            'products' => $products,
-            'countProduct' => $countProduct,
-        ];
-        return response()->json($data);
+        return ResponseFormatter::success(
+            [
+                'products' => $products,
+                'countProduct' => $countProduct
+            ],
+            'Data berhasil diambil'
+        );
     }
 
     /**
@@ -248,12 +252,12 @@ class ProductController extends Controller
         $query = Barang::where('stok', '<', 5)
             ->orderBy('stok', 'asc');
         $products = $query->get();
-        $countProduct = $query->count();
+        $countBarang = $query->count();
         $data = [
             'setting' => $setting,
             'title' => $title,
             'products' => $products,
-            'countProduct' => $countProduct,
+            'countBarang' => $countBarang,
         ];
         return view('report.empty', $data);
     }

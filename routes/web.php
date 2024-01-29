@@ -50,6 +50,7 @@ Route::controller('ProductController')->group(function () {
     Route::delete('/barang/{barang:idBarang}', [ProductController::class, 'destroy'])->name('barang.destroy');
 
     Route::get('/barang/kadaluarsa', [ProductController::class, 'productExpired'])->name('barang.kadaluarsa');
+    Route::get('/barang/kadaluarsa/data', [ProductController::class, 'productExpiredData'])->name('barang.kadaluarsa.data');
     Route::get('/barang/habis', [ProductController::class, 'productEmpty'])->name('barang.habis');
 });
 
