@@ -375,14 +375,32 @@ class ProductController extends Controller
         }
     }
 
-    public function destroyPrintPrice(Barang $barang)
+    public function destroyPrintPrice($id)
     {
-        // menghapus data product berdasarkan id yang dipilih
-        $barang->delete();
+        $barang = Barcode::where('IdBarang', $id)->first();
+        if (!$barang) {
+            return ResponseFormatter::error(
+                null,
+                'Data tidak ditemukan',
+                404
+            );
+        }
 
-        return ResponseFormatter::success(
-            null,
-            'Data berhasil dihapus'
-        );
+        try {
+            $barang->delete();
+
+            return ResponseFormatter::success(
+                null,
+                'Data berhasil dihapus'
+            );
+        } catch (\Exception $e) {
+            return ResponseFormatter::error(
+                [
+                    'error' => $e->getMessage()
+                ],
+                'Terjadi kesalahan saat menghapus data',
+                500
+            );
+        }
     }
 }

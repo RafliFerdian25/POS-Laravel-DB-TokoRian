@@ -193,7 +193,7 @@
                                 product.idBarang,
                                 product.nmBarang,
                                 product.hargaJual,
-                                `<button class="btn btn-sm btn-warning" onclick="showEdit('${product.IdBarang}', 'expired')">Edit</button>`
+                                `<button class="btn btn-sm btn-danger" onclick="deleteProduct('${product.idBarang}')"><i class="bi bi-trash"></i></button>`
                             ];
                             var rowNode = $('#tableListProduct').DataTable().row.add(rowData)
                                 .draw(
@@ -257,5 +257,50 @@
                 $('#product').val(null).trigger('change');
             }
         });
+
+        const deleteProduct = (id) => {
+            Swal.fire({
+                title: 'Hapus Produk',
+                text: "Apakah Anda yakin ingin menghapus produk ini?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Hapus',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "DELETE",
+                        url: `{{ url('barang/cetak-harga/${id}') }}`,
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                        },
+                        success: function(response) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil',
+                                text: 'Hapus Produk Berhasil',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                            getListProduct();
+                        },
+                        error: function(xhr, ajaxOptions, thrownError) {
+                            if (xhr.responseJSON) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal',
+                                    text: `Hapus Produk Gagal. ${xhr.responseJSON.meta.message} Error: ${xhr.responseJSON.data.error}`,
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                })
+                            }
+                            return false;
+                        },
+                    });
+                }
+            })
+        }
     </script>
 @endpush

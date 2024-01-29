@@ -14,5 +14,11 @@ class Barcode extends Model
     // tanpa ada timestamps
     public $timestamps = false;
 
+    protected $primaryKey = 'idBarang';
+
+    protected $casts = [
+        'id' => 'string',
+    ];
+
     protected $table = 't_barcode';
 }

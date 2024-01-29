@@ -56,7 +56,7 @@ Route::controller('ProductController')->group(function () {
     Route::get('/barang/cetak-harga', [ProductController::class, 'printPrice'])->name('barang.cetak-harga');
     Route::get('/barang/cetak-harga/data', [ProductController::class, 'printPriceData'])->name('barang.cetak-harga.data');
     Route::post('/barang/cetak-harga/store', [ProductController::class, 'storePrintPrice'])->name('barang.cetak-harga.store');
-    Route::post('/barang/cetak-harga/{barang:idBarang}', [ProductController::class, 'destroyPrintPrice'])->name('barang.cetak-harga.destroy');
+    Route::delete('/barang/cetak-harga/{id}', [ProductController::class, 'destroyPrintPrice'])->name('barang.cetak-harga.destroy');
 });
 
 // Kategori
