@@ -144,6 +144,13 @@
                                     Habis
                                 </a>
                             </li>
+                            <li class="">
+                                <a href="{{ url('/barang/cetak-harga') }}" id="navbarCetakHarga"
+                                    class="{{ Request::is('barang/cetak-harga*') ? 'mm-active' : '' }}">
+                                    <i class="metismenu-icon pe-7s-note2"></i>
+                                    Cetak Harga
+                                </a>
+                            </li>
 
                             <li class="app-sidebar__heading">Belanja</li>
                             <li>

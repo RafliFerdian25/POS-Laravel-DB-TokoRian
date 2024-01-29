@@ -204,19 +204,19 @@ class ProductController extends Controller
     /**
      * Melihat produk yang telah/akan expired
      */
-    public function productExpired()
+    public function expired()
     {
         $data = [
             'setting' => Toko::first(),
             'title' => 'POS TOKO | Laporan',
         ];
-        return view('report.expired', $data);
+        return view('product.expired', $data);
     }
 
     /**
      * Mnedapatkan data produk yang telah/akan expired
      */
-    public function productExpiredData(Request $request)
+    public function expiredData(Request $request)
     {
         $expDate = $request->filterDate ? $request->filterDate : Carbon::now()->addDays(90);
         $query = Barang::select('IdBarang', 'nmBarang', 'expDate', 'stok')
@@ -260,5 +260,17 @@ class ProductController extends Controller
             'countBarang' => $countBarang,
         ];
         return view('report.empty', $data);
+    }
+
+    /**
+     * Melihat produk yang akan dicetak harganya
+     */
+    public function printPrice()
+    {
+        $data = [
+            'setting' => Toko::first(),
+            'title' => 'POS TOKO | Laporan',
+        ];
+        return view('product.printPrice', $data);
     }
 }
