@@ -14,7 +14,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use DataTables;
-
+use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
@@ -54,6 +54,31 @@ class ProductController extends Controller
             ->addIndexColumn()
             ->rawColumns(['action'])
             ->make(true);
+    }
+
+    /**
+     * Mencari data produk berdasarkan nama atau barcode
+     */
+    public function searchData(Request $request)
+    {
+        $query = Barang::select('IdBarang', 'nmBarang')
+            ->when($request->has('q'), function ($query) use ($request) {
+                return $query->where('nmBarang', 'LIKE', '%' . $request->q . '%')
+                    ->orWhere('IdBarang', 'LIKE', '%' . $request->q . '%');
+            })
+            ->orderBy('nmBarang', 'asc')
+            ->limit(100);
+
+        $products = $query->get();
+        $countProduct = $query->count();
+
+        return ResponseFormatter::success(
+            [
+                'products' => $products,
+                'countProduct' => $countProduct
+            ],
+            'Data berhasil diambil'
+        );
     }
 
     /**
@@ -292,6 +317,72 @@ class ProductController extends Controller
                 'countProduct' => $countProduct
             ],
             'Data berhasil diambil'
+        );
+    }
+
+    /**
+     * Menambahkan data produk yang akan dicetak harganya
+     */
+    public function storePrintPrice(Request $request)
+    {
+        $rules = [
+            'IdBarang' => 'required',
+        ];
+
+        $validated = Validator::make($request->all(), $rules);
+
+        if ($validated->fails()) {
+            return ResponseFormatter::error(
+                [
+                    'error' => $validated->errors()
+                ],
+                'Data gagal ditambahkan',
+                422
+            );
+        }
+
+        $product = Barang::where('IdBarang', $request->IdBarang)->first();
+
+        if (!$product) {
+            return ResponseFormatter::error(
+                [
+                    'error' => 'Produk tidak ditemukan'
+                ],
+                'Data gagal ditambahkan',
+                422
+            );
+        }
+
+        try {
+            Barcode::create([
+                'IdBarang' => $product->IdBarang,
+                'nmBarang' => $product->nmBarang,
+                'hargaJual' => $product->hargaJual,
+            ]);
+
+            return ResponseFormatter::success(
+                null,
+                'Data berhasil ditambahkan'
+            );
+        } catch (\Exception $e) {
+            return ResponseFormatter::error(
+                [
+                    'error' => $e->getMessage()
+                ],
+                'Data gagal ditambahkan',
+                422
+            );
+        }
+    }
+
+    public function destroyPrintPrice(Barang $barang)
+    {
+        // menghapus data product berdasarkan id yang dipilih
+        $barang->delete();
+
+        return ResponseFormatter::success(
+            null,
+            'Data berhasil dihapus'
         );
     }
 }

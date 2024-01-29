@@ -1,5 +1,3 @@
-
-
 /****************************************/
 /*               VARIABLE               */
 /****************************************/
@@ -36,93 +34,143 @@
     --sm-rad: 3px;
     --md-rad: 6px;
     --lg-rad: 12px;
-  }
+}
 
 
 /*********************************************/
 /*               GENERAL STYLE               */
 /*********************************************/
-a{
+a {
     text-decoration: none !important;
 }
-.color__red1{
+
+.color__red1 {
     color: var(--red1) !important;
 }
-.color__green1{
+
+.color__green1 {
     color: var(--green1);
 }
-.btn-link{
-    background: transparent!important;
+
+.btn-link {
+    background: transparent !important;
     border: none !important;
 }
+
 /* Data Tabel */
-table.dataTable.no-footer{
-    border-bottom: rgb(227, 238, 237)!important;
+table.dataTable.no-footer {
+    border-bottom: rgb(227, 238, 237) !important;
 }
-li{
+
+li {
     list-style-type: none;
 }
-.color__red1{
+
+.color__red1 {
     color: var(--red1);
 }
-.color__abu{
+
+.color__abu {
     color: rgba(0, 0, 0, 0.5);
 }
-.garis__putus{
+
+.garis__putus {
     border-bottom: 2px dashed rgba(0, 0, 0, 0.5);
 }
-.rounded__10{
+
+.rounded__10 {
     border-radius: 10px;
 }
-.h-150{
+
+.h-150 {
     height: 150px;
 }
-.h-200{
+
+.h-200 {
     height: 200px;
 }
-.h-250{
+
+.h-250 {
     height: 250px;
 }
-.h-300{
+
+.h-300 {
     height: 300px;
 }
+
+.has-success label {
+    color: #31CE36 !important;
+}
+
+.has-success .form-control {
+    border-color: #31CE36 !important;
+    color: #31CE36 !important;
+}
+
+.has-success .input-group-text {
+    border-color: #31CE36 !important;
+    background: #31CE36 !important;
+    color: #ffffff !important;
+}
+
+.has-error label {
+    color: #F25961 !important;
+}
+
+.has-error .form-control {
+    border-color: #F25961 !important;
+    color: #F25961 !important;
+}
+
+.has-error .input-group-text {
+    border-color: #F25961 !important;
+    background: #F25961 !important;
+    color: #ffffff !important;
+}
+
 /*********************************************/
 /*               INDEX                       */
 /*********************************************/
 /* Card dsahboard */
-.widget__title{
+.widget__title {
     align-self: center;
 }
-.laporan__bulanan .btn-link{
+
+.laporan__bulanan .btn-link {
     border: 1px solid blue !important;
     text-decoration: none;
     font-size: 13px;
 }
-.laporan__bulanan td{
+
+.laporan__bulanan td {
     padding: 8px 20px !important;
 }
+
 /*********************************************/
 /*               BARANG                      */
 /*********************************************/
-.table__barang td{
+.table__barang td {
     font-size: 13px;
 }
 
 /*********************************************/
 /*               TAMBAH BARANG               */
 /*********************************************/
-.tambah__content{
+.tambah__content {
     padding: 32px;
 }
-.title__card{
+
+.title__card {
     font-weight: 700;
     font-size: 36px;
     margin-bottom: 24px;
 }
+
 .tambah__body .card {
     border-radius: 10px;
 }
-.jml__kasir{
+
+.jml__kasir {
     border: 1px solid rgba(0, 0, 0, 0.056);
     border-radius: 5px;
     max-width: 50px;
@@ -131,40 +179,47 @@ li{
 /*********************************************/
 /*               UBAH BARANG                 */
 /*********************************************/
-.ubah__content{
+.ubah__content {
     padding: 32px;
 }
-.title__card{
+
+.title__card {
     font-weight: 700;
     font-size: 36px;
     margin-bottom: 24px;
 }
+
 .ubah__body .card {
     border-radius: 10px;
 }
-.jml__kasir{
+
+.jml__kasir {
     border: 1px solid rgba(0, 0, 0, 0.056);
     border-radius: 5px;
     max-width: 50px;
 }
+
 /*********************************************/
 /*               KASIR                      */
 /*********************************************/
-.checkout__barang ul{
+.checkout__barang ul {
     padding: 0;
 }
-.checkout__barang__content{
+
+.checkout__barang__content {
     font-weight: 500;
 }
-.checkout{
+
+.checkout {
     margin-bottom: 16px;
 }
-.pe-7s-trash{
+
+.pe-7s-trash {
     font-size: 18px;
 }
 
 /* table produk */
-.table-produk td{
+.table-produk td {
     font-size: 12px;
     font-weight: 700;
     padding: 2px !important;

@@ -9,5 +9,10 @@ class Barcode extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
+    // tanpa ada timestamps
+    public $timestamps = false;
+
     protected $table = 't_barcode';
 }

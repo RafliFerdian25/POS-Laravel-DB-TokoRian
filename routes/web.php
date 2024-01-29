@@ -49,11 +49,14 @@ Route::controller('ProductController')->group(function () {
     Route::put('/barang/{barang:idBarang}', [ProductController::class, 'update'])->name('barang.update');
     Route::delete('/barang/{barang:idBarang}', [ProductController::class, 'destroy'])->name('barang.destroy');
 
+    Route::get('/barang/cari/data', [ProductController::class, 'searchData'])->name('barang.cari.data');
     Route::get('/barang/kadaluarsa', [ProductController::class, 'expired'])->name('barang.kadaluarsa');
     Route::get('/barang/kadaluarsa/data', [ProductController::class, 'expiredData'])->name('barang.kadaluarsa.data');
     Route::get('/barang/habis', [ProductController::class, 'productEmpty'])->name('barang.habis');
     Route::get('/barang/cetak-harga', [ProductController::class, 'printPrice'])->name('barang.cetak-harga');
     Route::get('/barang/cetak-harga/data', [ProductController::class, 'printPriceData'])->name('barang.cetak-harga.data');
+    Route::post('/barang/cetak-harga/store', [ProductController::class, 'storePrintPrice'])->name('barang.cetak-harga.store');
+    Route::post('/barang/cetak-harga/{barang:idBarang}', [ProductController::class, 'destroyPrintPrice'])->name('barang.cetak-harga.destroy');
 });
 
 // Kategori

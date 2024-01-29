@@ -47,27 +47,30 @@
         <div class="FilterListProductSection">
             <div class="main-card mb-3 card">
                 <div class="card-body">
-                    <h5 class="card-title text-center">Cari Barang</h5>
-                    <form id="formFilterProduct" method="GET" onsubmit="event.preventDefault(); getListProduct();">
+                    <h5 class="card-title text-center">Tambah Barang</h5>
+                    <form id="formAddProduct" method="POST">
                         @csrf
                         <div class="card-body">
-                            <div class="row mb-3">
-                                <label for="filterName" class="col-sm-2 col-form-label">Nama Barang</label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control rounded__10 " id="filterName"
-                                        name="filterName">
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <label for="filterDate" class="col-sm-2 col-form-label">Tanggal Kadaluarsa</label>
-                                <div class="col-sm-10">
-                                    <input type="date" class="form-control rounded__10 " id="filterDate"
-                                        name="filterDate">
+                            <div class="form-group form-show-validation row select2-form-input">
+                                <label for="product" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-sm-right">Nama
+                                    / Barcode Barang
+                                    <span class="required-label">*</span></label>
+                                <div class="col-lg-6 col-md-9 col-sm-8">
+                                    <div class="select2-input select2-info">
+                                        <select id="product" name="product" class="form-control">
+                                            <option value="">&nbsp;</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="card-footer">
-                            <button type="submit" class="btn btn-primary">Cari</button>
+                        <div class="card-action py-3 px-4">
+                            <div class="row">
+                                <div class="col-md-12 text-right">
+                                    <button class="btn btn-primary ml-3" type="submit"
+                                        id="searchProductButton">Tambah</button>
+                                </div>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -118,6 +121,58 @@
                 info: false,
             });
 
+            $('#product').select2({
+                theme: "bootstrap-5",
+                placeholder: 'Masukkan Nama atau Barcode Barang',
+                allowClear: true,
+                minimumInputLength: 1, // Minimum characters required to start searching
+                language: {
+                    inputTooShort: function(args) {
+                        var remainingChars = args.minimum - args.input.length;
+                        return "Masukkan kata kunci setidaknya " + remainingChars + " karakter";
+                    },
+                    searching: function() {
+                        return "Sedang mengambil data...";
+                    },
+                    noResults: function() {
+                        return "Pegawai tidak ditemukan";
+                    },
+                    errorLoading: function() {
+                        return "Terjadi kesalahan saat memuat data";
+                    },
+                },
+                templateSelection: function(data, container) {
+                    if (data.id === '') {
+                        return data.text;
+                    }
+                    var match = data.text.match(/^(.*?) \(/);
+                    var resultName = match[1];
+
+                    return $('<span class="custom-selection">' + resultName + '</span>');
+                },
+                ajax: {
+                    url: "{{ route('barang.cari.data') }}", // URL to fetch data from
+                    dataType: 'json', // Data type expected from the server
+                    processResults: function(response) {
+                        var products = response.data.products;
+                        var options = [];
+
+                        products.forEach(function(product) {
+                            options.push({
+                                id: product.IdBarang, // Use the product NIP as the ID
+                                text: product.nmBarang + ' (' + product.IdBarang +
+                                    ')' // Display both NAMA and NIP
+                            });
+                        });
+
+                        return {
+                            results: options // Processed results with id and text properties
+                        };
+                    },
+                    cache: true, // Cache the results for better performance
+                }
+            });
+
             getListProduct();
         });
 
@@ -155,5 +210,52 @@
                 }
             });
         }
+
+        $('#formAddProduct').validate({
+            rules: {
+                product: {
+                    required: true,
+                },
+            },
+            messages: {
+                product: {
+                    required: '<i class="fas fa-exclamation-circle mr-1 text-sm icon-error"></i>Barang tidak boleh kosong',
+                },
+            },
+            highlight: function(element) {
+                $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+            },
+            success: function(element) {
+                $(element).closest('.form-group').removeClass('has-error');
+            },
+            submitHandler: function(form, event) {
+                event.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('barang.cetak-harga.store') }}",
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        IdBarang: $('#product').val(),
+                    },
+                    success: function(response) {
+                        getListProduct();
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        if (xhr.responseJSON) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal',
+                                text: `Tambah Produk Gagal. ${xhr.responseJSON.meta.message} Error: ${xhr.responseJSON.data.error}`,
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                        }
+                        return false;
+                    },
+                });
+
+                $('#product').val(null).trigger('change');
+            }
+        });
     </script>
 @endpush
