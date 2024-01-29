@@ -59,7 +59,7 @@
                                 </div>
                             </div>
                             <div class="row mb-3">
-                                <label for="filterDate" class="col-sm-2 col-form-label">Expired Date</label>
+                                <label for="filterDate" class="col-sm-2 col-form-label">Tanggal Kadaluarsa</label>
                                 <div class="col-sm-10">
                                     <input type="date" class="form-control rounded__10 " id="filterDate"
                                         name="filterDate">
@@ -246,7 +246,7 @@
                                 </div>
                             </div>
                             <div class="row mb-3">
-                                <label for="expDate" class="col-sm-2 col-form-label">Expired Date</label>
+                                <label for="expDate" class="col-sm-2 col-form-label">Tanggal Kadaluarsa</label>
                                 <div class="col-sm-10">
                                     <input value="${response.product.expDate}" type="date"
                                         class="form-control rounded__10 "
