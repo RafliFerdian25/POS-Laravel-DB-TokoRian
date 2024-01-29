@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ResponseFormatter;
 use App\Models\Barang;
+use App\Models\Barcode;
 use App\Models\Category;
 use App\Models\Jenis;
 use App\Models\Merk;
@@ -272,5 +273,25 @@ class ProductController extends Controller
             'title' => 'POS TOKO | Laporan',
         ];
         return view('product.printPrice', $data);
+    }
+
+    /**
+     * Mnedapatkan data produk yang akan dicetak harganya
+     */
+    public function printPriceData(Request $request)
+    {
+        $query = Barcode::orderBy('nmBarang', 'asc')
+            ->limit(100);
+
+        $products = $query->get();
+        $countProduct = $query->count();
+
+        return ResponseFormatter::success(
+            [
+                'products' => $products,
+                'countProduct' => $countProduct
+            ],
+            'Data berhasil diambil'
+        );
     }
 }

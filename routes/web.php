@@ -52,8 +52,8 @@ Route::controller('ProductController')->group(function () {
     Route::get('/barang/kadaluarsa', [ProductController::class, 'expired'])->name('barang.kadaluarsa');
     Route::get('/barang/kadaluarsa/data', [ProductController::class, 'expiredData'])->name('barang.kadaluarsa.data');
     Route::get('/barang/habis', [ProductController::class, 'productEmpty'])->name('barang.habis');
-    Route::get('/barang/cetak-harga', [ProductController::class, 'printPrice'])->name('barang.print-price');
-    Route::get('/barang/cetak-harga/data', [ProductController::class, 'printPriceData'])->name('barang.print-price.data');
+    Route::get('/barang/cetak-harga', [ProductController::class, 'printPrice'])->name('barang.cetak-harga');
+    Route::get('/barang/cetak-harga/data', [ProductController::class, 'printPriceData'])->name('barang.cetak-harga.data');
 });
 
 // Kategori
