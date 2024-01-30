@@ -22,23 +22,48 @@
         <!-- CARD DASHBOARD -->
         <div class="row">
             <!-- total pendapatan -->
-            <div class="col-sm-6 col-md-4 col-xl-3 p-3">
-                <div class="card mb-0 widget-content row">
+            <div class="col-sm-12 col-md-4 col-xl-3 p-3">
+                <div class="card mb-3 widget-content">
                     <div class="content">
-                        <div class="widget-content-left row mb-2">
+                        <div class="widget-content-left mb-2">
                             <i class="pe-7s-cash col-2" style="font-size: 30px;"></i>
                             <div class="widget-heading col-10 widget__title">Total Barang Cetak Harga</div>
                         </div>
                         <div class="widget-content-right">
                             <div class="widget-numbers mb-2"><span id="countProduct">-</span></div>
-                            <div class="perubahan row">
-                                {{-- <div class="widget-subheading col-10" id="total_pendapatan">
-                                    -2000000
-                                </div> --}}
-                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="col-sm-12 col-md-8 col-xl-9 p-3">
+                <form id="formAddProduct" method="POST">
+                    <div class="main-card mb-3 card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Tambah Barang</h5>
+                            @csrf
+                            <div class="form-group form-show-validation row select2-form-input">
+                                <label for="product" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-sm-right">Nama
+                                    / Barcode Barang
+                                    <span class="required-label">*</span></label>
+                                <div class="col-lg-6 col-md-9 col-sm-8">
+                                    <div class="select2-input select2-info">
+                                        <select id="product" name="product" class="form-control rounded__10">
+                                            <option value="">&nbsp;</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-action py-3 px-4">
+                            <div class="row">
+                                <div class="col-md-12 text-right">
+                                    <button class="btn btn-primary ml-3" type="submit"
+                                        id="searchProductButton">Tambah</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
         <!-- END CARD DASHBOARD -->
@@ -56,7 +81,7 @@
                                 <span class="required-label">*</span></label>
                             <div class="col-lg-6 col-md-9 col-sm-8">
                                 <div class="select2-input select2-info">
-                                    <select id="product" name="product" class="form-control">
+                                    <select id="product" name="product" class="form-control rounded__10">
                                         <option value="">&nbsp;</option>
                                     </select>
                                 </div>
@@ -142,7 +167,7 @@
                         return "Sedang mengambil data...";
                     },
                     noResults: function() {
-                        return "Pegawai tidak ditemukan";
+                        return "Barang tidak ditemukan";
                     },
                     errorLoading: function() {
                         return "Terjadi kesalahan saat memuat data";
