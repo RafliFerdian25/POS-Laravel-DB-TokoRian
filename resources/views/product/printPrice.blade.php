@@ -10,9 +10,9 @@
                         <i class="pe-7s-note2 icon-gradient bg-plum-plate">
                         </i>
                     </div>
-                    <div>Barang Harga Jual
+                    <div>Barang
                         <div class="page-title-subheading">
-                            Harga Jual
+                            Cetak Harga Jual
                         </div>
                     </div>
                 </div>
@@ -27,7 +27,7 @@
                     <div class="content">
                         <div class="widget-content-left row mb-2">
                             <i class="pe-7s-cash col-2" style="font-size: 30px;"></i>
-                            <div class="widget-heading col-10 widget__title">Total Harga Jual</div>
+                            <div class="widget-heading col-10 widget__title">Total Barang Cetak Harga</div>
                         </div>
                         <div class="widget-content-right">
                             <div class="widget-numbers mb-2"><span id="countProduct">-</span></div>
@@ -63,7 +63,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-action pb-3 px-4">
+                    <div class="card-action py-3 px-4">
                         <div class="row">
                             <div class="col-md-12 text-right">
                                 <button class="btn btn-primary ml-3" type="submit" id="searchProductButton">Tambah</button>
@@ -83,6 +83,7 @@
                     <table class="mb-0 table" id="tableListProduct">
                         <thead>
                             <tr>
+                                <th>No</th>
                                 <th>Barcode</th>
                                 <th>Nama Barang</th>
                                 <th>Harga Jual</th>
@@ -177,6 +178,42 @@
                     },
                     cache: true, // Cache the results for better performance
                 }
+            }).on('change', function(e) {
+                // Mendapatkan nilai yang dipilih
+                var IdBarang = $(this).val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('barang.cetak-harga.store') }}",
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        IdBarang: IdBarang,
+                    },
+                    success: function(response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: 'Menambah Produk Berhasil',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        getListProduct();
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        if (xhr.responseJSON) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal',
+                                text: `Tambah Produk Gagal. ${xhr.responseJSON.meta.message} Error: ${xhr.responseJSON.data.error}`,
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                        }
+                        return false;
+                    },
+                });
+
+                // $('#product').val(null).trigger('change');
             });
 
             getListProduct();
@@ -196,6 +233,7 @@
                     if (response.data.products.length > 0) {
                         $.each(response.data.products, function(index, product) {
                             var rowData = [
+                                index + 1,
                                 product.idBarang,
                                 product.nmBarang,
                                 product.hargaJual,
@@ -244,6 +282,13 @@
                         IdBarang: $('#product').val(),
                     },
                     success: function(response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: 'Menambah Produk Berhasil',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
                         getListProduct();
                     },
                     error: function(xhr, ajaxOptions, thrownError) {
