@@ -229,6 +229,7 @@
     <!-- Datatable -->
     <link href="/DataTables/datatables.min.css" rel="stylesheet" />
     <script src="/DataTables/datatables.min.js"></script>
+    <script src="/DataTables/Buttons-2.3.6/js/dataTables.buttons.min.js"></script>
     {{-- toastr --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     {{-- Sweetalert --}}

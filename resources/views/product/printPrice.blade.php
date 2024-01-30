@@ -45,36 +45,33 @@
         {{--  --}}
         <!-- Cari Barang -->
         <div class="FilterListProductSection">
-            <div class="main-card mb-3 card">
-                <div class="card-body">
-                    <h5 class="card-title text-center">Tambah Barang</h5>
-                    <form id="formAddProduct" method="POST">
+            <form id="formAddProduct" method="POST">
+                <div class="main-card mb-3 card">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">Tambah Barang</h5>
                         @csrf
-                        <div class="card-body">
-                            <div class="form-group form-show-validation row select2-form-input">
-                                <label for="product" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-sm-right">Nama
-                                    / Barcode Barang
-                                    <span class="required-label">*</span></label>
-                                <div class="col-lg-6 col-md-9 col-sm-8">
-                                    <div class="select2-input select2-info">
-                                        <select id="product" name="product" class="form-control">
-                                            <option value="">&nbsp;</option>
-                                        </select>
-                                    </div>
+                        <div class="form-group form-show-validation row select2-form-input">
+                            <label for="product" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-sm-right">Nama
+                                / Barcode Barang
+                                <span class="required-label">*</span></label>
+                            <div class="col-lg-6 col-md-9 col-sm-8">
+                                <div class="select2-input select2-info">
+                                    <select id="product" name="product" class="form-control">
+                                        <option value="">&nbsp;</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
-                        <div class="card-action py-3 px-4">
-                            <div class="row">
-                                <div class="col-md-12 text-right">
-                                    <button class="btn btn-primary ml-3" type="submit"
-                                        id="searchProductButton">Tambah</button>
-                                </div>
+                    </div>
+                    <div class="card-action pb-3 px-4">
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <button class="btn btn-primary ml-3" type="submit" id="searchProductButton">Tambah</button>
                             </div>
                         </div>
-                    </form>
+                    </div>
                 </div>
-            </div>
+            </form>
         </div>
         <!-- end Cari Barang -->
 
@@ -95,6 +92,15 @@
                         <tbody id="tableListProductBody">
                         </tbody>
                     </table>
+                </div>
+                <div class="card-action pb-3 px-4">
+                    {{-- hapus --}}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button class="btn btn-danger ml-3" type="button" id="deleteAllProductButton"
+                                onclick="deleteProduct('all')">Hapus Semua</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -205,7 +211,7 @@
                         });
                     } else {
                         $('#tableListProductBody').html(tableEmpty(5,
-                            'Harga Jual'));
+                            'barang'));
                     }
                 }
             });
@@ -261,7 +267,7 @@
         const deleteProduct = (id) => {
             Swal.fire({
                 title: 'Hapus Produk',
-                text: "Apakah Anda yakin ingin menghapus produk ini?",
+                text: `Apakah Anda yakin ingin menghapus ${id == 'all' ? 'semua':''} produk?`,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Hapus',
