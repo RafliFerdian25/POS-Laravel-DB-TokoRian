@@ -59,10 +59,17 @@
                                 </div>
                             </div>
                             <div class="row mb-3">
-                                <label for="filterDate" class="col-sm-2 col-form-label">Tanggal Kadaluarsa</label>
+                                <label for="filterStartDate" class="col-sm-2 col-form-label">Awal Tanggal Kadaluarsa</label>
                                 <div class="col-sm-10">
-                                    <input type="date" class="form-control rounded__10 " id="filterDate"
-                                        name="filterDate">
+                                    <input type="date" class="form-control rounded__10 " id="filterStartDate"
+                                        name="filterStartDate">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="filterEndDate" class="col-sm-2 col-form-label">Akhir Tanggal Kadaluarsa</label>
+                                <div class="col-sm-10">
+                                    <input type="date" class="form-control rounded__10 " id="filterEndDate"
+                                        name="filterEndDate">
                                 </div>
                             </div>
                         </div>

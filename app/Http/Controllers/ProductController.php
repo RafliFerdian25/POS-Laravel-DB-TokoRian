@@ -244,11 +244,14 @@ class ProductController extends Controller
      */
     public function expiredData(Request $request)
     {
-        $expDate = $request->filterDate ? $request->filterDate : Carbon::now()->addDays(90);
         $query = Barang::select('IdBarang', 'nmBarang', 'expDate', 'stok')
-            ->where('expDate', '<', $expDate)
-            // ->where('expDate', '>', Carbon::now()->subYears(5))
-            ->when($request->has('filterName'), function ($query) use ($request) {
+            ->when($request->filterStartDate == null && $request->filterEndDate == null, function ($query) {
+                return $query->where('expDate', '<=', Carbon::now()->addDays(90));
+            })
+            ->when($request->filterStartDate != null && $request->filterEndDate != null, function ($query) use ($request) {
+                return $query->whereBetween('expDate', [$request->filterStartDate, $request->filterEndDate]);
+            })
+            ->when($request->filterName != null, function ($query) use ($request) {
                 return $query->where('nmBarang', 'LIKE', '%' . $request->filterName . '%');
             })
             ->orderBy('expDate', 'asc')
