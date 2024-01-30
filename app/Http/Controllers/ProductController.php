@@ -182,7 +182,7 @@ class ProductController extends Controller
             // mengupdate data di table products
             Barang::where('IdBarang', $barang->IdBarang)->update([
                 'IdBarang' => $validated['IdBarang'],
-                'nmBarang' => $validated['nmBarang'],
+                'nmBarang' => strtoupper($validated['nmBarang']),
                 'satuan' => $validated['satuan'],
                 'isi' => $validated['isi'],
                 'hargaPokok' => $validated['hargaPokok'],

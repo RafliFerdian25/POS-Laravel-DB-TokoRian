@@ -190,7 +190,7 @@
                                 <div class="col-sm-10">
                                     <input required value="${response.product.nmBarang}" type="text"
                                         class="form-control rounded__10 "
-                                        id="nmBarang" name="nmBarang">
+                                        id="nmBarang" name="nmBarang" style="text-transform:uppercase">
                                 </div>
                             </div>
                             <div class="row mb-3">
