@@ -15,8 +15,8 @@
                             Laporan
                         </div>
                         <div class="row justify-content-center justify-content-lg-start">
-                            <form action="" id="formBulan" class="col-6 col-lg-12">
-                                <input type="month" name="reportMonth" id="reportMonth" class="form-control mb-3"
+                            <form id="formBulan" class="col-6 col-lg-12">
+                                <input type="month" name="reportDate" id="reportDate" class="form-control mb-3"
                                     onchange="laporanBulanan(this)" value="{{ now()->format('Y-m') }}">
                             </form>
                         </div>
@@ -116,7 +116,7 @@
                 </div>
                 <div class="card-body">
                     <div>
-                        <canvas id="myChart" width="400" height="100"></canvas>
+                        <canvas id="categoryChart" width="400" height="100"></canvas>
                     </div>
                 </div>
             </div>
@@ -169,21 +169,24 @@
         });
 
         function laporanBulanan(input) {
-            let formBulan = $("#formBulan");
-            formBulan.submit();
-            // Upload log ke server
+            getCategoriesData()
         }
 
         // Chart
-        const ctx = document.getElementById('myChart');
+        const ctx = document.getElementById('categoryChart');
+        // Declare a global variable to store the Chart instance
+        let categoryChart;
 
         const getCategoriesData = () => {
+            if (categoryChart) {
+                categoryChart.destroy();
+            }
             $.ajax({
                 type: "GET",
                 url: "{{ route('laporan.kategori.data') }}",
                 data: $("#formBulan").serialize(),
                 success: function(response) {
-                    new Chart(ctx, {
+                    categoryChart = new Chart(ctx, {
                         type: 'doughnut',
                         data: {
                             labels: response.data.reports.map(report => report.keterangan),
