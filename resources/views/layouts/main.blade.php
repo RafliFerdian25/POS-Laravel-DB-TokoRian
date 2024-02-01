@@ -246,6 +246,9 @@
         integrity="sha512-6S5LYNn3ZJCIm0f9L6BCerqFlQ4f5MwNKq+EthDXabtaJvg3TuFLhpno9pcm+5Ynm6jdA9xfpQoMz2fcjVMk9g=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
+    {{-- html5-qrcode --}}
+    <script src="https://unpkg.com/html5-qrcode"></script>
+
     <!-- JS -->
     <script type="text/javascript" src="{{ asset('assets/scripts/main.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/scripts/script.js') }}"></script>
