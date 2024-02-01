@@ -19,7 +19,7 @@
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     <!-- ICONS -->
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.min.css">
@@ -114,6 +114,13 @@
                                     class="{{ Request::is('laporan/keuangan*') ? 'mm-active' : '' }}">
                                     <i class="metismenu-icon pe-7s-note2"></i>
                                     Keuangan
+                                </a>
+                            </li>
+                            <li class="">
+                                <a href="{{ url('/laporan/kategori') }}" id="navbar_laporan"
+                                    class="{{ Request::is('laporan/kategori*') ? 'mm-active' : '' }}">
+                                    <i class="metismenu-icon pe-7s-note2"></i>
+                                    Kategori
                                 </a>
                             </li>
                             <li class="">
@@ -248,6 +255,9 @@
 
     {{-- html5-qrcode --}}
     <script src="https://unpkg.com/html5-qrcode"></script>
+
+    {{-- Chart JS --}}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <!-- JS -->
     <script type="text/javascript" src="{{ asset('assets/scripts/main.js') }}"></script>
