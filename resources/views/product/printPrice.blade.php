@@ -36,36 +36,26 @@
                 </div>
             </div>
             <div class="col-sm-12 col-md-8 col-xl-9 p-3">
-                <form id="formAddProduct" method="POST">
-                    <div class="main-card mb-3 card">
-                        <div class="card-body">
-                            <h5 class="card-title text-center">Tambah Barang</h5>
-                            @csrf
-                            <div class="form-group form-show-validation row select2-form-input">
-                                <label for="product" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-sm-right">Nama
-                                    / Barcode Barang
-                                    <span class="required-label">*</span></label>
-                                <div class="col-lg-9 col-md-9 col-sm-8">
-                                    <div class="select2-input select2-info" style="width: 100%">
-                                        <select id="product" name="product" class="form-control rounded__10">
-                                            <option value="">&nbsp;</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="qr-reader" style="min-width:300px"></div>
-                            <div id="qr-reader-results"></div>
-                        </div>
-                        <div class="card-action py-3 px-4">
-                            <div class="row">
-                                <div class="col-md-12 text-right">
-                                    <button class="btn btn-primary ml-3" type="submit"
-                                        id="searchProductButton">Tambah</button>
+                <div class="main-card mb-3 card">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">Tambah Barang</h5>
+                        @csrf
+                        <div class="form-group form-show-validation row select2-form-input">
+                            <label for="product" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-sm-right">Nama
+                                / Barcode Barang
+                                <span class="required-label">*</span></label>
+                            <div class="col-lg-9 col-md-9 col-sm-8">
+                                <div class="select2-input select2-info" style="width: 100%">
+                                    <select id="product" name="product" class="form-control rounded__10">
+                                        <option value="">&nbsp;</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
+                        <div id="qr-reader" style="min-width:300px"></div>
+                        <div id="qr-reader-results"></div>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
         <!-- END CARD DASHBOARD -->
@@ -250,60 +240,6 @@
                 }
             });
         }
-
-        $('#formAddProduct').validate({
-            rules: {
-                product: {
-                    required: true,
-                },
-            },
-            messages: {
-                product: {
-                    required: '<i class="fas fa-exclamation-circle mr-1 text-sm icon-error"></i>Barang tidak boleh kosong',
-                },
-            },
-            highlight: function(element) {
-                $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
-            },
-            success: function(element) {
-                $(element).closest('.form-group').removeClass('has-error');
-            },
-            submitHandler: function(form, event) {
-                event.preventDefault();
-                $.ajax({
-                    type: "POST",
-                    url: "{{ route('barang.cetak-harga.store') }}",
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        IdBarang: $('#product').val(),
-                    },
-                    success: function(response) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil',
-                            text: 'Menambah Produk Berhasil',
-                            showConfirmButton: false,
-                            timer: 1500
-                        })
-                        getListProduct();
-                    },
-                    error: function(xhr, ajaxOptions, thrownError) {
-                        if (xhr.responseJSON) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Gagal',
-                                text: `Tambah Produk Gagal. ${xhr.responseJSON.meta.message} Error: ${xhr.responseJSON.data.error}`,
-                                showConfirmButton: false,
-                                timer: 1500
-                            })
-                        }
-                        return false;
-                    },
-                });
-
-                $('#product').val(null).trigger('change');
-            }
-        });
 
         const deleteProduct = (id) => {
             Swal.fire({
