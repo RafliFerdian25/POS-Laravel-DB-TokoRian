@@ -21,12 +21,11 @@ class Barang extends Model
 
     public function type()
     {
-        return $this->belongsTo(Jenis::class, 'jenis', 'ID');
+        return $this->belongsTo(Jenis::class, 'jenis', 'jenis');
     }
 
     public function merk()
     {
         return $this->belongsTo(Merk::class);
     }
-
 }

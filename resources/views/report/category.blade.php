@@ -116,7 +116,7 @@
                 </div>
                 <div class="card-body">
                     <div>
-                        <canvas id="myChart"></canvas>
+                        <canvas id="myChart" width="400" height="100"></canvas>
                     </div>
                 </div>
             </div>
@@ -181,15 +181,15 @@
             $.ajax({
                 type: "GET",
                 url: "{{ route('laporan.kategori.data') }}",
-                data: "data",
+                data: $("#formBulan").serialize(),
                 success: function(response) {
                     new Chart(ctx, {
                         type: 'doughnut',
                         data: {
-                            labels: response.data.categories.map(category => category.jenis),
+                            labels: response.data.reports.map(report => report.keterangan),
                             datasets: [{
                                 label: '# of Votes',
-                                data: [12, 19, 3, 5, 2, 3],
+                                data: response.data.reports.map(report => report.jumlah),
                                 backgroundColor: [
                                     'rgb(255, 99, 132)',
                                     'rgb(54, 162, 235)',

@@ -11,8 +11,8 @@ class Kasir extends Model
 
     protected $table = 't_kasir';
 
-    public function barang()
+    public function product()
     {
-        return $this->belongsTo(Barang::class, 'idBarang');
+        return $this->belongsTo(Barang::class, 'idBarang', 'idBarang');
     }
 }
