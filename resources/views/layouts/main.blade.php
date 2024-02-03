@@ -110,8 +110,8 @@
 
                             <li class="app-sidebar__heading">Laporan</li>
                             <li class="">
-                                <a href="{{ url('/laporan/keuangan') }}" id="navbar_laporan"
-                                    class="{{ Request::is('laporan/keuangan*') ? 'mm-active' : '' }}">
+                                <a href="{{ route('laporan.penjualan.bulanan') }}" id="navbar_laporan"
+                                    class="{{ Request::is('laporan/penjualan/bulanan*') ? 'mm-active' : '' }}">
                                     <i class="metismenu-icon pe-7s-note2"></i>
                                     Keuangan
                                 </a>

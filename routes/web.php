@@ -24,17 +24,17 @@ use App\Http\Controllers\SaleDetailController;
 /* Laporan */
 
 Route::get('/', function () {
-    return redirect()->route('laporan.bulanan');
+    return redirect()->route('laporan.penjualan.bulanan');
 });
 
 /** LAPORAN */
 Route::controller(ReportController::class)->group(function () {
     Route::get('/laporan/kategori', 'categoryIndex')->name('laporan.kategori');
     Route::get('/laporan/kategori/data', 'getCategoriesReport')->name('laporan.kategori.data');
+    Route::get('/laporan/penjualan/bulanan', 'ReportSaleMonthly')->name('laporan.penjualan.bulanan');
 });
 
 Route::get('/laporan/{sale}/show', [SaleController::class, 'showReport'])->name('laporan.show');
-Route::get('/laporan/keuangan', [SaleController::class, 'laporanBulanan'])->name('laporan.bulanan');
 Route::get('/laporan/barang/{barang:idBarang}', [SaleController::class, 'laporanBarangBulanan'])->name('laporan.barang.bulanan');
 
 // Route::get('/transaksi/baru', [PenjualanController::class, 'create'])->name('transaksi.baru');

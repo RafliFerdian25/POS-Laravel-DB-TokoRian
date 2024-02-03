@@ -1,0 +1,46 @@
+## BACKLOG ##
+grafik penjualan kategori harian dalam sebulan (grafik batang/garis)
+grafik penjualan barang harian dalam sebulan (grafik batang/garis)
+tanggal terakhir belanja barang
+
+read tabel barang
+create tabel barang
+update tabel barang
+delete tabel barang
+
+grafik penjualan harian / bulan
+grafik penjualan bulanan / tahun
+
+read barang habis
+create barang habis
+update barang habis
+delete barang habis
+
+read belanja barang
+create belanja barang
+update belanja barang
+delete belanja barang
+
+menambahkan tabel barang yang pernah kadaluarsa
+read barang pernah kadaluarsa
+create barang pernah kadaluarsa
+update barang pernah kadaluarsa
+delete barang pernah kadaluarsa
+
+menambahkan tabel penerimaan gas
+read penerimaan gas
+create penerimaan gas
+update penerimaan gas
+delete penerimaan gas
+
+menambahkan tabel penjualan gas
+read penjualan gas
+create penjualan gas
+update penjualan gas
+delete penjualan gas
+
+
+## DONE ##
+✅ perubahan NULL pada tanggal kadaluarsa product
+✅ mencetak harga
+✅ grafik penjualan kategori bulanan

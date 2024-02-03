@@ -210,8 +210,8 @@
                     <table class="mb-0 table" id="barang_terjual">
                         <thead>
                             <tr>
+                                <th>No. Transaksi</th>
                                 <th>Tanggal</th>
-                                <th>No. Kasir</th>
                                 <th>Total Item</th>
                                 <th>Total Harga</th>
                                 <th>Keuntungan</th>
@@ -219,15 +219,15 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($kasir as $kasir)
+                            @foreach ($transactions as $transaction)
                                 <tr>
-                                    <td scope="row">{{ $kasir->tanggal }}</td>
-                                    <td>{{ $kasir->noTransaksi }}</td>
-                                    <td>{{ $kasir->jumlah }}</td>
-                                    <td>{{ $kasir->total }}</td>
-                                    <td>{{ $kasir->laba }}</td>
+                                    <td scope="row">{{ $transaction->noTransaksi }}</td>
+                                    <td>{{ $transaction->tanggal }}</td>
+                                    <td>{{ $transaction->jumlah }}</td>
+                                    <td>{{ $transaction->total }}</td>
+                                    <td>{{ $transaction->laba }}</td>
                                     <td>
-                                        <a href="{{ route('laporan.show', $kasir->noTransaksi) }}"
+                                        <a href="{{ route('laporan.show', $transaction->noTransaksi) }}"
                                             class="btn btn-primary">Detail</a>
                                     </td>
                                 </tr>

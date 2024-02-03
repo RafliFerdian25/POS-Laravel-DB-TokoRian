@@ -73,59 +73,6 @@ class SaleController extends Controller
         return view('sale.nota_kecil', compact('setting', 'penjualan', 'detail', 'title'));
     }
 
-    public function laporanBulanan(Request $request)
-    {
-        $title = 'POS TOKO | Laporan';
-        if ($request->laporan_bulan == null) {
-            $tanggal = date('Y-m');
-        } else {
-            // $tanggal = explode("-",$request->laporan_bulan);
-            $tanggal = date('Y-m', strtotime($request->laporan_bulan));
-        }
-        $tahun = Carbon::parse($tanggal)->format('Y');
-        $bulan = Carbon::parse($tanggal)->format('m');
-
-        $setting = Toko::first();
-        $kasir = Kasir::selectRaw('noTransaksi, max(tanggal) as tanggal, sum(total) as total, sum(laba) as laba, sum(jumlah) as jumlah')
-            ->whereMonth('tanggal', $bulan)
-            ->whereYear('tanggal', $tahun)
-            ->orderBy('noTransaksi', 'desc')
-            ->groupBy('noTransaksi')
-            ->get();
-        $report = Kasir::whereMonth('tanggal', $bulan)
-            ->whereYear('tanggal', $tahun)
-            ->selectRaw('sum(total) as income, sum(laba) as profit, (select count(noUrut) from t_kasir where month(`tanggal`) = ' . $bulan . ' and year(`tanggal`) = ' . $tahun . ' and noUrut = 1) as total_transaction, sum(jumlah) as total_item')
-            ->get();
-
-        $barangTerlaris = Kasir::selectRaw('nmBarang as namaBarang, sum(jumlah) as total, idBarang')
-            ->whereMonth('tanggal', $bulan)
-            ->whereYear('tanggal', $tahun)
-            ->groupBy('namaBarang', 'idBarang')
-            ->orderBy('total', 'desc')
-            ->limit(10)
-            ->get();
-
-        $jenisTerlaris = Jenis::selectRaw('p_jenis.jenis, sum(t_kasir.jumlah) as total')
-            ->join('t_barang', 't_barang.jenis', '=', 'p_jenis.jenis')
-            ->join('t_kasir', 't_kasir.idBarang', '=', 't_barang.idBarang')
-            ->whereMonth('t_kasir.tanggal', $bulan)
-            ->whereYear('t_kasir.tanggal', $tahun)
-            ->groupBy('jenis')
-            ->orderBy('total', 'desc')
-            ->get();
-
-        $data = [
-            'setting' => $setting,
-            'kasir' => $kasir,
-            'title' => $title,
-            'report' => $report,
-            'tanggal' => $tanggal,
-            'barangTerlaris' => $barangTerlaris,
-            'jenisTerlaris' => $jenisTerlaris,
-        ];
-        return view('report.financial', $data);
-    }
-
     public function laporanBarangBulanan(Request $request, Barang $barang)
     {
         $barang->load('type');
