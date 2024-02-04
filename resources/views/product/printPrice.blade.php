@@ -152,9 +152,10 @@
 
                         products.forEach(function(product) {
                             options.push({
-                                id: product.IdBarang, // Use the product NIP as the ID
+                                id: product.IdBarang, // Use the product
                                 text: product.nmBarang + ' (' + product.IdBarang +
-                                    ')' // Display both NAMA and NIP
+                                    ')' + ' (' + product.hargaJual +
+                                    ')' // menampilkan nama, barcode, dan harga
                             });
                         });
 

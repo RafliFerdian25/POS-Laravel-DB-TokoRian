@@ -61,7 +61,7 @@ class ProductController extends Controller
      */
     public function searchData(Request $request)
     {
-        $query = Barang::select('IdBarang', 'nmBarang')
+        $query = Barang::select('IdBarang', 'nmBarang', 'hargaJual')
             ->when($request->has('q'), function ($query) use ($request) {
                 return $query->where('nmBarang', 'LIKE', '%' . $request->q . '%')
                     ->orWhere('IdBarang', 'LIKE', '%' . $request->q . '%');
@@ -313,7 +313,6 @@ class ProductController extends Controller
 
         $products = $query->get();
         $countProduct = $query->count();
-
         return ResponseFormatter::success(
             [
                 'products' => $products,
