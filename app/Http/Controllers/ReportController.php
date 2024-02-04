@@ -31,7 +31,7 @@ class ReportController extends Controller
         $transactions = Kasir::selectRaw('noTransaksi, max(tanggal) as tanggal, sum(total) as total, sum(laba) as laba, sum(jumlah) as jumlah')
             ->whereMonth('tanggal', $bulan)
             ->whereYear('tanggal', $tahun)
-            ->orderBy('id', 'desc')
+            ->orderBy('noTransaksi', 'desc')
             ->groupBy('noTransaksi')
             ->get();
         $report = Kasir::whereMonth('tanggal', $bulan)
