@@ -206,6 +206,7 @@
 
             getPrintPriceProduct();
         });
+        var printPriceProduct = [];
 
         const getPrintPriceProduct = () => {
             $('#tableListProduct').DataTable().clear().draw();
@@ -217,14 +218,18 @@
                 data: $('#formFilterProduct').serialize(),
                 dataType: "json",
                 success: function(response) {
+                    printPriceProduct = response.data.products.map((product) => {
+                        return product.idBarang;
+                    });
                     $('#countProduct').html(response.data.countProduct);
                     if (response.data.products.length > 0) {
+                        console.log(response.data.products);
                         $.each(response.data.products, function(index, product) {
                             var rowData = [
                                 index + 1,
                                 product.idBarang,
                                 product.nmBarang,
-                                product.product.expDate,
+                                product.product.expDate != null ? product.product.expDate : '-',
                                 product.hargaJual,
                                 `<button class="btn btn-sm btn-warning" onclick="showEdit('${product.idBarang}')">Edit</button>
                                 <button class="btn btn-sm btn-danger" onclick="deleteProduct('${product.idBarang}')"><i class="bi bi-trash"></i></button>`
@@ -243,6 +248,7 @@
                     }
                 }
             });
+
         }
 
         // Menampilkan modal edit product
@@ -349,7 +355,7 @@
                                             class="form-select rounded__10 "
                                             name="jenis" id="jenis" aria-label="Default select example">
                                             ${response.categories.map((category) => {
-                                                return `<option value="${category.ID}" ${category.ID == response.product.ID ? "selected" : ""}>${category.jenis}</option>`
+                                                return `<option value="${category.ID}" ${category.ID == response.product.jenis ? "selected" : ""}>${category.jenis}</option>`
                                             })}
                                         </select>
                                     </div>
@@ -575,9 +581,9 @@
         var lastResult, countResults = 0;
 
         function onScanSuccess(decodedText, decodedResult) {
-            if (decodedText !== lastResult) {
-                ++countResults;
+            if (!printPriceProduct.includes(decodedText) && lastResult !== decodedText) {
                 lastResult = decodedText;
+                ++countResults;
                 // Handle on success condition with the decoded message.
                 $.ajax({
                     type: "POST",
@@ -609,6 +615,14 @@
                         return false;
                     },
                 });
+            } else {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Gagal',
+                    text: 'Produk sudah ditambahkan',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
             }
         }
 

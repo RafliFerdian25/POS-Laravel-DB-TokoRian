@@ -16,7 +16,7 @@ class Barang extends Model
 
 
     protected $casts = [
-        'id' => 'string',
+        'idBarang' => 'string',
     ];
 
     public function type()
