@@ -21,4 +21,9 @@ class Barcode extends Model
     ];
 
     protected $table = 't_barcode';
+
+    public function product()
+    {
+        return $this->belongsTo(Barang::class, 'idBarang', 'idBarang');
+    }
 }

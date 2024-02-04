@@ -71,6 +71,7 @@
                                 <th>No</th>
                                 <th>Barcode</th>
                                 <th>Nama Barang</th>
+                                <th>Tanggal Kadaluarsa</th>
                                 <th>Harga Jual</th>
                                 <th>Aksi</th>
                             </tr>
@@ -223,6 +224,7 @@
                                 index + 1,
                                 product.idBarang,
                                 product.nmBarang,
+                                product.product.expDate,
                                 product.hargaJual,
                                 `<button class="btn btn-sm btn-danger" onclick="deleteProduct('${product.idBarang}')"><i class="bi bi-trash"></i></button>`
                             ];

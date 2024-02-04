@@ -308,11 +308,13 @@ class ProductController extends Controller
      */
     public function printPriceData(Request $request)
     {
-        $query = Barcode::orderBy('nmBarang', 'asc')
+        $query = Barcode::with('product:idBarang,expDate')
+            ->orderBy('nmBarang', 'asc')
             ->limit(100);
 
         $products = $query->get();
         $countProduct = $query->count();
+
         return ResponseFormatter::success(
             [
                 'products' => $products,
