@@ -53,7 +53,7 @@ Route::controller('ProductController')->group(function () {
     Route::get('/barang', [ProductController::class, 'index'])->name('barang.index');
     Route::get('/barang/create', [ProductController::class, 'create'])->name('barang.create');
     Route::post('/barang', [ProductController::class, 'store'])->name('barang.store');
-    Route::get('/barang/{barang:idBarang}/edit/{type}', [ProductController::class, 'edit'])->name('barang.edit');
+    Route::get('/barang/{barang:idBarang}/edit', [ProductController::class, 'edit'])->name('barang.edit');
     Route::put('/barang/{barang:idBarang}', [ProductController::class, 'update'])->name('barang.update');
     Route::delete('/barang/{barang:idBarang}', [ProductController::class, 'destroy'])->name('barang.destroy');
 

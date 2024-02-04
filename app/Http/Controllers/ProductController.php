@@ -129,7 +129,7 @@ class ProductController extends Controller
     }
 
 
-    public function edit(Request $request, Barang $barang, $type = null)
+    public function edit(Request $request, Barang $barang)
     {
         // menyeleksi data product berdasarkan id yang dipilih
         $categories = Jenis::get();
@@ -141,7 +141,6 @@ class ProductController extends Controller
             'categories' => $categories,
             'units' => $units,
             'title' => $title,
-            'type' => $type
         ];
         if ($request->ajax()) {
             return response()->json($data);
@@ -199,7 +198,10 @@ class ProductController extends Controller
             } else if ($request->type == 'empty') {
                 return redirect()->route('barang.habis')->with('success', 'Produk berhasil diupdate');
             } else {
-                return redirect()->route('barang.index')->with('success', 'Produk berhasil diupdate');
+                return ResponseFormatter::success(
+                    null,
+                    'Data berhasil diupdate'
+                );
             }
         } catch (\Illuminate\Validation\ValidationException $e) {
             if ($request->type == 'expired') {
@@ -207,7 +209,13 @@ class ProductController extends Controller
             } else if ($request->type == 'empty') {
                 return redirect()->route('barang.habis')->with('error', $e->validator->errors()->first());
             } else {
-                return redirect()->route('barang.index')->with('error', $e->validator->errors()->first());
+                return ResponseFormatter::error(
+                    [
+                        'error' => $e->validator->errors()->first()
+                    ],
+                    'Data gagal diupdate',
+                    422
+                );
             }
         }
     }

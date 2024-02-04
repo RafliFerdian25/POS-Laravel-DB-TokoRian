@@ -11,8 +11,8 @@ class Jenis extends Model
 
     protected $table = 'p_jenis';
 
-    public function barang()
+    public function product()
     {
-        return $this->hasMany(Barang::class, 'jenis');
+        return $this->hasMany(Barang::class, 'jenis', 'id');
     }
 }
