@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Jenis;
 use App\Models\Merk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -17,7 +18,7 @@ class CategoryController extends Controller
     public function index()
     {
         $title = 'POS TOKO | Kategori';
-        $categories = Category::withCount('products')->get();
+        $categories = Jenis::withCount('products')->get();
         $merks = Merk::all();
         return view('category.index', compact('categories', 'title', 'merks'));
     }
@@ -43,17 +44,19 @@ class CategoryController extends Controller
     {
         // menyeleksi data yang akan diinputkan
         $validated = $request->validate([
-            'id' => 'required|unique:products',
+            'id' => 'required|unique:p_jenis',
             'name' => 'required',
         ]);
 
-        $validated['id'] = strtoupper($validated['id']);
-
         // menginput data ke table products
-        Category::create($validated);
+        Jenis::create([
+            'ID' => strtoupper($validated['id']),
+            'jenis' => strtoupper($validated['id']),
+            'keterangan' => $validated['name'],
+        ]);
 
         // jika data berhasil ditambahkan, akan kembali ke halaman utama
-        return redirect()->route('barang.index')->with('success', 'Berhasil menambahkan kategori.');
+        return redirect()->route('kategori.index')->with('success', 'Berhasil menambahkan kategori.');
     }
 
     /**
@@ -94,7 +97,7 @@ class CategoryController extends Controller
         }
         $validated['id'] = strtoupper($validated['id']);
         // mengupdate data di table Categoriess
-        Category::whereId($id)->update($validated);
+        Jenis::whereId($id)->update($validated);
 
         // jika data berhasil ditambahkan, akan kembali ke halaman utama
         return redirect()->route('category.index')->with('success', 'Kategori berhasil diupdate');
@@ -107,7 +110,7 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        Category::destroy($id);
+        Jenis::destroy($id);
         return redirect()->route('category.index')->with('success', 'Kategori berhasil dihapus');
     }
 }

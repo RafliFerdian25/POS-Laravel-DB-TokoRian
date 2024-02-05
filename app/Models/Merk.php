@@ -11,7 +11,13 @@ class Merk extends Model
 
     protected $table = 'p_merk';
 
-    public function barang()
+    protected $primaryKey = 'ID';
+
+    protected $casts = [
+        'ID' => 'string',
+    ];
+
+    public function products()
     {
         return $this->hasMany(Barang::class);
     }

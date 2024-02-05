@@ -45,16 +45,22 @@
                                 <tbody>
                                     @foreach ($categories as $category)
                                         <tr>
-                                            <td>{{ $category->id }}</td>
-                                            <td>{{ $category->name }}</td>
-                                            <td>{{ $category->products_count }}</td>
+                                            <td>{{ $loop->index + 1 }}</td>
+                                            <td>{{ $category->jenis }}</td>
+                                            <td>{{ $category->keterangan }}</td>
                                             <td>
                                                 <div class="d-flex justify-content-center">
-                                                    <a href="{{ route('kategori.edit', $category->id) }}" class="btn btn-link btn-lg float-left px-0"><i class="fa fa-edit"></i></a>
-                                                    <form action="{{ route('kategori.destroy', $category->id) }}" method="POST">
+                                                    <a href="{{ route('kategori.edit', $category->ID) }}"
+                                                        class="btn btn-link btn-lg float-left px-0"><i
+                                                            class="fa fa-edit"></i></a>
+                                                    <form action="{{ route('kategori.destroy', $category->ID) }}"
+                                                        method="POST">
                                                         @method('DELETE')
                                                         @csrf
-                                                        <button type="submit" onclick="return confirm('Yakin ingin menghapus kategori')" class="btn btn-link btn-lg float-right px-0 color__red1"><i class="fa fa-trash"></i></button>
+                                                        <button type="submit"
+                                                            onclick="return confirm('Yakin ingin menghapus kategori')"
+                                                            class="btn btn-link btn-lg float-right px-0 color__red1"><i
+                                                                class="fa fa-trash"></i></button>
                                                     </form>
                                                 </div>
                                             </td>
@@ -109,15 +115,20 @@
                                 <tbody>
                                     @foreach ($merks as $merk)
                                         <tr>
-                                            <td>{{ $merk->id }}</td>
+                                            <td>{{ $merk->ID }}</td>
                                             <td>{{ $merk->name }}</td>
                                             <td>
                                                 <div class="d-flex justify-content-center">
-                                                    <a href="{{ route('merk.edit', $merk->id) }}" class="btn btn-link btn-lg float-left px-0"><i class="fa fa-edit"></i></a>
-                                                    <form action="{{ route('merk.destroy', $merk->id) }}" method="POST">
+                                                    <a href="{{ route('merk.edit', $merk->ID) }}"
+                                                        class="btn btn-link btn-lg float-left px-0"><i
+                                                            class="fa fa-edit"></i></a>
+                                                    <form action="{{ route('merk.destroy', $merk->ID) }}" method="POST">
                                                         @method('DELETE')
                                                         @csrf
-                                                        <button type="submit" onclick="return confirm('Yakin ingin menghapus merk')" class="btn btn-link btn-lg float-right px-0 color__red1"><i class="fa fa-trash"></i></button>
+                                                        <button type="submit"
+                                                            onclick="return confirm('Yakin ingin menghapus merk')"
+                                                            class="btn btn-link btn-lg float-right px-0 color__red1"><i
+                                                                class="fa fa-trash"></i></button>
                                                     </form>
                                                 </div>
                                             </td>

@@ -355,7 +355,7 @@
                                             class="form-select rounded__10 "
                                             name="jenis" id="jenis" aria-label="Default select example">
                                             ${response.categories.map((category) => {
-                                                return `<option value="${category.ID}" ${category.ID == response.product.jenis ? "selected" : ""}>${category.jenis}</option>`
+                                                return `<option value="${category.ID}" ${category.ID == response.product.jenis ? "selected" : ""}>${category.keterangan}</option>`
                                             })}
                                         </select>
                                     </div>

@@ -11,8 +11,19 @@ class Jenis extends Model
 
     protected $table = 'p_jenis';
 
-    public function product()
+    protected $primaryKey = 'ID';
+
+    protected $casts = [
+        'ID' => 'string',
+    ];
+
+    protected $guarded = [];
+
+    // tanpa ada timestamps
+    public $timestamps = false;
+
+    public function products()
     {
-        return $this->hasMany(Barang::class, 'jenis', 'id');
+        return $this->hasMany(Barang::class, 'jenis', 'ID');
     }
 }
