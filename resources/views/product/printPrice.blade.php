@@ -223,7 +223,6 @@
                     });
                     $('#countProduct').html(response.data.countProduct);
                     if (response.data.products.length > 0) {
-                        console.log(response.data.products);
                         $.each(response.data.products, function(index, product) {
                             var rowData = [
                                 index + 1,
@@ -344,7 +343,8 @@
                                 <div class="row mb-3">
                                     <label for="expDate" class="col-sm-2 col-form-label">Tanggal Kadaluarsa</label>
                                     <div class="col-sm-10">
-                                        <input value="${response.product.expDate}" type="date"
+                                        <input value="${moment(response.product
+                                    .expDate).format('YYYY-MM-DD')}" type="date"
                                             class="form-control rounded__10 "
                                             id="expDate" name="expDate">
                                     </div>
