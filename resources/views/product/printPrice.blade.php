@@ -232,7 +232,7 @@
                                 product.product.expDate != null ? product.product.expDate : '-',
                                 product.hargaJual,
                                 `<button class="btn btn-sm btn-warning" onclick="showEdit('${product.idBarang}')">Edit</button>
-                                <button class="btn btn-sm btn-danger" onclick="deleteProduct('${product.idBarang}')"><i class="bi bi-trash"></i></button>`
+                                <button class="btn btn-sm btn-danger" onclick="deleteProduct('${product.ID}')"><i class="bi bi-trash"></i></button>`
                             ];
                             var rowNode = $('#tableListProduct').DataTable().row.add(rowData)
                                 .draw(

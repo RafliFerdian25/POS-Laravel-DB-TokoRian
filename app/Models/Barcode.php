@@ -11,6 +11,8 @@ class Barcode extends Model
 
     protected $guarded = [];
 
+    protected $primaryKey = 'ID';
+
     // tanpa ada timestamps
     public $timestamps = false;
 

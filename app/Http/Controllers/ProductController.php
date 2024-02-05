@@ -389,22 +389,11 @@ class ProductController extends Controller
 
     public function destroyPrintPrice($id)
     {
-        if ($id != 'all') {
-            $barang = Barcode::where('idBarang', $id)->first();
-            if (!$barang) {
-                return ResponseFormatter::error(
-                    null,
-                    'Data tidak ditemukan',
-                    404
-                );
-            }
-        }
-
         try {
-            if ($id == 'all') {
+            if ($id != 'all') {
+                $product = Barcode::destroy($id);
+            } else if ($id == 'all') {
                 Barcode::truncate();
-            } else {
-                $barang->delete();
             }
 
             return ResponseFormatter::success(
