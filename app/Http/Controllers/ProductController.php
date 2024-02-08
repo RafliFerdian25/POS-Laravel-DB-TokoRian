@@ -27,14 +27,14 @@ class ProductController extends Controller
     public function index()
     {
         $title = 'POS TOKO | Barang';
-        // $products = Barang::Select("id", "name", "unit", "purchase_price", "selling_price", "wholesale_price", "stock", "expired_date")->get();
-        $products = Barang::get();
+        // $products = Product::Select("id", "name", "unit", "purchase_price", "selling_price", "wholesale_price", "stock", "expired_date")->get();
+        $products = Product::get();
 
         return view('product.product', compact('products', 'title'));
     }
     public function data()
     {
-        $product = Barang::Select("id", "name", "unit", "purchase_price", "selling_price", "wholesale_price", "stock", "expired_date")->get();
+        $product = Product::Select("id", "name", "unit", "purchase_price", "selling_price", "wholesale_price", "stock", "expired_date")->get();
         $data = array();
         foreach ($product as $item) {
             $row = array();
@@ -62,7 +62,7 @@ class ProductController extends Controller
      */
     public function searchData(Request $request)
     {
-        $query = Barang::select('IdBarang', 'nmBarang', 'hargaJual')
+        $query = Product::select('IdBarang', 'nmBarang', 'hargaJual')
             ->when($request->has('q'), function ($query) use ($request) {
                 return $query->where('nmBarang', 'LIKE', '%' . $request->q . '%')
                     ->orWhere('IdBarang', 'LIKE', '%' . $request->q . '%');
@@ -123,7 +123,7 @@ class ProductController extends Controller
 
         // menginput data ke table products
         // dd($validated);
-        Barang::create($validated);
+        Product::create($validated);
 
         // jika data berhasil ditambahkan, akan kembali ke halaman utama
         return redirect()->route('barang.index')->with('success', 'Barang created successfully.');
@@ -181,7 +181,7 @@ class ProductController extends Controller
 
             DB::beginTransaction();
             // mengupdate data di table products
-            Barang::where('IdBarang', $barang->IdBarang)->update([
+            Product::where('IdBarang', $barang->IdBarang)->update([
                 'IdBarang' => $validated['IdBarang'],
                 'nmBarang' => strtoupper($validated['nmBarang']),
                 'satuan' => $validated['satuan'],
@@ -234,7 +234,7 @@ class ProductController extends Controller
     public function destroy($id)
     {
         // menghapus data product berdasarkan id yang dipilih
-        Barang::destroy($id);
+        Product::destroy($id);
 
         // jika data berhasil dihapus, akan kembali ke halaman utama
         return response(null, 200);
@@ -258,7 +258,7 @@ class ProductController extends Controller
      */
     public function expiredData(Request $request)
     {
-        $query = Barang::select('IdBarang', 'nmBarang', 'expDate', 'stok')
+        $query = Product::select('IdBarang', 'nmBarang', 'expDate', 'stok')
             ->when($request->filterStartDate == null && $request->filterEndDate == null, function ($query) {
                 return $query->where('expDate', '<=', Carbon::now()->addDays(90));
             })
@@ -295,7 +295,7 @@ class ProductController extends Controller
 
         $setting = Toko::first();
 
-        $query = Barang::where('stok', '<', 5)
+        $query = Product::where('stok', '<', 5)
             ->orderBy('stok', 'asc');
         $products = $query->get();
         $countBarang = $query->count();
@@ -362,7 +362,7 @@ class ProductController extends Controller
             );
         }
 
-        $product = Barang::where('IdBarang', $request->IdBarang)->first();
+        $product = Product::where('IdBarang', $request->IdBarang)->first();
 
         if (!$product) {
             return ResponseFormatter::error(

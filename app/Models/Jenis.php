@@ -24,6 +24,6 @@ class Jenis extends Model
 
     public function products()
     {
-        return $this->hasMany(Barang::class, 'jenis', 'ID');
+        return $this->hasMany(Product::class, 'jenis', 'ID');
     }
 }

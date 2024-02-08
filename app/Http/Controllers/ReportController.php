@@ -119,7 +119,7 @@ class ReportController extends Controller
     public function monthlyProductReportData(Request $request)
     {
         $filterDate = $request->filterDate == null ? Carbon::now() : Carbon::parse($request->filterDate);
-        $query = Barang::select('t_barang.IdBarang', 't_barang.nmBarang', 'expDate', 'stok', DB::raw('COALESCE(SUM(t_kasir.jumlah), 0) as jumlah'))
+        $query = Product::select('t_barang.IdBarang', 't_barang.nmBarang', 'expDate', 'stok', DB::raw('COALESCE(SUM(t_kasir.jumlah), 0) as jumlah'))
             ->join('t_kasir', 't_barang.idBarang', '=', 't_kasir.idBarang')
             ->when($request->filterName != null, function ($query) use ($request) {
                 return $query->where('t_barang.nmBarang', 'LIKE', '%' . $request->input('filterName') . '%');

@@ -19,6 +19,6 @@ class Merk extends Model
 
     public function products()
     {
-        return $this->hasMany(Barang::class);
+        return $this->hasMany(Product::class);
     }
 }

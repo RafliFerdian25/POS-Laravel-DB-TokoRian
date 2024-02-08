@@ -13,6 +13,6 @@ class Kasir extends Model
 
     public function product()
     {
-        return $this->belongsTo(Barang::class, 'idBarang', 'idBarang');
+        return $this->belongsTo(Product::class, 'idBarang', 'idBarang');
     }
 }
