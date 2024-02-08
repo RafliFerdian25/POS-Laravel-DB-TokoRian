@@ -73,62 +73,6 @@ class SaleController extends Controller
         return view('sale.nota_kecil', compact('setting', 'penjualan', 'detail', 'title'));
     }
 
-    public function laporanBarangBulanan(Request $request, Barang $barang)
-    {
-        $barang->load('type');
-        $title = 'POS TOKO | Laporan';
-        if ($request->laporan_bulan == null) {
-            $tanggal = date('Y-m');
-        } else {
-            // $tanggal = explode("-",$request->laporan_bulan);
-            $tanggal = date('Y-m', strtotime($request->laporan_bulan));
-        }
-        $tahun = Carbon::parse($tanggal)->format('Y');
-        $bulan = Carbon::parse($tanggal)->format('m');
-
-        $setting = Toko::first();
-
-        $transactions = Kasir::selectRaw('tanggal, noTransaksi, jumlah, total, laba')
-            ->where('idBarang', $barang->IdBarang)
-            ->whereMonth('tanggal', $bulan)
-            ->whereYear('tanggal', $tahun)
-            ->orderBy('tanggal', 'desc')
-            ->get();
-
-        $report = Kasir::where('idBarang', $barang->IdBarang)
-            ->whereMonth('tanggal', $bulan)
-            ->whereYear('tanggal', $tahun)
-            ->selectRaw('sum(total) as income, sum(laba) as profit, sum(jumlah) as total_item')
-            ->first();
-
-        $reportMonths = Kasir::selectRaw('MONTHNAME(tanggal) as month, sum(total) as income')
-            ->where('idBarang', $barang->IdBarang)
-            ->whereYear('tanggal', $tahun)
-            ->groupBy('month')
-            ->orderBy('tanggal', 'asc')
-            ->get();
-
-        $reportDays = Kasir::selectRaw('DATE_FORMAT(tanggal, "%d/%m/%Y") as day, sum(total) as income')
-            ->where('idBarang', $barang->IdBarang)
-            ->whereMonth('tanggal', $bulan)
-            ->whereYear('tanggal', $tahun)
-            ->groupBy('tanggal')
-            ->orderBy('tanggal', 'asc')
-            ->get();
-
-        $data = [
-            'setting' => $setting,
-            'title' => $title,
-            'tanggal' => $tanggal,
-            'barang' => $barang,
-            'transactions' => $transactions,
-            'report' => $report,
-            'reportMonths' => $reportMonths,
-            'reportDays' => $reportDays,
-        ];
-        return view('report.product', $data);
-    }
-
     public function showReport($id)
     {
         $title = 'POS TOKO | Laporan';

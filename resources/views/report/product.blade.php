@@ -10,14 +10,14 @@
                         <i class="pe-7s-note2 icon-gradient bg-plum-plate">
                         </i>
                     </div>
-                    <div>Laporan Bulanan {{ $barang->nmBarang }}
+                    <div>Laporan Bulanan
                         <div class="page-title-subheading">
                             Laporan
                         </div>
                         <div class="row justify-content-center justify-content-lg-start">
-                            <form action="" id="formBulan" class="col-6 col-lg-12">
-                                <input type="month" name="laporan_bulan" id="laporan_bulan" class="form-control mb-3"
-                                    onchange="laporanBulanan(this)" value="{{ $tanggal }}">
+                            <form id="formBulan" class="col-6 col-lg-12">
+                                <input type="month" name="filterDate" id="filterDate" class="form-control mb-3"
+                                    onchange="getProducts()" value="{{ date('Y-m') }}">
                             </form>
                         </div>
                     </div>
@@ -25,18 +25,19 @@
             </div>
         </div>
         <!-- END TITLE -->
+
         <!-- CARD DASHBOARD -->
         <div class="row">
             <!-- total pendapatan -->
-            <div class="col-sm-6 col-md-4 p-3">
+            <div class="col-sm-6 col-md-4 col-xl-3 p-3">
                 <div class="card mb-0 widget-content row">
                     <div class="content">
                         <div class="widget-content-left row mb-2">
                             <i class="pe-7s-cash col-2" style="font-size: 30px;"></i>
-                            <div class="widget-heading col-10 widget__title">Total Pendapatan</div>
+                            <div class="widget-heading col-10 widget__title">Total Barang</div>
                         </div>
                         <div class="widget-content-right">
-                            <div class="widget-numbers mb-2"><span>Rp. {{ format_uang($report->income) }}</span></div>
+                            <div class="widget-numbers mb-2" id="countProduct">-</div>
                             <div class="perubahan row">
                                 {{-- <div class="widget-subheading col-10" id="total_pendapatan">
                                     -2000000
@@ -46,367 +47,402 @@
                     </div>
                 </div>
             </div>
-            <!-- total keuntungan -->
-            <div class="col-sm-6 col-md-4 p-3">
-                <div class="card mb-0 widget-content row">
-                    <div class="content">
-                        <div class="widget-content-left row mb-2">
-                            <i class="pe-7s-graph1 col-2" style="font-size: 30px;"></i>
-                            <div class="widget-heading col-10 widget__title">Total Keuntungan</div>
-                        </div>
-                        <div class="widget-content-right">
-                            <div class="widget-numbers mb-2"><span>Rp {{ format_uang($report->profit) }}</span></div>
-                            <div class="change row" id="change">
-                                {{-- <div class="widget-subheading col-10" id="total_keuntungan">
-                                    2000000
-                                </div> --}}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- total barang terjual -->
-            <div class="col-sm-6 col-md-4 p-3">
-                <div class="card mb-0 widget-content row">
-                    <div class="content">
-                        <div class="widget-content-left row mb-2">
-                            <i class="pe-7s-box2 col-2" style="font-size: 30px;"></i>
-                            <div class="widget-heading col-10 widget__title">Total Barang Terjual</div>
-                        </div>
-                        <div class="widget-content-right">
-                            <div class="widget-numbers mb-2"><span>{{ format_uang($report->total_item) }}</span></div>
-                            <div class="change row" id="change">
-                                {{-- <div class="widget-subheading col-10" id="total_barang">
-                                    -8
-                                </div> --}}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
         <!-- END CARD DASHBOARD -->
 
-        <div class="row">
-            {{-- Detail Barang --}}
-            <div class="col-md-6">
-                <div class="main-card mb-3 card">
-                    <div class="card-header-tab card-header">
-                        <div class="card-header-title">
-                            <i class="header-icon lnr-rocket icon-gradient bg-tempting-azure">
-                            </i>
-                            DETAIL BARANG
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="tab-content">
-                            <table class="table table-borderless">
-                                <tr>
-                                    <td>Nama Barang</td>
-                                    <td>:</td>
-                                    <td>{{ $barang->nmBarang }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Jenis</td>
-                                    <td>:</td>
-                                    <td>{{ $barang->type->keterangan }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Harga Beli</td>
-                                    <td>:</td>
-                                    <td>{{ format_uang($barang->hargaPokok) }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Harga Jual</td>
-                                    <td>:</td>
-                                    <td>{{ format_uang($barang->hargaJual) }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Stok</td>
-                                    <td>:</td>
-                                    <td>{{ $barang->stok }}</td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {{-- END DETAIL BARANG --}}
-            {{-- GRAFIK PENJUALAN BULAN --}}
-            <div class="col-md-12 col-lg-6">
-                <div class="mb-3 card">
-                    <div class="card-header-tab card-header">
-                        <div class="card-header-title">
-                            <i class="header-icon lnr-rocket icon-gradient bg-tempting-azure">
-                            </i>
-                            Penjualan Bulanan
-                        </div>
-                    </div>
-                    <div class="tab-content">
-                        <div class="tab-pane fade active show" id="tab-eg-55">
-                            <div class="widget-chart p-3">
-                                <canvas id="ChartBulanan" class="h-150"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {{-- END GRAFIK PENJUALAN BULAN --}}
-        </div>
-
-        {{-- GRAFIK PENJUALAN --}}
-        <div class="row">
-            <div class="col-12">
-                <div class="mb-3 card">
-                    <div class="card-header-tab card-header">
-                        <div class="card-header-title">
-                            <i class="header-icon lnr-rocket icon-gradient bg-tempting-azure">
-                            </i>
-                            Penjualan Bulanan
-                        </div>
-                    </div>
-                    <div class="tab-content">
-                        <div class="tab-pane fade active show" id="tab-eg-55">
-                            <div class="widget-chart p-3">
-                                <canvas id="ChartHarian" class="h-300"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {{-- ENDGRAFIK PENJUALAN --}}
-        <!-- Barang Terjual -->
-        <div class="barang__terjual__section">
+        <!-- FILTER Barang -->
+        <div class="FilterExpiredProductSection">
             <div class="main-card mb-3 card">
                 <div class="card-body">
-                    <h5 class="card-title text-center">Riwayat Penjualan</h5>
-                    <table class="mb-0 table" id="barang_terjual">
+                    <h5 class="card-title text-center">Filter Barang</h5>
+                    <form id="formFilterProduct" method="GET" onsubmit="event.preventDefault(); getProducts();">
+                        @csrf
+                        <div class="modal-body">
+                            <div class="row mb-3">
+                                <label for="filterBarcode" class="col-sm-2 col-form-label">Barcode</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control rounded__10 " id="filterBarcode"
+                                        name="filterBarcode">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="filterName" class="col-sm-2 col-form-label">Nama</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control rounded__10 " id="filterName"
+                                        name="filterName">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Cari</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- end barang terjual -->
+
+        <!-- Barang -->
+        <div class="productSection">
+            <div class="main-card mb-3 card">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Barang</h5>
+                    <table class="mb-0 table" id="tableProduct">
                         <thead>
                             <tr>
-                                <th>Tanggal</th>
-                                <th>No. Kasir</th>
-                                <th>Total Item</th>
-                                <th>Total Harga</th>
-                                <th>Keuntungan</th>
+                                <th>No</th>
+                                <th>Barcode</th>
+                                <th>Nama Barang</th>
+                                <th>Stok</th>
+                                <th>Tanggal Kadaluarsa</th>
+                                <th>Terjual</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @foreach ($transactions as $transaction)
-                                <tr>
-                                    <td scope="row">{{ $transaction->tanggal }}</td>
-                                    <td>{{ $transaction->noTransaksi }}</td>
-                                    <td>{{ $transaction->jumlah }}</td>
-                                    <td>{{ $transaction->total }}</td>
-                                    <td>{{ $transaction->laba }}</td>
-                                </tr>
-                            @endforeach
+                        <tbody id="tableProductBody">
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
         <!-- end barang terjual -->
-
     </div>
 @endsection
 
 @push('scripts')
+    @if (session('error'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: "{{ session('error') }}",
+                showConfirmButton: false,
+                timer: 1500
+            })
+        </script>
+    @endif
     <script>
         $(document).ready(function() {
-            $("#laporan_bulanan").DataTable({
-                pageLength: 3,
-                paging: false,
+            $("#tableProduct").DataTable({
+                pageLength: 10,
                 info: false,
             });
+
+            getProducts();
         });
 
-        function laporanBulanan(input) {
-            let formBulan = $("#formBulan");
-            formBulan.submit();
-            // Upload log ke server
+        const getProducts = () => {
+            $('#countProduct').html(
+                '<svg class="loader" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="25" height="25"><circle cx="50" cy="50" r="45" fill="none" stroke="#3498db" stroke-width="5" stroke-dasharray="89 89" stroke-linecap="round"><animateTransform attributeName="transform" dur="1s" type="rotate" from="0 50 50" to="360 50 50" repeatCount="indefinite" /></circle></svg>'
+            );
+            $('#tableProduct').DataTable().clear().draw();
+            $('#tableProductBody').html(tableLoader(5, `{{ asset('assets/svg/Ellipsis-2s-48px.svg') }}`));
+
+            $.ajax({
+                type: "GET",
+                url: `{{ route('monthly.product.report.data') }}`,
+                data: {
+                    token: '{{ csrf_token() }}',
+                    filterBarcode: $('#filterBarcode').val(),
+                    filterName: $('#filterName').val(),
+                    filterDate: $('#filterDate').val()
+                },
+                dataType: "json",
+                success: function(response) {
+                    $('#countProduct').html(response.data.countProduct);
+                    if (response.data.products.length > 0) {
+                        $.each(response.data.products, function(index, product) {
+                            var rowData = [
+                                index + 1,
+                                product.IdBarang,
+                                product.nmBarang,
+                                product.stok,
+                                product.expDate,
+                                product.jumlah,
+                                `<button class="btn btn-sm btn-warning" onclick="showEdit('${product.IdBarang}', 'expired')">Edit</button>
+                                <button class="btn btn-sm btn-primary" onclick="showEdit('${product.IdBarang}', 'expired')">Detail</button>`
+                            ];
+                            var rowNode = $('#tableProduct').DataTable().row.add(rowData)
+                                .draw(
+                                    false)
+                                .node();
+
+                            // $(rowNode).find('td').eq(0).addClass('text-center');
+                            // $(rowNode).find('td').eq(4).addClass('text-center text-nowrap');
+                        });
+                    } else {
+                        $('#tableProductBody').html(tableEmpty(5,
+                            'barang'));
+                    }
+                }
+            });
         }
 
-        // chart bulan
-        let months = [];
-        let incomeMonth = [];
-        @foreach ($reportMonths as $reportMonth)
-            months.push('{{ $reportMonth->month }}');
-            incomeMonth.push('{{ $reportMonth->income }}');
-        @endforeach
-        // data
-        const DataPenjualanBulanan = {
-            labels: months,
-            datasets: [{
-                label: "Pendapatan",
-                fill: !0,
-                backgroundColor: "#A7C4BC",
-                borderColor: "#2F5D62",
-                borderCapStyle: "butt",
-                borderDash: [],
-                borderDashOffset: 0,
-                pointBorderColor: "#2F5D62",
-                pointBackgroundColor: "#2F5D62",
-                pointBorderWidth: 1,
-                pointHoverRadius: 5,
-                pointHoverBackgroundColor: "#2F5D62",
-                pointHoverBorderColor: "#2F5D62",
-                pointHoverBorderWidth: 1,
-                pointRadius: 3,
-                pointHitRadius: 5,
-                data: incomeMonth,
-            }]
+
+        function showEdit(idBarang, status) {
+            // Mengisi konten modal dengan data yang sesuai
+            let modalContent = $('#modalMain .modal-content');
+
+            // mengirim request ajax
+            $.ajax({
+                type: "GET",
+                url: `{{ url('/barang/${idBarang}/edit/expired') }}`,
+                success: function(response) {
+                    modalContent.html(`
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form action="{{ url('/barang/${response.product.IdBarang}') }}" method="POST" id="formEditProduct">
+                        @method('PUT')
+                        @csrf
+                        <div class="modal-body">
+                            <input hidden type="text" name="type" value="expired">
+                            <div class="row mb-3">
+                                <label for="IdBarang" class="col-sm-2 col-form-label">Kode Barang</label>
+                                <div class="col-sm-10">
+                                    <input required value="${response.product.IdBarang}" type="text"
+                                        class="form-control rounded__10 "
+                                        id="IdBarang" name="IdBarang" max="999999999999999" pattern="[0-9]*" inputmode="numeric">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="nmBarang" class="col-sm-2 col-form-label">Nama Barang</label>
+                                <div class="col-sm-10">
+                                    <input required value="${response.product.nmBarang}" type="text"
+                                        class="form-control rounded__10 "
+                                        id="nmBarang" name="nmBarang" style="text-transform:uppercase">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="satuan" class="col-sm-2 col-form-label">Satuan</label>
+                                <div class="col-sm-10">
+                                    <select required
+                                        class="form-select rounded__10"
+                                        name="satuan" aria-label="Default select example">
+                                        ${response.units.map((unit) => {
+                                            return `<option value="${unit.satuan}" ${unit.satuan == response.product.satuan ? "selected" : ""}>${unit.satuan}</option>`
+                                        })}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="isi" class="col-sm-2 col-form-label">Isi</label>
+                                <div class="col-sm-10">
+                                    <input required value="${response.product.isi}" type="number"
+                                        class="form-control rounded__10 "
+                                        min="0" id="isi" name="isi">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="hargaPokok" class="col-sm-2 col-form-label">Harga Pokok</label>
+                                <div class="col-sm-10">
+                                    <input required value="${response.product.hargaPokok}" type="number"
+                                        class="form-control rounded__10 "
+                                        min="0" id="hargaPokok" name="hargaPokok">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="hargaJual" class="col-sm-2 col-form-label">Harga Jual</label>
+                                <div class="col-sm-10">
+                                    <input required value="${response.product.hargaJual}" type="number"
+                                        class="form-control rounded__10 "
+                                        min="0" id="hargaJual" name="hargaJual">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="hargaGrosir" class="col-sm-2 col-form-label">Harga Grosir</label>
+                                <div class="col-sm-10">
+                                    <input required value="${response.product.hargaGrosir}" type="number"
+                                        class="form-control rounded__10 "
+                                        min="0" id="hargaGrosir" name="hargaGrosir">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="stok" class="col-sm-2 col-form-label">Stok</label>
+                                <div class="col-sm-10">
+                                    <input required value="${response.product.stok}" type="number"
+                                        class="form-control rounded__10 "
+                                        min="0" id="stok" name="stok">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="expDate" class="col-sm-2 col-form-label">Tanggal</label>
+                                <div class="col-sm-10">
+                                    <input value="${response.product.expDate}" type="date"
+                                        class="form-control rounded__10 "
+                                        id="expDate" name="expDate">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="jenis" class="col-sm-2 col-form-label">Kategori</label>
+                                <div class="col-sm-10">
+                                    <select required
+                                        class="form-select rounded__10 "
+                                        name="jenis" aria-label="Default select example">
+                                        ${response.categories.map((category) => {
+                                            return `<option value="${category.jenis}" ${category.jenis == response.product.jenis ? "selected" : ""}>${category.jenis}</option>`
+                                        })}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                            <button type="submit" class="btn btn-primary">Simpan</button>
+                        </div>
+                        </form>
+                    `);
+                }
+            });
+
+            // Menampilkan modal
+            $('#modalMain').modal('show');
         }
-        // config
-        const annualFinancialConfig = {
-            type: 'line',
-            data: DataPenjualanBulanan,
-            options: {
-                maintainAspectRatio: !1,
-                legend: {
-                    display: true
+
+        $("formEditProduct").validate({
+            rules: {
+                IdBarang: {
+                    required: true,
+                    maxlength: 15,
+                    minlength: 15,
+                    number: true
                 },
-                animation: {
-                    easing: "easeInOutBack"
+                nmBarang: {
+                    required: true,
+                    maxlength: 50,
+                    minlength: 3,
                 },
-                scales: {
-                    yAxes: [{
-                        display: true,
-                        ticks: {
-                            fontColor: "#ACB1D6",
-                            fontStyle: "bold",
-                            beginAtZero: !0,
-                            maxTicksLimit: 10,
-                            padding: 0
-                        },
-                        gridLines: {
-                            drawTicks: !1,
-                            display: !1
-                        }
-                    }],
-                    xAxes: [{
-                        display: true,
-                        gridLines: {
-                            display: !1,
-                            zeroLineColor: "transparent"
-                        },
-                        ticks: {
-                            padding: 0,
-                            fontColor: "#ACB1D6",
-                            fontStyle: "bold"
-                        }
-                    }]
+                satuan: {
+                    required: true,
                 },
-                tooltips: {
-                    callbacks: {
-                        label: function(tooltipItem, data) {
-                            // Format the tooltip label as Indonesian Rupiah without trailing zeros
-                            var value = tooltipItem.yLabel;
-                            var formattedValue = new Intl.NumberFormat("id-ID", {
-                                style: "currency",
-                                currency: "IDR",
-                                minimumFractionDigits: 0
-                            }).format(value);
-                            return "Pendapatan: " + formattedValue;
-                        }
-                    },
+                isi: {
+                    required: true,
+                    number: true,
+                    min: 0
+                },
+                hargaPokok: {
+                    required: true,
+                    number: true,
+                    min: 1000000
+                },
+                hargaJual: {
+                    required: true,
+                    number: true,
+                    min: 0
+                },
+                hargaGrosir: {
+                    required: true,
+                    number: true,
+                    min: 0
+                },
+                stok: {
+                    required: true,
+                    number: true,
+                    min: 0
+                },
+                expDate: {
+                    required: true,
+                },
+                jenis: {
+                    required: true,
                 },
             },
-            responsive: true,
-            maintainAspectRatio: false
-        }
-        // define
-        const ChartBulanan = document.getElementById('ChartBulanan').getContext('2d');
-        new Chart(ChartBulanan, annualFinancialConfig);
+            messages: {
+                IdBarang: {
+                    required: "Kode barang tidak boleh kosong",
+                    maxlength: "Kode barang maksimal 15 karakter",
+                    minlength: "Kode barang minimal 15 karakter",
+                    number: "Kode barang harus berupa angka"
+                },
+                nmBarang: {
+                    required: "Nama barang tidak boleh kosong",
+                    maxlength: "Nama barang maksimal 50 karakter",
+                    minlength: "Nama barang minimal 3 karakter",
+                },
+                satuan: {
+                    required: "Satuan tidak boleh kosong",
+                },
+                isi: {
+                    required: "Isi tidak boleh kosong",
+                    number: "Isi harus berupa angka",
+                    min: "Isi minimal 0"
+                },
+                hargaPokok: {
+                    required: "Harga pokok tidak boleh kosong",
+                    number: "Harga pokok harus berupa angka",
+                    min: "Harga pokok minimal 0"
+                },
+                hargaJual: {
+                    required: "Harga jual tidak boleh kosong",
+                    number: "Harga jual harus berupa angka",
+                    min: "Harga jual minimal 0"
+                },
+                hargaGrosir: {
+                    required: "Harga grosir tidak boleh kosong",
+                    number: "Harga grosir harus berupa angka",
+                    min: "Harga grosir minimal 0"
+                },
+            },
+            highlight: function(element) {
+                $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+            },
+            success: function(element) {
+                $(element).closest('.form-group').removeClass('has-error');
+            },
+            submitHandler: function(form, event) {
+                event.preventDefault();
+                var formData = new FormData(form);
+                $('#updateButton').html(
+                    '<svg class="spinners-2" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;"><path d="M12 22c5.421 0 10-4.579 10-10h-2c0 4.337-3.663 8-8 8s-8-3.663-8-8c0-4.336 3.663-8 8-8V2C6.579 2 2 6.58 2 12c0 5.421 4.579 10 10 10z"></path></svg>'
+                );
+                $('#updateButton').prop('disabled', true);
+                $.ajax({
+                    url: `{{ url('/barang/${response.product.IdBarang}') }}`,
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        $('#updateButton').html('Update');
+                        $('#updateButton').prop('disabled', false);
+                        Swal.fire({
+                                title: "Berhasil!",
+                                text: response.meta.message,
+                                icon: "success",
+                                showCancelButton: false,
+                                confirmButtonText: "Okay",
+                                customClass: {
+                                    confirmButton: "btn btn-success"
+                                },
+                            })
+                            .then((value) => {
+                                if (value === "confirm") {
+                                    // window.location.href = response.data.redirect
+                                    getProducts();
+                                }
+                            });
 
-        // chart harian
-        let days = [];
-        let incomeDay = [];
-        @foreach ($reportDays as $reportDay)
-            days.push('{{ $reportDay->day }}');
-            incomeDay.push('{{ $reportDay->income }}');
-        @endforeach
-        // data
-        const DataPenjualanHarian = {
-            labels: days,
-            datasets: [{
-                label: "Pendapatan",
-                fill: !0,
-                backgroundColor: "#A7C4BC",
-                borderColor: "#2F5D62",
-                borderCapStyle: "butt",
-                borderDash: [],
-                borderDashOffset: 0,
-                pointBorderColor: "#2F5D62",
-                pointBackgroundColor: "#2F5D62",
-                pointBorderWidth: 1,
-                pointHoverRadius: 5,
-                pointHoverBackgroundColor: "#2F5D62",
-                pointHoverBorderColor: "#2F5D62",
-                pointHoverBorderWidth: 1,
-                pointRadius: 3,
-                pointHitRadius: 5,
-                data: incomeDay,
-            }]
-        }
-        // config
-        const ConfigPenjualanHarian = {
-            type: 'line',
-            data: DataPenjualanHarian,
-            options: {
-                maintainAspectRatio: !1,
-                legend: {
-                    display: true
-                },
-                animation: {
-                    easing: "easeInOutBack"
-                },
-                scales: {
-                    yAxes: [{
-                        display: true,
-                        ticks: {
-                            fontColor: "#ACB1D6",
-                            fontStyle: "bold",
-                            beginAtZero: !0,
-                            maxTicksLimit: 10,
-                            padding: 0
-                        },
-                        gridLines: {
-                            drawTicks: !1,
-                            display: !1
-                        }
-                    }],
-                    xAxes: [{
-                        display: true,
-                        gridLines: {
-                            display: !1,
-                            zeroLineColor: "transparent"
-                        },
-                        ticks: {
-                            padding: 0,
-                            fontColor: "#ACB1D6",
-                            fontStyle: "bold"
-                        }
-                    }]
-                },
-                tooltips: {
-                    callbacks: {
-                        label: function(tooltipItem, data) {
-                            // Format the tooltip label as Indonesian Rupiah without trailing zeros
-                            var value = tooltipItem.yLabel;
-                            var formattedValue = new Intl.NumberFormat("id-ID", {
-                                style: "currency",
-                                currency: "IDR",
-                                minimumFractionDigits: 0
-                            }).format(value);
-                            return "Pendapatan: " + formattedValue;
-                        }
+                        setTimeout(function() {
+                            // window.location.href = response.data.redirect
+                            getProducts();
+                        }, 4000);
                     },
-                }
+                    error: function(xhr, status, error) {
+                        $('#updateButton').html('Update');
+                        $('#updateButton').prop('disabled', false);
+                        if (xhr.responseJSON) {
+                            errorAlert("Gagal!",
+                                `Ubah Mesin Gagal. ${xhr.responseJSON.meta.message} Error: ${xhr.responseJSON.data.error}`
+                            );
+                        } else {
+                            errorAlert("Gagal!",
+                                `Terjadi kesalahan pada server. Error: ${xhr.responseText}`);
+                        }
+                        return false;
+                    }
+                });
             }
-        }
-        // define
-        const ChartHarian = document.getElementById('ChartHarian').getContext('2d');
-        new Chart(ChartHarian, ConfigPenjualanHarian);
+        })
     </script>
 @endpush

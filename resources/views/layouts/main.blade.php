@@ -100,7 +100,7 @@
                                     Dashboard
                                 </a>
                             </li> --}}
-                            <li class="app-sidebar__heading">Dashboards</li>
+                            <li class="app-sidebar__heading">Dashboard</li>
                             <li>
                                 <a href="{{ route('penjualan.index') }}" id="navbar__kasir">
                                     <i class="metismenu-icon pe-7s-cash"></i>

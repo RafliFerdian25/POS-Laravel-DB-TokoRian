@@ -10,7 +10,7 @@ const tableLoader = (colSpan, dataImage) => {
 
 const inlineLoader = (dataImage) => {
     return `<div style="display: inline !important">
-                <object data="${dataImage}" type="image/svg+xml" style="height: 40px !important; vertical-align: middle; transform: translate(-4px, -1px); display: inline !important"></object>
+                <object data="${dataImage}" type="image/svg+xml" style="height: 40px; vertical-align: middle; transform: translate(-4px, -1px); display: inline !important"></object>
             </div>`;
 };
 

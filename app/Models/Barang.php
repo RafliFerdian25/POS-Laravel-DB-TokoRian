@@ -28,4 +28,9 @@ class Barang extends Model
     {
         return $this->belongsTo(Merk::class);
     }
+
+    public function purchase()
+    {
+        return $this->hasMany(Kasir::class, 'idBarang', 'idBarang');
+    }
 }
