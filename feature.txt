@@ -1,5 +1,12 @@
 ## BACKLOG ##
 grafik penjualan kategori harian dalam sebulan (grafik batang/garis)
+
+// View Laporan Barang 
+✅ Total barang terjual
+✅ Filter barang
+✅ Tabel barang terjual
+
+// View Laporan Barang Detail
 grafik penjualan barang harian dalam sebulan (grafik batang/garis)
 tanggal terakhir belanja barang
 

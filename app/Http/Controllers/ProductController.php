@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use DataTables;
+use Exception;
 use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
@@ -198,10 +199,12 @@ class ProductController extends Controller
             } else if ($request->type == 'empty') {
                 return redirect()->route('barang.habis')->with('success', 'Produk berhasil diupdate');
             } else {
-                return ResponseFormatter::success(
-                    null,
-                    'Data berhasil diupdate'
-                );
+                if ($request->ajax()) {
+                    return ResponseFormatter::success(
+                        null,
+                        'Data berhasil diupdate'
+                    );
+                }
             }
         } catch (\Illuminate\Validation\ValidationException $e) {
             if ($request->type == 'expired') {
@@ -209,13 +212,16 @@ class ProductController extends Controller
             } else if ($request->type == 'empty') {
                 return redirect()->route('barang.habis')->with('error', $e->validator->errors()->first());
             } else {
-                return ResponseFormatter::error(
-                    [
-                        'error' => $e->validator->errors()->first()
-                    ],
-                    'Data gagal diupdate',
-                    422
-                );
+                if ($request->ajax()) {
+                    return ResponseFormatter::error(
+                        [
+                            'error' => $e->validator->errors()->first()
+                        ],
+                        'Data gagal diupdate',
+                        422
+                    );
+                } else {
+                }
             }
         }
     }
@@ -407,6 +413,59 @@ class ProductController extends Controller
                 ],
                 'Terjadi kesalahan saat menghapus data',
                 500
+            );
+        }
+    }
+
+    public function updateFromPrintPrice(Request $request, Barang $barang)
+    {
+        try {
+            $rules = [
+                'IdBarang' => 'required',
+                'nmBarang' => 'required',
+                'hargaJual' => 'required|numeric|min:0|max:999999999',
+            ];
+
+            $validated = Validator::make($request->all(), $rules);
+
+            if ($validated->fails()) {
+                return ResponseFormatter::error(
+                    [
+                        'error' => $validated->errors()
+                    ],
+                    'Data gagal ditambahkan',
+                    422
+                );
+            }
+
+            DB::beginTransaction();
+
+            $updateProduct = $this->update($request, $barang);
+            if ($updateProduct instanceof \Illuminate\Http\JsonResponse) {
+                // Mengambil data dari JsonResponse
+                $responseData = $updateProduct->getData();
+
+                $meta = $responseData->meta;
+                if ($meta->code != 200) {
+                    throw new Exception('Terjadi Kesalahan. ' . $meta->message . '. Error: ' . $responseData->data->error, $meta->code);
+                }
+            }
+
+            Barcode::where('idBarang', $barang->IdBarang)->update([
+                'idBarang' => $request->IdBarang,
+                'nmBarang' => $request->nmBarang,
+                'hargaJual' => $request->hargaJual
+            ]);
+
+            DB::commit();
+
+            return ResponseFormatter::success(null, 'Data barang berhasil diubah');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return ResponseFormatter::error(
+                ['error' => $e->getMessage()],
+                'Gagal mengubah data barang',
+                $e->getCode()
             );
         }
     }

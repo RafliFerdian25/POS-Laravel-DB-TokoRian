@@ -65,6 +65,7 @@ Route::controller(ProductController::class)->group(function () {
     Route::get('/barang/habis', 'productEmpty')->name('barang.habis');
     Route::get('/barang/cetak-harga', 'printPrice')->name('barang.cetak-harga');
     Route::get('/barang/cetak-harga/data', 'printPriceData')->name('barang.cetak-harga.data');
+    Route::put('/barang/cetak-harga/{barang:idBarang}', 'updateFromPrintPrice')->name('product.print.price.update');
     Route::post('/barang/cetak-harga/store', 'storePrintPrice')->name('barang.cetak-harga.store');
     Route::delete('/barang/cetak-harga/{id}', 'destroyPrintPrice')->name('barang.cetak-harga.destroy');
 });

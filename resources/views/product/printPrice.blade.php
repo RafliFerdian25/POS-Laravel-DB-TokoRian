@@ -468,7 +468,7 @@
                             );
                             $('#updateButton').prop('disabled', true);
                             $.ajax({
-                                url: `{{ url('/barang/${response.product.IdBarang}') }}`,
+                                url: `{{ url('/barang/cetak-harga/${response.product.IdBarang}') }}`,
                                 type: "POST",
                                 data: {
                                     _method: 'PUT',
