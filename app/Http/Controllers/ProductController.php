@@ -179,6 +179,7 @@ class ProductController extends Controller
                 ]);
             }
 
+            DB::beginTransaction();
             // mengupdate data di table products
             Barang::where('IdBarang', $barang->IdBarang)->update([
                 'IdBarang' => $validated['IdBarang'],
@@ -193,6 +194,7 @@ class ProductController extends Controller
                 'expDate' => $request->expDate,
             ]);
 
+            DB::commit();
             // jika data berhasil ditambahkan, akan kembali ke halaman utama
             if ($request->type == 'expired') {
                 return redirect()->route('barang.kadaluarsa')->with('success', 'Produk berhasil diupdate');
@@ -207,6 +209,7 @@ class ProductController extends Controller
                 }
             }
         } catch (\Illuminate\Validation\ValidationException $e) {
+            DB::rollBack();
             if ($request->type == 'expired') {
                 return redirect()->route('barang.kadaluarsa')->with('error', $e->validator->errors()->first());
             } else if ($request->type == 'empty') {
@@ -453,7 +456,7 @@ class ProductController extends Controller
 
             Barcode::where('idBarang', $barang->IdBarang)->update([
                 'idBarang' => $request->IdBarang,
-                'nmBarang' => $request->nmBarang,
+                'nmBarang' => strtoupper($request->nmBarang),
                 'hargaJual' => $request->hargaJual
             ]);
 

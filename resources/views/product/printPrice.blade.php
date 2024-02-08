@@ -411,9 +411,6 @@
                                 number: true,
                                 min: 0
                             },
-                            expDate: {
-                                required: true,
-                            },
                             jenis: {
                                 required: true,
                             },
@@ -497,17 +494,11 @@
                                                 confirmButton: "btn btn-success"
                                             },
                                         })
-                                        .then((value) => {
-                                            if (value === "confirm") {
-                                                // window.location.href = response.data.redirect
-                                                getPrintPriceProduct();
-                                            }
+                                        .then(() => {
+                                            getPrintPriceProduct();
+                                            // menutup modal
+                                            $('#modalMain').modal('hide');
                                         });
-
-                                    setTimeout(function() {
-                                        // window.location.href = response.data.redirect
-                                        getPrintPriceProduct();
-                                    }, 4000);
                                 },
                                 error: function(xhr, status, error) {
                                     $('#updateButton').html('Update');

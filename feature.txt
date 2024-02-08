@@ -10,6 +10,7 @@ grafik penjualan kategori harian dalam sebulan (grafik batang/garis)
 grafik penjualan barang harian dalam sebulan (grafik batang/garis)
 tanggal terakhir belanja barang
 
+// CRUD tabel barang
 read tabel barang
 create tabel barang
 update tabel barang
