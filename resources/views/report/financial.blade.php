@@ -156,8 +156,13 @@
             {{-- Barang terlaris --}}
             <div class="col-md-6">
                 <div class="main-card mb-3 card">
-                    <div class="card-header">
-                        Barang Terlaris
+                    <div class="card-header d-flex justify-content-between">
+                        <div>
+                            Barang Terlaris
+                        </div>
+                        <div>
+                            <a href="{{ route('monthly.product.report') }}" class="btn btn-primary"> </a>
+                        </div>
                     </div>
                     <div class="table-responsive">
                         <table class="align-middle mb-0 table table-borderless table-striped table-hover">
