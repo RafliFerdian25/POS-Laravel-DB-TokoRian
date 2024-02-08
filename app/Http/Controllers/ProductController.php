@@ -196,9 +196,7 @@ class ProductController extends Controller
 
             DB::commit();
             // jika data berhasil ditambahkan, akan kembali ke halaman utama
-            if ($request->type == 'expired') {
-                return redirect()->route('barang.kadaluarsa')->with('success', 'Produk berhasil diupdate');
-            } else if ($request->type == 'empty') {
+            if ($request->type == 'empty') {
                 return redirect()->route('barang.habis')->with('success', 'Produk berhasil diupdate');
             } else {
                 if ($request->ajax()) {
@@ -210,9 +208,7 @@ class ProductController extends Controller
             }
         } catch (\Illuminate\Validation\ValidationException $e) {
             DB::rollBack();
-            if ($request->type == 'expired') {
-                return redirect()->route('barang.kadaluarsa')->with('error', $e->validator->errors()->first());
-            } else if ($request->type == 'empty') {
+            if ($request->type == 'empty') {
                 return redirect()->route('barang.habis')->with('error', $e->validator->errors()->first());
             } else {
                 if ($request->ajax()) {
@@ -252,6 +248,7 @@ class ProductController extends Controller
         $data = [
             'setting' => Toko::first(),
             'title' => 'POS TOKO | Laporan',
+            'categories' => Jenis::get(),
         ];
         return view('product.expired', $data);
     }
@@ -270,6 +267,9 @@ class ProductController extends Controller
             })
             ->when($request->filterName != null, function ($query) use ($request) {
                 return $query->where('nmBarang', 'LIKE', '%' . $request->filterName . '%');
+            })
+            ->when($request->filterCategory != null, function ($query) use ($request) {
+                return $query->where('jenis',  $request->filterCategory);
             })
             ->orderBy('expDate', 'asc')
             ->limit(100);

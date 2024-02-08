@@ -277,6 +277,7 @@
     {{-- loader --}}
     <script src="{{ asset('assets/js/loader.js') }}"></script>
     <script src="{{ asset('assets/js/empty.js') }}"></script>
+    <script src="{{ asset('assets/js/customAlert.js') }}"></script>
 
     @stack('scripts')
 </body>

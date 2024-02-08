@@ -375,7 +375,7 @@
                             IdBarang: {
                                 required: true,
                                 maxlength: 15,
-                                minlength: 4,
+                                minlength: 3,
                                 number: true
                             },
                             nmBarang: {
@@ -419,7 +419,7 @@
                             IdBarang: {
                                 required: "Kode barang tidak boleh kosong",
                                 maxlength: "Kode barang maksimal 15 karakter",
-                                minlength: "Kode barang minimal 4 karakter",
+                                minlength: "Kode barang minimal 3 karakter",
                                 number: "Kode barang harus berupa angka"
                             },
                             nmBarang: {

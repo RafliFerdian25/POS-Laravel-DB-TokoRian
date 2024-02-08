@@ -3,11 +3,14 @@ grafik penjualan kategori harian dalam sebulan (grafik batang/garis)
 
 // View Laporan Barang 
 ✅ Total barang terjual
-✅ Filter barang
+✅ Filter barang 
 ✅ Tabel barang terjual
+grafik penjualan harian / bulan
+grafik penjualan bulanan / tahun
 
 // View Laporan Barang Detail
 grafik penjualan barang harian dalam sebulan (grafik batang/garis)
+grafik penjualan barang bulanan dalam setahun (grafik batang/garis)
 tanggal terakhir belanja barang
 
 // CRUD tabel barang
@@ -16,19 +19,19 @@ create tabel barang
 update tabel barang
 delete tabel barang
 
-grafik penjualan harian / bulan
-grafik penjualan bulanan / tahun
-
+// CRUD tabel barang habis
 read barang habis
 create barang habis
 update barang habis
 delete barang habis
 
+// CRUD tabel belanja barang
 read belanja barang
 create belanja barang
 update belanja barang
 delete belanja barang
 
+// CRUD tabel barang pernah kadaluarsa
 menambahkan tabel barang yang pernah kadaluarsa
 read barang pernah kadaluarsa
 create barang pernah kadaluarsa
