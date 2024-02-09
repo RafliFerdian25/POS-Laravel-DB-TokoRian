@@ -10,6 +10,8 @@ use App\Models\WholesalePurchase;
 use App\Models\Supplier;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class WholesalePurchaseController extends Controller
 {
@@ -31,23 +33,13 @@ class WholesalePurchaseController extends Controller
      */
     public function indexData()
     {
-        $wholesalePurchases = WholesalePurchase::get();
+        $wholesalePurchases = WholesalePurchase::select('id', 'IdBarang', 'nmBarang', 'satuan', 'hargaPokok', 'jumlah', 'total')
+            ->orderBy('nmBarang', 'desc')
+            ->get();
 
         return ResponseFormatter::success([
             'wholesalePurchases' => $wholesalePurchases
         ], 'Data berhasil diambil');
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        $title = 'POS TOKO | Belanja';
-        $suppliers = Supplier::get();
-        return view('purchase.create', compact('suppliers', 'title'));
     }
 
     /**
@@ -58,21 +50,39 @@ class WholesalePurchaseController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'supplier_id' => 'required',
-        ]);
+        $rules = [
+            'IdBarang' => 'required|exists:t_barang,IdBarang',
+        ];
 
-        // User ID
-        $validated['user_id'] = 1;
+        $validated = Validator::make($request->all(), $rules);
 
-        $validated['total_item'] = 0;
-        $validated['total_price'] = 0;
+        if ($validated->fails()) {
+            return ResponseFormatter::error([
+                'error' => $validated->errors()->first()
+            ], 'Data gagal divalidasi', 422);
+        }
 
-        $purchase = WholesalePurchase::create($validated);
+        try {
+            DB::beginTransaction();
+            $product = Product::where('IdBarang', $request->IdBarang)->first();
 
-        $id = $purchase->getKey();
+            $purchase = WholesalePurchase::create([
+                'IdBarang' => $product->IdBarang,
+                'nmBarang' => $product->nmBarang,
+                'satuan' => $product->satuan,
+                'hargaPokok' => $product->hargaPokok,
+                'jumlah' => 2,
+                'TOTAL' => $product->hargaPokok * 2,
+            ]);
 
-        return redirect()->route('belanja.create.purchase-details', $id)->with('success', 'Belanja berhasil ditambahkan.');
+            DB::commit();
+            return ResponseFormatter::success(null, 'Data berhasil disimpan');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return ResponseFormatter::error([
+                'error' => $e->getMessage()
+            ], 'Data gagal disimpan', 500);
+        }
     }
 
     public function createWholesalePurchaseDetails($id)

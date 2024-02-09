@@ -15,15 +15,10 @@
                     </div>
                     <div>Belanja
                         <div class="page-title-subheading">
-                            Dashboard
+                            Daftar Barang Belanja
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-3 text-center align-self-center">
-                <a href="{{ url('/belanja/create') }}">
-                    <button class="btn btn-primary rounded-pill px-3" id="tambah-produk">Tambah</button>
-                </a>
             </div>
         </div>
         <!-- END TITLE -->
@@ -50,12 +45,12 @@
                         <h5 class="card-title text-center">Tambah Barang</h5>
                         @csrf
                         <div class="form-group form-show-validation row select2-form-input">
-                            <label for="product" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-sm-right">Nama
+                            <label for="addProduct" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-sm-right">Nama
                                 / Barcode Barang
                                 <span class="required-label">*</span></label>
                             <div class="col-lg-9 col-md-9 col-sm-8">
                                 <div class="select2-input select2-info" style="width: 100%">
-                                    <select id="product" name="product" class="form-control rounded__10">
+                                    <select id="addProduct" name="addProduct" class="form-control rounded__10">
                                         <option value="">&nbsp;</option>
                                     </select>
                                 </div>
@@ -84,6 +79,7 @@
                                     <th>Satuan</th>
                                     <th>Harga Pokok</th>
                                     <th>Jumlah</th>
+                                    <th>Total</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -105,6 +101,98 @@
                 pageLength: 10,
                 info: false,
             })
+
+
+            $('#addProduct').select2({
+                theme: "bootstrap-5",
+                placeholder: 'Masukkan Nama atau Barcode Barang',
+                width: '100%',
+                allowClear: true,
+                minimumInputLength: 1, // Minimum characters required to start searching
+                language: {
+                    inputTooShort: function(args) {
+                        var remainingChars = args.minimum - args.input.length;
+                        return "Masukkan kata kunci setidaknya " + remainingChars + " karakter";
+                    },
+                    searching: function() {
+                        return "Sedang mengambil data...";
+                    },
+                    noResults: function() {
+                        return "Barang tidak ditemukan";
+                    },
+                    errorLoading: function() {
+                        return "Terjadi kesalahan saat memuat data";
+                    },
+                },
+                templateSelection: function(data, container) {
+                    if (data.id === '') {
+                        return data.text;
+                    }
+                    var match = data.text.match(/^(.*?) \(/);
+                    var resultName = match[1];
+
+                    return $('<span class="custom-selection">' + resultName + '</span>');
+                },
+                ajax: {
+                    url: "{{ route('barang.cari.data') }}", // URL to fetch data from
+                    dataType: 'json', // Data type expected from the server
+                    processResults: function(response) {
+                        var products = response.data.products;
+                        var options = [];
+
+                        products.forEach(function(product) {
+                            options.push({
+                                id: product.IdBarang, // Use the product
+                                text: product.nmBarang + ' (' + product.IdBarang +
+                                    ')' + ' (' + product.hargaJual +
+                                    ')' // menampilkan nama, barcode, dan harga
+                            });
+                        });
+
+                        return {
+                            results: options // Processed results with id and text properties
+                        };
+                    },
+                    cache: true, // Cache the results for better performance
+                }
+            }).on('change', function(e) {
+                // Mendapatkan nilai yang dipilih
+                var IdBarang = $(this).val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('wholesale.purchase.store') }}",
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        IdBarang: IdBarang,
+                    },
+                    success: function(response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: 'Menambah Produk Berhasil',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        getWholesalePurchase();
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        if (xhr.responseJSON) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal',
+                                text: `Tambah Produk Gagal. ${xhr.responseJSON.meta.message} Error: ${xhr.responseJSON.data.error}`,
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                        }
+                        return false;
+                    },
+                });
+
+                // $('#product').val(null).trigger('change');
+            });
+
             getWholesalePurchase();
         });
 
@@ -128,12 +216,13 @@
                                 product.satuan,
                                 product.hargaPokok,
                                 product.jumlah,
+                                product.total,
                                 `<button class="btn btn-danger rounded-pill px-3"><i class="bi bi-trash"></button>`
                             ]).draw(false).node();
                         });
                     } else {
                         $('#tableWholesalePurchaseBody').html(tableEmpty(5,
-                            'barang'));;
+                            'barang'));
                     }
                 },
                 error: function(error) {

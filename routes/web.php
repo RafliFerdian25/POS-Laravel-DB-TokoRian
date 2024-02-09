@@ -85,4 +85,5 @@ Route::get('/belanja/detail/{purchase}', [WholesalePurchaseController::class, 's
 Route::controller(WholesalePurchaseController::class)->group(function () {
     Route::get('/belanja', 'index')->name('wholesale.purchase.index');
     Route::get('/belanja/data', 'indexData')->name('wholesale.purchase.index.data');
+    Route::post('/belanja', 'store')->name('wholesale.purchase.store');
 });

@@ -62,7 +62,7 @@ class ProductController extends Controller
      */
     public function searchData(Request $request)
     {
-        $query = Product::select('IdBarang', 'nmBarang', 'hargaJual')
+        $query = Product::select('IdBarang', 'nmBarang', 'hargaJual', 'hargaPokok')
             ->when($request->has('q'), function ($query) use ($request) {
                 return $query->where('nmBarang', 'LIKE', '%' . $request->q . '%')
                     ->orWhere('IdBarang', 'LIKE', '%' . $request->q . '%');
