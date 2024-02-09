@@ -173,7 +173,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ url('/belanja') }}" id="navbar__supplier">
+                                <a href="{{ route('wholesale.purchase.index') }}" id="navbar__supplier">
                                     <i class="metismenu-icon pe-7s-car">
                                     </i>Belanja
                                 </a>

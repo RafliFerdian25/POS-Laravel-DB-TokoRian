@@ -61,7 +61,7 @@
                             <div class="row mb-3">
                                 <label for="filterCategory" class="col-sm-2 col-form-label">Kategori</label>
                                 <div class="col-sm-10">
-                                    <select required class="form-select rounded__10 " name="filterCategory"
+                                    <select class="form-select rounded__10 " name="filterCategory"
                                         aria-label="Default select example">
                                         <option value="" selected>Pilih Kategori</option>
                                         @foreach ($categories as $category)

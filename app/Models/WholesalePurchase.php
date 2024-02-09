@@ -5,9 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Purchase extends Model
+class WholesalePurchase extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
     protected $table = 't_belanja';
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'idBarang');
+    }
 }

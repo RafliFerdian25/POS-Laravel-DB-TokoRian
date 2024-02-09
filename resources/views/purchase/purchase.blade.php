@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
 @section('content')
-{{-- @dd($products[0]->id) --}}
+    {{-- @dd($products[0]->id) --}}
     <!-- Section Layouts  -->
     <div class="app-main__inner">
         <!-- Barang section -->
@@ -27,46 +27,69 @@
             </div>
         </div>
         <!-- END TITLE -->
+
+        <!-- CARD DASHBOARD -->
+        <div class="row">
+            <!-- total pendapatan -->
+            <div class="col-sm-12 col-md-4 col-xl-3 p-3">
+                <div class="card mb-3 widget-content">
+                    <div class="content">
+                        <div class="widget-content-left mb-2">
+                            <i class="pe-7s-cash col-2" style="font-size: 30px;"></i>
+                            <div class="widget-heading col-10 widget__title">Total Barang Cetak Harga</div>
+                        </div>
+                        <div class="widget-content-right">
+                            <div class="widget-numbers mb-2"><span id="countProduct">-</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-8 col-xl-9 p-3">
+                <div class="main-card mb-3 card">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">Tambah Barang</h5>
+                        @csrf
+                        <div class="form-group form-show-validation row select2-form-input">
+                            <label for="product" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-sm-right">Nama
+                                / Barcode Barang
+                                <span class="required-label">*</span></label>
+                            <div class="col-lg-9 col-md-9 col-sm-8">
+                                <div class="select2-input select2-info" style="width: 100%">
+                                    <select id="product" name="product" class="form-control rounded__10">
+                                        <option value="">&nbsp;</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="qr-reader" style="min-width:300px"></div>
+                        <div id="qr-reader-results"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END CARD DASHBOARD -->
+
         <div class="belanja__section">
             <!-- Barang -->
-            <div class="container belanja__container">
-                <div class="belanja__content">
-                    <div class="main-card mb-3 card">
-                        <div class="card-body">
-                            <h5 class="card-title text-center font-size-xlg">Belanja</h5>
-                            <table class="mb-0 table table__belanja" id="table__belanja">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Nama Kasir</th>
-                                        <th>Nama Supplier</th>
-                                        <th>Total Item</th>
-                                        <th>Total Harga</th>
-                                        <th>Aksi</th>
-                                    </tr>
-                                </thead>
-                                @foreach ($purchases as $purchase)
-                                    <tr id="index_{{ $purchase->id }}">
-                                        <td>{{ $purchase->id }}</td>
-                                        <td>{{ $purchase->username }}</td>
-                                        <td>{{ $purchase->supplier_name }}</td>
-                                        <td>{{ $purchase->total_item }}</td>
-                                        <td>{{ $purchase->total_price }}</td>
-                                        <td>
-                                            <a href="{{ route('belanja.edit', $purchase->id) }}"
-                                                class="btn btn-link btn-lg float-left px-0" id="{{ $purchase->id }}"><i
-                                                    class="fa fa-edit"></i></a>
-                                            <a href="#"
-                                                onclick="deleteData('{{ route('belanja.destroy', $purchase->id) }}','{{ $purchase->id }}')"
-                                                class="btn btn-link btn-lg float-right px-0 color__red1"
-                                                id="{{ $purchase->id }}"><i class="fa fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                                <tbody>
-                                </tbody>
-                            </table>
-                        </div>
+            <div class="belanja__content">
+                <div class="main-card mb-3 card">
+                    <div class="card-body">
+                        <h5 class="card-title text-center font-size-xlg">Belanja</h5>
+                        <table class="mb-0 table" id="tableWholesalePurchase">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Barcode</th>
+                                    <th>Nama</th>
+                                    <th>Satuan</th>
+                                    <th>Harga Pokok</th>
+                                    <th>Jumlah</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableWholesalePurchaseBody">
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -77,27 +100,47 @@
 @endsection
 @push('scripts')
     <script>
-        let table;
+        $(document).ready(function() {
+            $('#tableWholesalePurchase').DataTable({
+                pageLength: 10,
+                info: false,
+            })
+            getWholesalePurchase();
+        });
 
-        function deleteData(url, idBarang) {
-            if (confirm('Yakin ingin menghapus data terpilih?')) {
-                $.post(url, {
-                        '_token': $("meta[name='csrf-token']").attr('content'),
-                        '_method': 'delete'
-                    })
-                    .done((response) => {
-                        $(`#index_`+ idBarang).remove();
-                        alert('success') ;
-                    })
-                    .fail((errors) => {
-                        alert('Tidak dapat menghapus data');
-                        return;
-                    });
-            }
+        const getWholesalePurchase = () => {
+            $('#tableWholesalePurchase').DataTable().clear().draw();
+            $('#tableWholesalePurchaseBody').html(tableLoader(5,
+                `{{ asset('assets/svg/Ellipsis-2s-48px.svg') }}`));
+
+            $.ajax({
+                url: "{{ route('wholesale.purchase.index.data') }}",
+                type: "GET",
+                dataType: "json",
+                success: function(response) {
+                    $('#countProduct').html(response.data.countProduct);
+                    if (response.data.wholesalePurchases.length > 0) {
+                        response.data.wholesalePurchases.forEach((product, index) => {
+                            $('#tableWholesalePurchase').DataTable().row.add([
+                                index + 1,
+                                product.IdBarang,
+                                product.nmBarang,
+                                product.satuan,
+                                product.hargaPokok,
+                                product.jumlah,
+                                `<button class="btn btn-danger rounded-pill px-3"><i class="bi bi-trash"></button>`
+                            ]).draw(false).node();
+                        });
+                    } else {
+                        $('#tableWholesalePurchaseBody').html(tableEmpty(5,
+                            'barang'));;
+                    }
+                },
+                error: function(error) {
+                    $('#tableWholesalePurchaseBody').html(tableEmpty(5,
+                        'barang'));
+                }
+            });
         }
-        $(function() {
-            table = $('#table__belanja').DataTable();
-        })
-
     </script>
 @endpush

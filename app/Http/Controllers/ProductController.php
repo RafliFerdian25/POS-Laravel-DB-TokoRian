@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ResponseFormatter;
-use App\Models\Barang;
+use App\Models\Product;
 use App\Models\Barcode;
 use App\Models\Category;
 use App\Models\Jenis;
@@ -130,7 +130,7 @@ class ProductController extends Controller
     }
 
 
-    public function edit(Request $request, Barang $barang)
+    public function edit(Request $request, Product $product)
     {
         // menyeleksi data product berdasarkan id yang dipilih
         $categories = Jenis::get();
@@ -138,7 +138,7 @@ class ProductController extends Controller
         $title = 'POS TOKO | Barang';
         $units = Satuan::orderBy('satuan')->get();
         $data = [
-            'product' => $barang,
+            'product' => $product,
             'categories' => $categories,
             'units' => $units,
             'title' => $title,
@@ -149,11 +149,11 @@ class ProductController extends Controller
         return view('product.update', $data);
     }
 
-    public function update(Request $request, Barang $barang)
+    public function update(Request $request, Product $product)
     {
         try {
             // menyeleksi data yang akan diinputkan
-            if ($request->IdBarang == $barang->IdBarang) {
+            if ($request->IdBarang == $product->IdBarang) {
                 $validated = $request->validate([
                     'IdBarang' => 'required',
                     'nmBarang' => 'required',
@@ -181,7 +181,7 @@ class ProductController extends Controller
 
             DB::beginTransaction();
             // mengupdate data di table products
-            Product::where('IdBarang', $barang->IdBarang)->update([
+            Product::where('IdBarang', $product->IdBarang)->update([
                 'IdBarang' => $validated['IdBarang'],
                 'nmBarang' => strtoupper($validated['nmBarang']),
                 'satuan' => $validated['satuan'],
@@ -420,7 +420,7 @@ class ProductController extends Controller
         }
     }
 
-    public function updateFromPrintPrice(Request $request, Barang $barang)
+    public function updateFromPrintPrice(Request $request, Product $product)
     {
         try {
             $rules = [
@@ -443,7 +443,7 @@ class ProductController extends Controller
 
             DB::beginTransaction();
 
-            $updateProduct = $this->update($request, $barang);
+            $updateProduct = $this->update($request, $product);
             if ($updateProduct instanceof \Illuminate\Http\JsonResponse) {
                 // Mengambil data dari JsonResponse
                 $responseData = $updateProduct->getData();
@@ -454,7 +454,7 @@ class ProductController extends Controller
                 }
             }
 
-            Barcode::where('idBarang', $barang->IdBarang)->update([
+            Barcode::where('idBarang', $product->IdBarang)->update([
                 'idBarang' => $request->IdBarang,
                 'nmBarang' => strtoupper($request->nmBarang),
                 'hargaJual' => $request->hargaJual

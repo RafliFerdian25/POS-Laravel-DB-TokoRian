@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ResponseFormatter;
 use App\Models\Category;
 use App\Models\Merk;
 use App\Models\Product;
-use App\Models\Purchase;
+use App\Models\WholesalePurchase;
 use App\Models\Supplier;
 use App\Models\User;
 use Illuminate\Http\Request;
 
-class PurchaseController extends Controller
+class WholesalePurchaseController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,11 +21,21 @@ class PurchaseController extends Controller
     public function index()
     {
         $title = 'POS TOKO | Belanja';
-        $purchases = Purchase::Select("purchases.*", "users.username", "suppliers.name as supplier_name")
-            ->leftJoin('users', 'users.id', '=', 'purchases.user_id')
-            ->leftJoin('suppliers', 'suppliers.id', '=', 'purchases.supplier_id')
-            ->get();
-        return view('purchase.purchase', compact('purchases', 'title'));
+        return view('purchase.purchase', compact('title'));
+    }
+
+    /**
+     * Menampilkan data permintaan index.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indexData()
+    {
+        $wholesalePurchases = WholesalePurchase::get();
+
+        return ResponseFormatter::success([
+            'wholesalePurchases' => $wholesalePurchases
+        ], 'Data berhasil diambil');
     }
 
     /**
@@ -57,14 +68,14 @@ class PurchaseController extends Controller
         $validated['total_item'] = 0;
         $validated['total_price'] = 0;
 
-        $purchase = Purchase::create($validated);
+        $purchase = WholesalePurchase::create($validated);
 
         $id = $purchase->getKey();
 
-        return redirect()->route('belanja.create.purchase-details', $id )->with('success', 'Belanja berhasil ditambahkan.');
+        return redirect()->route('belanja.create.purchase-details', $id)->with('success', 'Belanja berhasil ditambahkan.');
     }
 
-    public function createPurchaseDetails($id)
+    public function createWholesalePurchaseDetails($id)
     {
         $title = 'POS TOKO | Belanja';
         $purchaseId = $id;
@@ -74,7 +85,7 @@ class PurchaseController extends Controller
         return view('purchase.create-purchase-details', compact('purchaseId', 'title', 'categories', 'merks', 'product'));
     }
 
-    public function storePurchaseDetails($id)
+    public function storeWholesalePurchaseDetails($id)
     {
         $title = 'POS TOKO | Belanja';
         return redirect()->route('belanja');
@@ -122,7 +133,7 @@ class PurchaseController extends Controller
      */
     public function destroy($id)
     {
-        Purchase::destroy($id);
+        WholesalePurchase::destroy($id);
 
         return response(null, 200);
     }

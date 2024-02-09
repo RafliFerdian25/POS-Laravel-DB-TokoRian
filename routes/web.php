@@ -5,7 +5,7 @@ use App\Http\Controllers\MerkController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\WholesalePurchaseController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\SaleDetailController;
@@ -37,7 +37,7 @@ Route::controller(ReportController::class)->group(function () {
 });
 
 Route::get('/laporan/{sale}/show', [SaleController::class, 'showReport'])->name('laporan.show');
-Route::get('/laporan/barang/{barang:idBarang}', [SaleController::class, 'laporanBarangBulanan'])->name('laporan.barang.bulanan');
+Route::get('/laporan/barang/{product:idBarang}', [SaleController::class, 'laporanBarangBulanan'])->name('laporan.barang.bulanan');
 
 // Route::get('/transaksi/baru', [PenjualanController::class, 'create'])->name('transaksi.baru');
 Route::get('/transaksi/kasir', [SaleDetailController::class, 'index'])->name('penjualan.index');
@@ -55,9 +55,9 @@ Route::controller(ProductController::class)->group(function () {
     Route::get('/barang', 'index')->name('barang.index');
     Route::get('/barang/create', 'create')->name('barang.create');
     Route::post('/barang', 'store')->name('barang.store');
-    Route::get('/barang/{barang:idBarang}/edit', 'edit')->name('barang.edit');
-    Route::put('/barang/{barang:idBarang}', 'update')->name('barang.update');
-    Route::delete('/barang/{barang:idBarang}', 'destroy')->name('barang.destroy');
+    Route::get('/barang/{product:idBarang}/edit', 'edit')->name('barang.edit');
+    Route::put('/barang/{product:idBarang}', 'update')->name('barang.update');
+    Route::delete('/barang/{product:idBarang}', 'destroy')->name('barang.destroy');
 
     Route::get('/barang/cari/data', 'searchData')->name('barang.cari.data');
     Route::get('/barang/kadaluarsa', 'expired')->name('barang.kadaluarsa');
@@ -65,7 +65,7 @@ Route::controller(ProductController::class)->group(function () {
     Route::get('/barang/habis', 'productEmpty')->name('barang.habis');
     Route::get('/barang/cetak-harga', 'printPrice')->name('barang.cetak-harga');
     Route::get('/barang/cetak-harga/data', 'printPriceData')->name('barang.cetak-harga.data');
-    Route::put('/barang/cetak-harga/{barang:idBarang}', 'updateFromPrintPrice')->name('product.print.price.update');
+    Route::put('/barang/cetak-harga/{product:idBarang}', 'updateFromPrintPrice')->name('product.print.price.update');
     Route::post('/barang/cetak-harga/store', 'storePrintPrice')->name('barang.cetak-harga.store');
     Route::delete('/barang/cetak-harga/{id}', 'destroyPrintPrice')->name('barang.cetak-harga.destroy');
 });
@@ -78,6 +78,11 @@ Route::resource('/supplier', SupplierController::class)->except('show');
 // Penjualan
 
 // Belanja
-Route::get('/belanja/detail/{purchase}/create', [PurchaseController::class, 'createPurchaseDetails'])->name('belanja.create.purchase-details');
-Route::get('/belanja/detail/{purchase}', [PurchaseController::class, 'storePurchaseDetails'])->name('belanja.store.purchase-details');
-Route::resource('/belanja', PurchaseController::class);
+Route::get('/belanja/detail/{purchase}/create', [WholesalePurchaseController::class, 'createPurchaseDetails'])->name('belanja.create.purchase-details');
+Route::get('/belanja/detail/{purchase}', [WholesalePurchaseController::class, 'storePurchaseDetails'])->name('belanja.store.purchase-details');
+
+// Belanja Barang
+Route::controller(WholesalePurchaseController::class)->group(function () {
+    Route::get('/belanja', 'index')->name('wholesale.purchase.index');
+    Route::get('/belanja/data', 'indexData')->name('wholesale.purchase.index.data');
+});
