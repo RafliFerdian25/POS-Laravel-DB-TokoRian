@@ -34,7 +34,7 @@
                             <div class="widget-heading col-10 widget__title">Total Barang Cetak Harga</div>
                         </div>
                         <div class="widget-content-right">
-                            <div class="widget-numbers mb-2"><span id="countProduct">-</span></div>
+                            <div class="widget-numbers mb-2" id="countProduct">-</div>
                         </div>
                     </div>
                 </div>
@@ -70,7 +70,7 @@
                 <div class="main-card mb-3 card">
                     <div class="card-body">
                         <h5 class="card-title text-center font-size-xlg">Belanja</h5>
-                        <table class="mb-0 table" id="tableWholesalePurchase">
+                        <table class="mb-0 table" id="tableWholesalePurchaseProduct">
                             <thead>
                                 <tr>
                                     <th>No</th>
@@ -83,7 +83,7 @@
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody id="tableWholesalePurchaseBody">
+                            <tbody id="tableWholesalePurchaseProductBody">
                             </tbody>
                         </table>
                     </div>
@@ -97,11 +97,10 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            $('#tableWholesalePurchase').DataTable({
+            $('#tableWholesalePurchaseProduct').DataTable({
                 pageLength: 10,
                 info: false,
             })
-
 
             $('#addProduct').select2({
                 theme: "bootstrap-5",
@@ -174,7 +173,7 @@
                             showConfirmButton: false,
                             timer: 1500
                         })
-                        getWholesalePurchase();
+                        getWholesalePurchaseProduct();
                     },
                     error: function(xhr, ajaxOptions, thrownError) {
                         if (xhr.responseJSON) {
@@ -193,12 +192,12 @@
                 // $('#product').val(null).trigger('change');
             });
 
-            getWholesalePurchase();
+            getWholesalePurchaseProduct();
         });
 
-        const getWholesalePurchase = () => {
-            $('#tableWholesalePurchase').DataTable().clear().draw();
-            $('#tableWholesalePurchaseBody').html(tableLoader(5,
+        const getWholesalePurchaseProduct = () => {
+            $('#tableWholesalePurchaseProduct').DataTable().clear().draw();
+            $('#tableWholesalePurchaseProductBody').html(tableLoader(8,
                 `{{ asset('assets/svg/Ellipsis-2s-48px.svg') }}`));
 
             $.ajax({
@@ -206,10 +205,10 @@
                 type: "GET",
                 dataType: "json",
                 success: function(response) {
-                    $('#countProduct').html(response.data.countProduct);
+                    $('#countProduct').html(response.data.wholesalePurchases.length);
                     if (response.data.wholesalePurchases.length > 0) {
                         response.data.wholesalePurchases.forEach((product, index) => {
-                            $('#tableWholesalePurchase').DataTable().row.add([
+                            $('#tableWholesalePurchaseProduct').DataTable().row.add([
                                 index + 1,
                                 product.IdBarang,
                                 product.nmBarang,
@@ -217,19 +216,64 @@
                                 product.hargaPokok,
                                 product.jumlah,
                                 product.total,
-                                `<button class="btn btn-danger rounded-pill px-3"><i class="bi bi-trash"></button>`
+                                `<button class="btn btn-danger rounded-pill px-3" onclick="deleteWholesalePurchaseProduct('${product.id}','${product.nmBarang}')"><i class="bi bi-trash"></button>`
                             ]).draw(false).node();
                         });
                     } else {
-                        $('#tableWholesalePurchaseBody').html(tableEmpty(5,
+                        $('#tableWholesalePurchaseProductBody').html(tableEmpty(8,
                             'barang'));
                     }
                 },
                 error: function(error) {
-                    $('#tableWholesalePurchaseBody').html(tableEmpty(5,
+                    $('#tableWholesalePurchaseProductBody').html(tableEmpty(8,
                         'barang'));
                 }
             });
+        }
+
+        const deleteWholesalePurchaseProduct = (id, name) => {
+            Swal.fire({
+                title: 'Hapus Produk',
+                text: `Apakah Anda yakin ingin menghapus ${name}?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Hapus',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "DELETE",
+                        url: `{{ url('belanja/${id}') }}`,
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                        },
+                        success: function(response) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil',
+                                text: 'Hapus Produk Berhasil',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                            getWholesalePurchaseProduct();
+                        },
+                        error: function(xhr, ajaxOptions, thrownError) {
+                            if (xhr.responseJSON) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal',
+                                    text: `Hapus Produk Gagal. ${xhr.responseJSON.meta.message} Error: ${xhr.responseJSON.data.error}`,
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                })
+                            }
+                            return false;
+                        },
+                    });
+                }
+            })
         }
     </script>
 @endpush

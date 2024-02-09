@@ -26,8 +26,8 @@ update barang habis
 delete barang habis
 
 // CRUD tabel belanja barang
-read belanja barang
-create belanja barang
+✅ read belanja barang
+✅ store belanja barang
 update belanja barang
 delete belanja barang
 

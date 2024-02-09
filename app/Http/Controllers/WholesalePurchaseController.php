@@ -95,34 +95,6 @@ class WholesalePurchaseController extends Controller
         return view('purchase.create-purchase-details', compact('purchaseId', 'title', 'categories', 'merks', 'product'));
     }
 
-    public function storeWholesalePurchaseDetails($id)
-    {
-        $title = 'POS TOKO | Belanja';
-        return redirect()->route('belanja');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
     /**
      * Update the specified resource in storage.
      *
@@ -141,10 +113,18 @@ class WholesalePurchaseController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(WholesalePurchase $wholesalePurchase)
     {
-        WholesalePurchase::destroy($id);
-
-        return response(null, 200);
+        try {
+            DB::beginTransaction();
+            $wholesalePurchase->delete();
+            DB::commit();
+            return ResponseFormatter::success(null, 'Data berhasil dihapus');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return ResponseFormatter::error([
+                'error' => $e->getMessage()
+            ], 'Data gagal dihapus', 500);
+        }
     }
 }
