@@ -151,8 +151,8 @@
                                 </a>
                             </li>
                             <li class="">
-                                <a href="{{ url('/laporan/habis') }}" id="navbar_laporan"
-                                    class="{{ Request::is('laporan/habis*') ? 'mm-active' : '' }}">
+                                <a href="{{ route('barang.habis') }}" id="navbar_laporan"
+                                    class="{{ Request::is('barang/habis*') ? 'mm-active' : '' }}">
                                     <i class="metismenu-icon pe-7s-note2"></i>
                                     Habis
                                 </a>

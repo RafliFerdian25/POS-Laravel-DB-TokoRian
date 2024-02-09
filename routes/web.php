@@ -58,11 +58,17 @@ Route::controller(ProductController::class)->group(function () {
     Route::get('/barang/{product:idBarang}/edit', 'edit')->name('barang.edit');
     Route::put('/barang/{product:idBarang}', 'update')->name('barang.update');
     Route::delete('/barang/{product:idBarang}', 'destroy')->name('barang.destroy');
-
     Route::get('/barang/cari/data', 'searchData')->name('barang.cari.data');
+
+    // Kadaluarsa
     Route::get('/barang/kadaluarsa', 'expired')->name('barang.kadaluarsa');
     Route::get('/barang/kadaluarsa/data', 'expiredData')->name('barang.kadaluarsa.data');
-    Route::get('/barang/habis', 'productEmpty')->name('barang.habis');
+
+    // Habis
+    Route::get('/barang/habis', 'empty')->name('barang.habis');
+    Route::get('/barang/habis/data', 'emptyData')->name('barang.habis.data');
+
+    // Cetak Harga
     Route::get('/barang/cetak-harga', 'printPrice')->name('barang.cetak-harga');
     Route::get('/barang/cetak-harga/data', 'printPriceData')->name('barang.cetak-harga.data');
     Route::put('/barang/cetak-harga/{product:idBarang}', 'updateFromPrintPrice')->name('product.print.price.update');

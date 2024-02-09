@@ -289,23 +289,46 @@ class ProductController extends Controller
     /**
      * Melihat produk yang stoknya kosong
      */
-    public function productEmpty()
+    public function empty()
     {
-        $title = 'POS TOKO | Laporan';
-
-        $setting = Toko::first();
-
-        $query = Product::where('stok', '<', 5)
-            ->orderBy('stok', 'asc');
-        $products = $query->get();
-        $countBarang = $query->count();
         $data = [
-            'setting' => $setting,
-            'title' => $title,
-            'products' => $products,
-            'countBarang' => $countBarang,
+            'setting' => Toko::first(),
+            'title' => 'POS TOKO | Barang Habis',
+            'categories' => Jenis::get(),
         ];
-        return view('report.empty', $data);
+        return view('product.empty', $data);
+    }
+
+    /**
+     * Mendapatkan data produk yang stoknya kosong
+     */
+    public function emptyData(Request $request)
+    {
+        $query = Product::select('IdBarang', 'nmBarang', 'expDate', 'stok')
+            ->when($request->filled('filterStock'), function ($query) use ($request) {
+                return $query->where('stok', '<=', $request->filterStock);
+            }, function ($query) {
+                return $query->where('stok', '<=', 0);
+            })
+            ->when($request->filled('filterName'), function ($query) use ($request) {
+                return $query->where('nmBarang', 'LIKE', '%' . $request->filterName . '%');
+            })
+            ->when($request->filled('filterCategory'), function ($query) use ($request) {
+                return $query->where('jenis', $request->filterCategory);
+            })
+            ->orderBy('nmBarang', 'asc')
+            ->limit(200);
+
+        $products = $query->get();
+        $countProduct = $query->count();
+
+        return ResponseFormatter::success(
+            [
+                'products' => $products,
+                'countProduct' => $countProduct
+            ],
+            'Data berhasil diambil'
+        );
     }
 
     /**

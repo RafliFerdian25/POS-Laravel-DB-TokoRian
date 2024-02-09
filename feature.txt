@@ -25,12 +25,6 @@ create barang habis
 update barang habis
 delete barang habis
 
-// CRUD tabel belanja barang
-✅ read belanja barang
-✅ store belanja barang
-update belanja barang
-delete belanja barang
-
 // CRUD tabel barang pernah kadaluarsa
 menambahkan tabel barang yang pernah kadaluarsa
 read barang pernah kadaluarsa
@@ -55,3 +49,9 @@ delete penjualan gas
 ✅ perubahan NULL pada tanggal kadaluarsa product
 ✅ mencetak harga
 ✅ grafik penjualan kategori bulanan
+
+// CRUD tabel belanja barang
+✅ read belanja barang
+✅ store belanja barang
+✅ update belanja barang
+✅ delete belanja barang
