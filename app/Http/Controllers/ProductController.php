@@ -8,7 +8,7 @@ use App\Models\Barcode;
 use App\Models\Category;
 use App\Models\Jenis;
 use App\Models\Merk;
-use App\Models\Satuan;
+use App\Models\Unit;
 use App\Models\Toko;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -136,7 +136,7 @@ class ProductController extends Controller
         $categories = Jenis::get();
         // $merks = Merk::orderBy('name')->get();
         $title = 'POS TOKO | Barang';
-        $units = Satuan::orderBy('satuan')->get();
+        $units = Unit::orderBy('satuan')->get();
         $data = [
             'product' => $product,
             'categories' => $categories,

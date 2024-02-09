@@ -4,11 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ResponseFormatter;
 use App\Models\Category;
-use App\Models\Merk;
 use App\Models\Product;
 use App\Models\WholesalePurchase;
-use App\Models\Supplier;
-use App\Models\User;
+use App\Models\Unit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -85,15 +83,23 @@ class WholesalePurchaseController extends Controller
         }
     }
 
-    public function createWholesalePurchaseDetails($id)
+    /**
+     * Edit the specified resource.
+     *
+     * @param  \App\Models\WholesalePurchase  $wholesalePurchase
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(WholesalePurchase $wholesalePurchase)
     {
-        $title = 'POS TOKO | Belanja';
-        $purchaseId = $id;
-        $categories = Category::get();
-        $merks = Merk::get();
-        $product = Product::orderBy('name')->get();
-        return view('purchase.create-purchase-details', compact('purchaseId', 'title', 'categories', 'merks', 'product'));
+        $units = Unit::orderBy('satuan')->get();
+        // dd($wholesalePurchase);
+
+        return ResponseFormatter::success([
+            'wholesalePurchaseProduct' => $wholesalePurchase,
+            'units' => $units
+        ], 'Data berhasil diambil');
     }
+
 
     /**
      * Update the specified resource in storage.
@@ -102,9 +108,36 @@ class WholesalePurchaseController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, WholesalePurchase $wholesalePurchase)
     {
-        //
+        $rules = [
+            'jumlah' => 'required|numeric|min:1',
+            'hargaPokok' => 'required|numeric|min:1',
+        ];
+
+        $validated = Validator::make($request->all(), $rules);
+
+        if ($validated->fails()) {
+            return ResponseFormatter::error([
+                'error' => $validated->errors()->first()
+            ], 'Data gagal divalidasi', 422);
+        }
+
+        try {
+            DB::beginTransaction();
+            $wholesalePurchase->update([
+                'jumlah' => $request->jumlah,
+                'hargaPokok' => $request->hargaPokok,
+                'TOTAL' => $request->jumlah * $request->hargaPokok
+            ]);
+            DB::commit();
+            return ResponseFormatter::success(null, 'Data berhasil diubah');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return ResponseFormatter::error([
+                'error' => $e->getMessage()
+            ], 'Data gagal diubah', 500);
+        }
     }
 
     /**

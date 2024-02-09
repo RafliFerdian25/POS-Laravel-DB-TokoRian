@@ -216,7 +216,8 @@
                                 product.hargaPokok,
                                 product.jumlah,
                                 product.total,
-                                `<button class="btn btn-danger rounded-pill px-3" onclick="deleteWholesalePurchaseProduct('${product.id}','${product.nmBarang}')"><i class="bi bi-trash"></button>`
+                                `<button class="btn btn-danger rounded-circle px-2" onclick="deleteWholesalePurchaseProduct('${product.id}','${product.nmBarang}')"><i class="bi bi-trash"></i></button>
+                                    <button class="btn btn-primary rounded-circle px-2" onclick="editWholesalePurchaseProduct('${product.id}')"><i class="bi bi-pencil"></i></button>`
                             ]).draw(false).node();
                         });
                     } else {
@@ -229,6 +230,196 @@
                         'barang'));
                 }
             });
+        }
+
+        // Menampilkan modal edit product
+        const editWholesalePurchaseProduct = (id) => {
+            // Mengisi konten modal dengan data yang sesuai
+            let modalContent = $('#modalMain .modal-content');
+
+            // mengirim request ajax
+            $.ajax({
+                type: "GET",
+                url: `{{ url('/belanja/${id}/edit') }}`,
+                success: function(response) {
+                    let formId = `formEditProduct${id}`;
+
+                    modalContent.html(`
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form id="${formId}">
+                            @method('PUT')
+                            @csrf
+                            <div class="modal-body">
+                                <div class="row mb-3">
+                                    <label for="IdBarang" class="col-sm-2 col-form-label">Kode Barang</label>
+                                    <div class="col-sm-10">
+                                        <input required value="${response.data.wholesalePurchaseProduct.IdBarang}" type="text"
+                                            class="form-control rounded__10" disabled
+                                            id="IdBarang" name="IdBarang" max="999999999999999" pattern="[0-9]*" inputmode="numeric">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="nmBarang" class="col-sm-2 col-form-label">Nama Barang</label>
+                                    <div class="col-sm-10">
+                                        <input required value="${response.data.wholesalePurchaseProduct.nmBarang}" type="text"
+                                            class="form-control rounded__10 " disabled
+                                            id="nmBarang" name="nmBarang" style="text-transform:uppercase">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="satuan" class="col-sm-2 col-form-label">Satuan</label>
+                                    <div class="col-sm-10">
+                                        <select required disabled
+                                            class="form-select rounded__10"
+                                            name="satuan" id="satuan" aria-label="Default select example">
+                                            ${response.data.units.map((unit) => {
+                                                return `<option value="${unit.satuan}" ${unit.satuan == response.data.wholesalePurchaseProduct.satuan ? "selected" : ""}>${unit.satuan}</option>`
+                                            })}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="hargaPokok" class="col-sm-2 col-form-label">Harga Pokok</label>
+                                    <div class="col-sm-10">
+                                        <input required value="${response.data.wholesalePurchaseProduct.hargaPokok}" type="number"
+                                            class="form-control rounded__10 "
+                                            min="0" id="hargaPokok" name="hargaPokok">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="jumlah" class="col-sm-2 col-form-label">jumlah</label>
+                                    <div class="col-sm-10">
+                                        <input required value="${response.data.wholesalePurchaseProduct.jumlah}" type="number"
+                                            class="form-control rounded__10 "
+                                            min="0" id="jumlah" name="jumlah">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                <button type="submit" id="updateButton" class="btn btn-primary">Simpan</button>
+                            </div>
+                        </form>
+                    `);
+
+                    // submit form
+                    $(`#${formId}`).validate({
+                        rules: {
+                            IdBarang: {
+                                required: true,
+                                maxlength: 15,
+                                minlength: 3,
+                                number: true
+                            },
+                            nmBarang: {
+                                required: true,
+                                maxlength: 50,
+                                minlength: 3,
+                            },
+                            satuan: {
+                                required: true,
+                            },
+                            hargaPokok: {
+                                required: true,
+                                number: true,
+                                min: 0
+                            },
+                            jumlah: {
+                                required: true,
+                                number: true,
+                                min: 0
+                            },
+                        },
+                        messages: {
+                            IdBarang: {
+                                required: "Kode barang tidak boleh kosong",
+                                maxlength: "Kode barang maksimal 15 karakter",
+                                minlength: "Kode barang minimal 3 karakter",
+                                number: "Kode barang harus berupa angka"
+                            },
+                            nmBarang: {
+                                required: "Nama barang tidak boleh kosong",
+                                maxlength: "Nama barang maksimal 50 karakter",
+                                minlength: "Nama barang minimal 3 karakter",
+                            },
+                            satuan: {
+                                required: "Satuan tidak boleh kosong",
+                            },
+                            hargaPokok: {
+                                required: "Harga pokok tidak boleh kosong",
+                                number: "Harga pokok harus berupa angka",
+                                min: "Harga pokok minimal 0"
+                            },
+                        },
+                        highlight: function(element) {
+                            $(element).closest('.form-group').removeClass('has-success')
+                                .addClass('has-error');
+                        },
+                        success: function(element) {
+                            $(element).closest('.form-group').removeClass('has-error');
+                        },
+                        submitHandler: function(form, event) {
+                            event.preventDefault();
+                            $('#updateButton').html(
+                                '<svg class="spinners-2" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;"><path d="M12 22c5.421 0 10-4.579 10-10h-2c0 4.337-3.663 8-8 8s-8-3.663-8-8c0-4.336 3.663-8 8-8V2C6.579 2 2 6.58 2 12c0 5.421 4.579 10 10 10z"></path></svg>'
+                            );
+                            $('#updateButton').prop('disabled', true);
+                            $.ajax({
+                                url: `{{ url('/belanja/${response.data.wholesalePurchaseProduct.id}') }}`,
+                                type: "POST",
+                                data: {
+                                    _method: 'PUT',
+                                    _token: '{{ csrf_token() }}',
+                                    IdBarang: $('#IdBarang').val(),
+                                    nmBarang: $('#nmBarang').val(),
+                                    satuan: $('#satuan').val(),
+                                    hargaPokok: $('#hargaPokok').val(),
+                                    jumlah: $('#jumlah').val(),
+                                },
+                                success: function(response) {
+                                    $('#updateButton').html('Update');
+                                    $('#updateButton').prop('disabled', false);
+                                    Swal.fire({
+                                            title: "Berhasil!",
+                                            text: response.meta.message,
+                                            icon: "success",
+                                            showCancelButton: false,
+                                            confirmButtonText: "Okay",
+                                            customClass: {
+                                                confirmButton: "btn btn-success"
+                                            },
+                                        })
+                                        .then(() => {
+                                            getWholesalePurchaseProduct();
+                                            // menutup modal
+                                            $('#modalMain').modal('hide');
+                                        });
+                                },
+                                error: function(xhr, status, error) {
+                                    $('#updateButton').html('Update');
+                                    $('#updateButton').prop('disabled', false);
+                                    if (xhr.responseJSON) {
+                                        errorAlert("Gagal!",
+                                            `Ubah Mesin Gagal. ${xhr.responseJSON.meta.message} Error: ${xhr.responseJSON.data.error}`
+                                        );
+                                    } else {
+                                        errorAlert("Gagal!",
+                                            `Terjadi kesalahan pada server. Error: ${xhr.responseText}`
+                                        );
+                                    }
+                                    return false;
+                                }
+                            });
+                        }
+                    })
+                }
+            });
+
+            // Menampilkan modal
+            $('#modalMain').modal('show');
         }
 
         const deleteWholesalePurchaseProduct = (id, name) => {
