@@ -19,12 +19,6 @@ create tabel barang
 update tabel barang
 delete tabel barang
 
-// CRUD tabel barang habis
-read barang habis
-create barang habis
-update barang habis
-delete barang habis
-
 // CRUD tabel barang pernah kadaluarsa
 menambahkan tabel barang yang pernah kadaluarsa
 read barang pernah kadaluarsa
@@ -55,3 +49,7 @@ delete penjualan gas
 ✅ store belanja barang
 ✅ update belanja barang
 ✅ delete belanja barang
+
+// CRUD tabel barang habis
+✅ read barang habis
+✅ update barang habis

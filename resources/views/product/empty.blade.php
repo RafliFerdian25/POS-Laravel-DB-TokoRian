@@ -88,7 +88,7 @@
         <!-- end barang terjual -->
 
         <!-- Barang Habis -->
-        <div class="expiredProductSection">
+        <div class="productSection">
             <div class="main-card mb-3 card">
                 <div class="card-body">
                     <h5 class="card-title text-center">Barang Habis</h5>
@@ -152,7 +152,7 @@
                                 product.nmBarang,
                                 product.stok,
                                 product.expDate,
-                                `<button class="btn btn-sm btn-warning" onclick="showEdit('${product.IdBarang}', 'expired')">Edit</button>`
+                                `<button class="btn btn-sm btn-warning" onclick="showEdit('${product.IdBarang}')">Edit</button>`
                             ];
                             var rowNode = $('#tableEmptyProduct').DataTable().row.add(rowData)
                                 .draw(

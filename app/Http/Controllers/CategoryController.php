@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use App\Models\Jenis;
+use App\Models\Category;
 use App\Models\Merk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -18,7 +18,7 @@ class CategoryController extends Controller
     public function index()
     {
         $title = 'POS TOKO | Kategori';
-        $categories = Jenis::withCount('products')->get();
+        $categories = Category::withCount('products')->get();
         $merks = Merk::all();
         return view('category.index', compact('categories', 'title', 'merks'));
     }
@@ -49,7 +49,7 @@ class CategoryController extends Controller
         ]);
 
         // menginput data ke table products
-        Jenis::create([
+        Category::create([
             'ID' => strtoupper($validated['id']),
             'jenis' => strtoupper($validated['id']),
             'keterangan' => $validated['name'],
@@ -97,7 +97,7 @@ class CategoryController extends Controller
         }
         $validated['id'] = strtoupper($validated['id']);
         // mengupdate data di table Categoriess
-        Jenis::whereId($id)->update($validated);
+        Category::whereId($id)->update($validated);
 
         // jika data berhasil ditambahkan, akan kembali ke halaman utama
         return redirect()->route('category.index')->with('success', 'Kategori berhasil diupdate');
@@ -110,7 +110,7 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        Jenis::destroy($id);
+        Category::destroy($id);
         return redirect()->route('category.index')->with('success', 'Kategori berhasil dihapus');
     }
 }

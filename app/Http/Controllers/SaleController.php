@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Barang;
-use App\Models\Jenis;
+use App\Models\Category;
 use App\Models\Kasir;
 use App\Models\Setting;
 use App\Models\Toko;

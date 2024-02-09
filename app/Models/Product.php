@@ -21,7 +21,7 @@ class Product extends Model
 
     public function type()
     {
-        return $this->belongsTo(Jenis::class, 'jenis', 'ID');
+        return $this->belongsTo(Category::class, 'jenis', 'ID');
     }
 
     public function merk()

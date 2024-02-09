@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ResponseFormatter;
 use App\Models\Barang;
-use App\Models\Jenis;
+use App\Models\Category;
 use App\Models\Kasir;
+use App\Models\Product;
 use App\Models\Toko;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -40,7 +41,7 @@ class ReportController extends Controller
             ->selectRaw('sum(total) as income, sum(laba) as profit, (select count(noUrut) from t_kasir where month(`tanggal`) = ' . $bulan . ' and year(`tanggal`) = ' . $tahun . ' and noUrut = 1) as total_transaction, sum(jumlah) as total_item')
             ->get();
 
-        $barangTerlaris = Kasir::selectRaw('nmBarang as namaBarang, sum(jumlah) as total, idBarang')
+        $productTerlaris = Kasir::selectRaw('nmBarang as namaBarang, sum(jumlah) as total, idBarang')
             ->whereMonth('tanggal', $bulan)
             ->whereYear('tanggal', $tahun)
             ->groupBy('namaBarang', 'idBarang')
@@ -48,7 +49,7 @@ class ReportController extends Controller
             ->limit(10)
             ->get();
 
-        $jenisTerlaris = Jenis::selectRaw('p_jenis.jenis, sum(t_kasir.jumlah) as total')
+        $jenisTerlaris = Category::selectRaw('p_jenis.jenis, sum(t_kasir.jumlah) as total')
             ->join('t_barang', 't_barang.jenis', '=', 'p_jenis.jenis')
             ->join('t_kasir', 't_kasir.idBarang', '=', 't_barang.idBarang')
             ->whereMonth('t_kasir.tanggal', $bulan)
@@ -63,7 +64,7 @@ class ReportController extends Controller
             'title' => $title,
             'report' => $report,
             'tanggal' => $tanggal,
-            'barangTerlaris' => $barangTerlaris,
+            'barangTerlaris' => $productTerlaris,
             'jenisTerlaris' => $jenisTerlaris,
         ];
         return view('report.financial', $data);
@@ -73,7 +74,7 @@ class ReportController extends Controller
     {
         $data = [
             'title' => 'Laporan Kategori',
-            'kategori' => Jenis::all()
+            'kategori' => Category::all()
         ];
 
         return view('report.category', $data);
@@ -83,7 +84,7 @@ class ReportController extends Controller
     {
         $date = Carbon::createFromFormat('Y-m', $request->reportDate);
 
-        $reports = Jenis::leftJoin('t_barang', function ($join) use ($date) {
+        $reports = Category::leftJoin('t_barang', function ($join) use ($date) {
             $join->on('p_jenis.jenis', '=', 't_barang.jenis')
                 ->leftJoin('t_kasir', 't_kasir.idBarang', '=', 't_barang.idBarang')
                 ->whereYear('t_kasir.tanggal', $date->year)
@@ -144,9 +145,9 @@ class ReportController extends Controller
         );
     }
 
-    public function laporanBarangBulanan(Request $request, Barang $barang)
+    public function laporanBarangBulanan(Request $request, Product $product)
     {
-        $barang->load('type');
+        $product->load('type');
         $title = 'POS TOKO | Laporan';
         if ($request->laporan_bulan == null) {
             $tanggal = date('Y-m');
@@ -160,27 +161,27 @@ class ReportController extends Controller
         $setting = Toko::first();
 
         $transactions = Kasir::selectRaw('tanggal, noTransaksi, jumlah, total, laba')
-            ->where('idBarang', $barang->IdBarang)
+            ->where('idBarang', $product->IdBarang)
             ->whereMonth('tanggal', $bulan)
             ->whereYear('tanggal', $tahun)
             ->orderBy('tanggal', 'desc')
             ->get();
 
-        $report = Kasir::where('idBarang', $barang->IdBarang)
+        $report = Kasir::where('idBarang', $product->IdBarang)
             ->whereMonth('tanggal', $bulan)
             ->whereYear('tanggal', $tahun)
             ->selectRaw('sum(total) as income, sum(laba) as profit, sum(jumlah) as total_item')
             ->first();
 
         $reportMonths = Kasir::selectRaw('MONTHNAME(tanggal) as month, sum(total) as income')
-            ->where('idBarang', $barang->IdBarang)
+            ->where('idBarang', $product->IdBarang)
             ->whereYear('tanggal', $tahun)
             ->groupBy('month')
             ->orderBy('tanggal', 'asc')
             ->get();
 
         $reportDays = Kasir::selectRaw('DATE_FORMAT(tanggal, "%d/%m/%Y") as day, sum(total) as income')
-            ->where('idBarang', $barang->IdBarang)
+            ->where('idBarang', $product->IdBarang)
             ->whereMonth('tanggal', $bulan)
             ->whereYear('tanggal', $tahun)
             ->groupBy('tanggal')
@@ -191,7 +192,7 @@ class ReportController extends Controller
             'setting' => $setting,
             'title' => $title,
             'tanggal' => $tanggal,
-            'barang' => $barang,
+            'barang' => $product,
             'transactions' => $transactions,
             'report' => $report,
             'reportMonths' => $reportMonths,

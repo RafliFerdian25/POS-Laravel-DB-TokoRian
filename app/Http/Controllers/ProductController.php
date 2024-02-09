@@ -6,7 +6,6 @@ use App\Helpers\ResponseFormatter;
 use App\Models\Product;
 use App\Models\Barcode;
 use App\Models\Category;
-use App\Models\Jenis;
 use App\Models\Merk;
 use App\Models\Unit;
 use App\Models\Toko;
@@ -26,35 +25,38 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $title = 'POS TOKO | Barang';
-        // $products = Product::Select("id", "name", "unit", "purchase_price", "selling_price", "wholesale_price", "stock", "expired_date")->get();
-        $products = Product::get();
+        $data = [
+            'setting' => Toko::first(),
+            'title' => 'POS TOKO | Barang',
+            'categories' => Category::get(),
+        ];
 
-        return view('product.product', compact('products', 'title'));
+        return view('product.product', $data);
     }
-    public function data()
+    public function data(Request $request)
     {
-        $product = Product::Select("id", "name", "unit", "purchase_price", "selling_price", "wholesale_price", "stock", "expired_date")->get();
-        $data = array();
-        foreach ($product as $item) {
-            $row = array();
-            $row['id'] = $item->id;
-            $row['name'] = $item->name;
-            $row['unit'] = $item->unit;
-            $row['purchase_price'] = $item->purchase_price;
-            $row['selling_price'] = $item->selling_price;
-            $row['wholesale_price'] = $item->wholesale_price;
-            $row['stock'] = $item->stock;
-            $row['expired_date'] = $item->expired_date;
-            $row['action'] = '<a href="' . route('barang.edit', $item->id) . '" class="btn btn-link btn-lg float-left px-0" id="' . $item->id . '"><i class="fa fa-edit"></i></a>
-                        <a href="#" onclick="deleteData(`' . route('barang.destroy', $item->id) . '`)" class="btn btn-link btn-lg float-right px-0 color__red1" id="' . $item->id . '"><i class="fa fa-trash"></i></a>';
+        $query = Product::when($request->filterName != null, function ($query) use ($request) {
+            return $query->where('nmBarang', 'LIKE', '%' . $request->filterName . '%');
+        })
+            ->when($request->filterBarcode != null, function ($query) use ($request) {
+                return $query->where('IdBarang', 'LIKE', '%' . $request->filterBarcode . '%');
+            })
+            ->when($request->filterCategory != null, function ($query) use ($request) {
+                return $query->where('jenis',  $request->filterCategory);
+            })
+            ->orderBy('nmBarang', 'asc')
+            ->limit(100);
 
-            $data[] = $row;
-        }
-        return DataTables::of($data)
-            ->addIndexColumn()
-            ->rawColumns(['action'])
-            ->make(true);
+        $products = $query->get();
+        $countProduct = $query->count();
+
+        return ResponseFormatter::success(
+            [
+                'products' => $products,
+                'countProduct' => $countProduct
+            ],
+            'Data berhasil diambil'
+        );
     }
 
     /**
@@ -89,10 +91,14 @@ class ProductController extends Controller
      */
     public function create()
     {
-        $title = 'POS TOKO | Barang';
-        $categories = Category::get();
-        $merks = Merk::orderBy('name')->get();
-        return view('product.create', compact('categories',  'merks', 'title'));
+        $data = [
+            'setting' => Toko::first(),
+            'title' => 'POS TOKO | Barang',
+            'categories' => Category::get(),
+            'merks' => Merk::orderBy('name')->get(),
+        ];
+
+        return view('product.create', $data);
     }
 
     /**
@@ -133,7 +139,7 @@ class ProductController extends Controller
     public function edit(Request $request, Product $product)
     {
         // menyeleksi data product berdasarkan id yang dipilih
-        $categories = Jenis::get();
+        $categories = Category::get();
         // $merks = Merk::orderBy('name')->get();
         $title = 'POS TOKO | Barang';
         $units = Unit::orderBy('satuan')->get();
@@ -248,8 +254,9 @@ class ProductController extends Controller
         $data = [
             'setting' => Toko::first(),
             'title' => 'POS TOKO | Laporan',
-            'categories' => Jenis::get(),
+            'categories' => Category::get(),
         ];
+
         return view('product.expired', $data);
     }
 
@@ -294,7 +301,7 @@ class ProductController extends Controller
         $data = [
             'setting' => Toko::first(),
             'title' => 'POS TOKO | Barang Habis',
-            'categories' => Jenis::get(),
+            'categories' => Category::get(),
         ];
         return view('product.empty', $data);
     }
