@@ -50,12 +50,9 @@
                                 is-invalid
                             @enderror"
                                     name="unit" aria-label="Default select example">
-                                    <option value="PCS">Pieces</option>
-                                    <option value="LSN">Lusin</option>
-                                    <option value="PAK">Pak</option>
-                                    <option value="BOX">Box</option>
-                                    <option value="DUS">Dus</option>
-                                    <option value="SCT">Sachet</option>
+                                    @foreach ($units as $unit)
+                                        <option value="{{ $unit->ID }}">{{ $unit->satuan }}</option>
+                                    @endforeach
                                 </select>
                                 @error('unit')
                                     <div class="invalid-feedback">
@@ -191,20 +188,11 @@
                         <div class="row mb-3">
                             <label for="merk" class="col-sm-2 col-form-label">Merk</label>
                             <div class="col-sm-10">
-                                <select required
-                                    class="form-select rounded__10 @error('merk_id')
-                                is-invalid
-                            @enderror"
-                                    name="merk_id" aria-label="Default select example">
-                                    @foreach ($merks as $merk)
-                                        <option value="{{ $merk->id }}">{{ $merk->name }}</option>
-                                    @endforeach
-                                </select>
-                                @error('merk_id')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                @enderror
+                                <div class="select2-input select2-info" style="width: 100%">
+                                    <select id="merk" name="merk" class="form-control rounded__10">
+                                        <option value="">&nbsp;</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                         <div class="submit text-end">
@@ -219,3 +207,75 @@
     </div>
     <!-- END Section layouts   -->
 @endsection
+
+
+@push('scripts')
+    @if (session('error'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: "{{ session('error') }}",
+                showConfirmButton: false,
+                timer: 1500
+            })
+        </script>
+    @endif
+
+    <script>
+        $(document).ready(function() {
+            $('#merk').select2({
+                theme: "bootstrap-5",
+                placeholder: 'Masukkan Nama atau Barcode Barang',
+                width: '100%',
+                allowClear: true,
+                minimumInputLength: 1, // Minimum characters required to start searching
+                language: {
+                    inputTooShort: function(args) {
+                        var remainingChars = args.minimum - args.input.length;
+                        return "Masukkan kata kunci setidaknya " + remainingChars + " karakter";
+                    },
+                    searching: function() {
+                        return "Sedang mengambil data...";
+                    },
+                    noResults: function() {
+                        return "Merk tidak ditemukan";
+                    },
+                    errorLoading: function() {
+                        return "Terjadi kesalahan saat memuat data";
+                    },
+                },
+                templateSelection: function(data, container) {
+                    if (data.id === '') {
+                        return data.text;
+                    }
+                    var match = data.text.match(/^(.*?) \(/);
+                    var resultName = match[1];
+
+                    return $('<span class="custom-selection">' + resultName + '</span>');
+                },
+                ajax: {
+                    url: "{{ route('merk.search.data') }}", // URL to fetch data from
+                    dataType: 'json', // Data type expected from the server
+                    processResults: function(response) {
+                        var merks = response.data.merks;
+                        var options = [];
+
+                        merks.forEach(function(merk) {
+                            options.push({
+                                id: merk.id, // Use the merk
+                                text: merk.name + ' (' + merk.description +
+                                    ')'
+                            });
+                        });
+
+                        return {
+                            results: options // Processed results with id and text properties
+                        };
+                    },
+                    cache: true, // Cache the results for better performance
+                }
+            })
+        });
+    </script>
+@endpush

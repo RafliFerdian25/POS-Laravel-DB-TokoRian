@@ -96,3 +96,8 @@ Route::controller(WholesalePurchaseController::class)->group(function () {
     Route::put('/belanja/{wholesalePurchase:id}', 'update')->name('wholesale.purchase.update');
     Route::delete('/belanja/{wholesalePurchase:id}', 'destroy')->name('wholesale.purchase.destroy');
 });
+
+// Merk
+Route::controller(MerkController::class)->group(function () {
+    Route::get('/merk/cari/data', 'searchData')->name('merk.search.data');
+});

@@ -96,6 +96,7 @@ class ProductController extends Controller
             'title' => 'POS TOKO | Barang',
             'categories' => Category::get(),
             'merks' => Merk::orderBy('name')->get(),
+            'units' => Unit::orderBy('satuan')->get(),
         ];
 
         return view('product.create', $data);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ResponseFormatter;
 use App\Models\Merk;
 use Illuminate\Http\Request;
 
@@ -75,5 +76,17 @@ class MerkController extends Controller
     {
         Merk::destroy($id);
         return redirect()->route('kategori.index')->with('success', 'Berhasil menghapus merk.');
+    }
+
+    /**
+     * Search data from storage.
+     */
+    public function searchData(Request $request)
+    {
+        $merks = Merk::where('name', 'like', '%' . $request->q . '%')->get();
+
+        return ResponseFormatter::success([
+            'merks' => $merks
+        ], 'Data berhasil diambil');
     }
 }

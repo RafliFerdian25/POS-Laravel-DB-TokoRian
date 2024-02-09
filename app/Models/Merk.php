@@ -11,11 +11,7 @@ class Merk extends Model
 
     protected $table = 'p_merk';
 
-    protected $primaryKey = 'ID';
-
-    protected $casts = [
-        'ID' => 'string',
-    ];
+    protected $primaryKey = 'id';
 
     public function products()
     {
