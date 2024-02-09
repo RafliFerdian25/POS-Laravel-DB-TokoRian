@@ -110,6 +110,7 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        dd($request->all());
         // menyeleksi data yang akan diinputkan
         $validated = $request->validate([
             'id' => 'required|unique:products',
