@@ -162,7 +162,8 @@
                                 product.stok,
                                 product.expDate,
                                 product.jenis,
-                                `<button class="btn btn-sm btn-warning" onclick="showEdit('${product.IdBarang}')">Edit</button>`
+                                `<button class="btn btn-sm btn-warning" onclick="showEdit('${product.IdBarang}')">Edit</button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteProduct('${product.ID}')"><i class="bi bi-trash"></i></button>`
                             ];
                             var rowNode = $('#tableProduct').DataTable().row.add(rowData)
                                 .draw(
@@ -438,6 +439,51 @@
 
             // Menampilkan modal
             $('#modalMain').modal('show');
+        }
+
+        const deleteProduct = (id) => {
+            Swal.fire({
+                title: 'Hapus Produk',
+                text: `Apakah Anda yakin ingin menghapus produk?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Hapus',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "DELETE",
+                        url: `{{ url('barang/${id}') }}`,
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                        },
+                        success: function(response) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil',
+                                text: 'Hapus Produk Berhasil',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                            getPrintPriceProduct();
+                        },
+                        error: function(xhr, ajaxOptions, thrownError) {
+                            if (xhr.responseJSON) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal',
+                                    text: `Hapus Produk Gagal. ${xhr.responseJSON.meta.message} Error: ${xhr.responseJSON.data.error}`,
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                })
+                            }
+                            return false;
+                        },
+                    });
+                }
+            })
         }
     </script>
 @endpush

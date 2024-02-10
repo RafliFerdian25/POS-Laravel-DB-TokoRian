@@ -31,7 +31,7 @@ class ProductController extends Controller
             'categories' => Category::get(),
         ];
 
-        return view('product.product', $data);
+        return view('product.index', $data);
     }
     public function data(Request $request)
     {
@@ -110,31 +110,67 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->all());
-        // menyeleksi data yang akan diinputkan
-        $validated = $request->validate([
-            'id' => 'required|unique:products',
-            'category_id' => 'required',
+        $rules = [
+            'IdBarang' => 'required|unique:t_barang',
+            'nmBarang' => 'required',
+            'satuan' => 'required',
+            'isi' => 'required',
+            'hargaPokok' => 'required|numeric|min:0|max:999999999',
+            'hargaJual' => 'required|numeric|min:0|max:999999999',
+            'hargaGrosir' => 'required|numeric|min:0|max:999999999',
+            'stok' => 'required|numeric|min:0',
+            'rak' => 'required|numeric|min:0',
+            'jenis' => 'required',
             'merk_id' => 'required',
-            'name' => 'required',
-            'unit' => 'required',
-            'contain' => 'required',
-            'discount' => 'required|numeric|min:0|max:999999999',
-            'purchase_price' => 'required|numeric|min:0|max:999999999',
-            'selling_price' => 'required|numeric|min:0|max:999999999',
-            'wholesale_price' => 'required|numeric|min:0|max:999999999',
-            'expired_date' => 'required',
-            'stock' => 'required',
-        ]);
+        ];
 
-        // dd($request->all());
+        $validated = Validator::make($request->all(), $rules);
 
-        // menginput data ke table products
-        // dd($validated);
-        Product::create($validated);
+        if ($validated->fails()) {
+            return ResponseFormatter::error(
+                [
+                    'error' => $validated->errors()->first()
+                ],
+                'Data gagal ditambahkan',
+                422
+            );
+        }
 
-        // jika data berhasil ditambahkan, akan kembali ke halaman utama
-        return redirect()->route('barang.index')->with('success', 'Barang created successfully.');
+        try {
+            DB::beginTransaction();
+            // menginput data ke table products
+            Product::create([
+                'IdBarang' => $request->IdBarang,
+                'nmBarang' => strtoupper($request->nmBarang),
+                'satuan' => $request->satuan,
+                'isi' => $request->isi,
+                'hargaPokok' => $request->hargaPokok,
+                'hargaJual' => $request->hargaJual,
+                'hargaGrosir' => $request->hargaGrosir,
+                'stok' => $request->stok,
+                'Rak' => $request->rak,
+                'jenis' => $request->jenis,
+                'merk_id' => $request->merk_id,
+                'expDate' => $request->expDate,
+            ]);
+
+            DB::commit();
+            return ResponseFormatter::success(
+                [
+                    'redirect' => route('barang.index')
+                ],
+                'Data berhasil ditambahkan'
+            );
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return ResponseFormatter::error(
+                [
+                    'error' => $e->getMessage()
+                ],
+                'Data gagal ditambahkan',
+                422
+            );
+        }
     }
 
 

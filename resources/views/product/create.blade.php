@@ -29,10 +29,10 @@
                         <div class="row mb-3">
                             <label for="satuan" class="col-sm-2 col-form-label">Satuan</label>
                             <div class="col-sm-10">
-                                <select required class="form-select rounded__10 " name="satuan"
+                                <select required class="form-select rounded__10 " name="satuan" id="satuan"
                                     aria-label="Default select example">
                                     @foreach ($units as $unit)
-                                        <option value="{{ $unit->ID }}">{{ $unit->satuan }}</option>
+                                        <option value="{{ $unit->satuan }}">{{ $unit->satuan }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -70,6 +70,13 @@
                             <div class="col-sm-10">
                                 <input required type="number" class="form-control rounded__10 " min="0"
                                     id="stok" name="stok">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="rak" class="col-sm-2 col-form-label">Rak</label>
+                            <div class="col-sm-10">
+                                <input required type="number" class="form-control rounded__10 " min="0"
+                                    id="rak" name="rak">
                             </div>
                         </div>
                         <div class="row mb-3">
@@ -224,6 +231,11 @@
                     number: true,
                     min: 0
                 },
+                rak: {
+                    required: true,
+                    number: true,
+                    min: 0
+                },
                 jenis: {
                     required: true,
                 },
@@ -271,6 +283,11 @@
                     number: "Stok harus berupa angka",
                     min: "Stok minimal 0"
                 },
+                rak: {
+                    required: "Rak tidak boleh kosong",
+                    number: "Rak harus berupa angka",
+                    min: "Rak minimal 0"
+                },
                 jenis: {
                     required: "Kategori tidak boleh kosong",
                 },
@@ -308,6 +325,7 @@
                         hargaJual: $('#hargaJual').val(),
                         hargaGrosir: $('#hargaGrosir').val(),
                         stok: $('#stok').val(),
+                        rak: $('#rak').val(),
                         expDate: $('#expDate').val(),
                         jenis: $('#jenis').val(),
                         merk_id: $('#merk_id').val(),
@@ -326,9 +344,10 @@
                                 },
                             })
                             .then(() => {
-                                getPrintPriceProduct();
                                 // menutup modal
                                 $('#modalMain').modal('hide');
+                                // redirect
+                                window.location.href = response.data.redirect;
                             });
                     },
                     error: function(xhr, status, error) {

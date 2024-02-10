@@ -83,7 +83,7 @@ class MerkController extends Controller
      */
     public function searchData(Request $request)
     {
-        $merks = Merk::where('name', 'like', '%' . $request->q . '%')->get();
+        $merks = Merk::where('merk', 'like', '%' . $request->q . '%')->get();
 
         return ResponseFormatter::success([
             'merks' => $merks
