@@ -129,6 +129,8 @@
             $("#tableEmptyProduct").DataTable({
                 pageLength: 10,
                 info: false,
+                responsive: true,
+                scrollX: true,
             });
 
             getEmptyProduct();

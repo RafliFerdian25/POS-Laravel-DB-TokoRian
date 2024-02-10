@@ -136,6 +136,8 @@
             $("#tableExpiredProduct").DataTable({
                 pageLength: 10,
                 info: false,
+                responsive: true,
+                scrollX: true,
             });
 
             getExpiredProduct();
