@@ -374,12 +374,16 @@
                                 min: "Harga grosir minimal 0"
                             },
                         },
+                        errorClass: "invalid-feedback",
                         highlight: function(element) {
-                            $(element).closest('.form-group').removeClass('has-success').addClass(
-                                'has-error');
+                            $(element).closest('.form-control').removeClass('valid')
+                                .addClass('is-invalid');
+                        },
+                        unhighlight: function(element) {
+                            $(element).closest('.form-control').removeClass('is-invalid');
                         },
                         success: function(element) {
-                            $(element).closest('.form-group').removeClass('has-error');
+                            $(element).closest('.form-control').removeClass('is-invalid');
                         },
                         submitHandler: function(form, event) {
                             event.preventDefault();

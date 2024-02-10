@@ -95,7 +95,7 @@ class ProductController extends Controller
             'setting' => Toko::first(),
             'title' => 'POS TOKO | Barang',
             'categories' => Category::get(),
-            'merks' => Merk::orderBy('name')->get(),
+            'merks' => Merk::orderBy('merk')->get(),
             'units' => Unit::orderBy('satuan')->get(),
         ];
 
