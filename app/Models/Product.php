@@ -14,6 +14,8 @@ class Product extends Model
     // tanpa ada timestamps
     public $timestamps = false;
 
+    protected $primaryKey = 'IdBarang';
+
     protected $guarded = [];
 
     protected $casts = [

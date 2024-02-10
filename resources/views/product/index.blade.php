@@ -53,7 +53,7 @@
             <div class="main-card mb-3 card">
                 <div class="card-body">
                     <h5 class="card-title text-center">Filter Barang</h5>
-                    <form id="formFilterProduct" method="GET" onsubmit="event.preventDefault(); getProduct();">
+                    <form id="formFilterProduct" method="GET" onsubmit="event.preventDefault(); getProducts();">
                         @csrf
                         <div class="modal-body">
                             <div class="row mb-3">
@@ -130,15 +130,18 @@
     @endif
     <script>
         $(document).ready(function() {
+            // datatable reponsive
             $("#tableProduct").DataTable({
                 pageLength: 10,
                 info: false,
+                responsive: true,
+                scrollX: true,
             });
 
-            getProduct();
+            getProducts();
         });
 
-        const getProduct = () => {
+        const getProducts = () => {
             $('#tableProduct').DataTable().clear().draw();
             $('#tableProductBody').html(tableLoader(11, `{{ asset('assets/svg/Ellipsis-2s-48px.svg') }}`));
 
@@ -163,7 +166,7 @@
                                 product.expDate,
                                 product.jenis,
                                 `<button class="btn btn-sm btn-warning" onclick="showEdit('${product.IdBarang}')">Edit</button>
-                                <button class="btn btn-sm btn-danger" onclick="deleteProduct('${product.ID}')"><i class="bi bi-trash"></i></button>`
+                                <button class="btn btn-sm btn-danger" onclick="deleteProduct('${product.IdBarang}', '${product.nmBarang}')"><i class="bi bi-trash"></i></button>`
                             ];
                             var rowNode = $('#tableProduct').DataTable().row.add(rowData)
                                 .draw(
@@ -412,7 +415,7 @@
                                             },
                                         })
                                         .then(() => {
-                                            getProduct();
+                                            getProducts();
                                             // menyembunyikan modal
                                             $('#modalMain').modal('hide');
                                         });
@@ -441,10 +444,10 @@
             $('#modalMain').modal('show');
         }
 
-        const deleteProduct = (id) => {
+        const deleteProduct = (id, name) => {
             Swal.fire({
                 title: 'Hapus Produk',
-                text: `Apakah Anda yakin ingin menghapus produk?`,
+                text: `Apakah Anda yakin ingin menghapus ${name}?`,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Hapus',
@@ -467,7 +470,7 @@
                                 showConfirmButton: false,
                                 timer: 1500
                             })
-                            getPrintPriceProduct();
+                            getProducts();
                         },
                         error: function(xhr, ajaxOptions, thrownError) {
                             if (xhr.responseJSON) {

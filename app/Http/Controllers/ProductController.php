@@ -275,13 +275,25 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Product $product)
     {
-        // menghapus data product berdasarkan id yang dipilih
-        Product::destroy($id);
-
-        // jika data berhasil dihapus, akan kembali ke halaman utama
-        return response(null, 200);
+        try {
+            DB::beginTransaction();
+            // menghapus data product berdasarkan id yang dipilih
+            $product->delete();
+            DB::commit();
+            // jika data berhasil dihapus, akan kembali ke halaman utama
+            return ResponseFormatter::success(null, 'Data berhasil dihapus');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return ResponseFormatter::error(
+                [
+                    'error' => $e->getMessage()
+                ],
+                'Terjadi kesalahan saat menghapus data',
+                500
+            );
+        }
     }
 
     /**

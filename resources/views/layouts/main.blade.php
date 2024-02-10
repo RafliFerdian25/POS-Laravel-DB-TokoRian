@@ -37,6 +37,11 @@
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
 
+    {{-- Datatable --}}
+    <link href="/DataTables/datatables.min.css" rel="stylesheet" />
+    <link href="/DataTables/DataTables-1.13.4/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <link href="/DataTables/Buttons-2.3.6/css/buttons.dataTables.min.css" rel="stylesheet" />
+    <link href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css" rel="stylesheet" />
 
 </head>
 
@@ -234,9 +239,11 @@
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous">
     </script>
     <!-- Datatable -->
-    <link href="/DataTables/datatables.min.css" rel="stylesheet" />
     <script src="/DataTables/datatables.min.js"></script>
+    <script src="/DataTables/DataTables-1.13.4/js/jquery.dataTables.min.js"></script>
     <script src="/DataTables/Buttons-2.3.6/js/dataTables.buttons.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js">
+
     {{-- toastr --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     {{-- Sweetalert --}}
