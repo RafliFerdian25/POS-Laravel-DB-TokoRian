@@ -313,11 +313,21 @@ class ProductController extends Controller
     public function expiredData(Request $request)
     {
         $query = Product::select('IdBarang', 'nmBarang', 'expDate', 'stok')
+            ->where('expDate', '!=', null)
             ->when($request->filterStartDate == null && $request->filterEndDate == null, function ($query) {
                 return $query->where('expDate', '<=', Carbon::now()->addDays(90));
             })
-            ->when($request->filterStartDate != null && $request->filterEndDate != null, function ($query) use ($request) {
-                return $query->whereBetween('expDate', [$request->filterStartDate, $request->filterEndDate]);
+            ->when($request->filterStartDate != null || $request->filterEndDate != null, function ($query) use ($request) {
+                $filterStartDate = $request->filterStartDate;
+                $filterEndDate = $request->filterEndDate;
+                if ($request->filterStartDate == null && $request->filterEndDate != null) {
+                    $filterStartDate = "0000-00-00";
+                    $filterEndDate = $request->filterEndDate;
+                } else if ($request->filterEndDate == null && $request->filterStartDate != null) {
+                    $filterEndDate = "9999-12-31";
+                    $filterStartDate = $request->filterStartDate;
+                }
+                return $query->whereBetween('expDate', [$filterStartDate, $filterEndDate]);
             })
             ->when($request->filterName != null, function ($query) use ($request) {
                 return $query->where('nmBarang', 'LIKE', '%' . $request->filterName . '%');

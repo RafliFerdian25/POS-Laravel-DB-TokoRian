@@ -301,7 +301,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                            <button type="submit" id="updateButton" class="btn btn-primary">Simpan</button>
+                            <button type="submit" id="updateButton" class="btn btn-primary">Ubah</button>
                         </div>
                         </form>
                     `);
