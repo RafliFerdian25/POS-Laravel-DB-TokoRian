@@ -174,6 +174,19 @@
             // Mengisi konten modal dengan data yang sesuai
             let modalContent = $('#modalMain .modal-content');
 
+            modalContent.html(`
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body d-flex justify-content-center align-items-center">
+                    <svg class="loader" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="25" height="25">
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="#3498db" stroke-width="5" stroke-dasharray="89 89" stroke-linecap="round">
+                            <animateTransform attributeName="transform" dur="1s" type="rotate" from="0 50 50" to="360 50 50" repeatCount="indefinite" />
+                        </circle>
+                    </svg>
+                </div>
+            `);
             // mengirim request ajax
             $.ajax({
                 type: "GET",

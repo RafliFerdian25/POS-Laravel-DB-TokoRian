@@ -35,12 +35,9 @@ class ProductController extends Controller
     }
     public function data(Request $request)
     {
-        $query = Product::when($request->filterName != null, function ($query) use ($request) {
-            return $query->where('nmBarang', 'LIKE', '%' . $request->filterName . '%');
+        $query = Product::when($request->filterProduct != null, function ($query) use ($request) {
+            return $query->where('nmBarang', 'LIKE', '%' . $request->filterProduct . '%')->orWhere('IdBarang', 'LIKE', '%' . $request->filterProduct . '%');
         })
-            ->when($request->filterBarcode != null, function ($query) use ($request) {
-                return $query->where('IdBarang', 'LIKE', '%' . $request->filterBarcode . '%');
-            })
             ->when($request->filterCategory != null, function ($query) use ($request) {
                 return $query->where('jenis',  $request->filterCategory);
             })

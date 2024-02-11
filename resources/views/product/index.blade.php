@@ -55,30 +55,37 @@
                     <h5 class="card-title text-center">Filter Barang</h5>
                     <form id="formFilterProduct" method="GET" onsubmit="event.preventDefault(); getProducts();">
                         @csrf
-                        <div class="modal-body">
-                            <div class="row mb-3">
-                                <label for="filterName" class="col-sm-2 col-form-label">Nama Barang</label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control rounded__10 " id="filterName"
-                                        name="filterName">
+                        <div class="modal-body row">
+                            <div class="col-md-6">
+                                <div class="row mb-3">
+                                    <label for="filterProduct" class="col-sm-2 col-form-label">Nama / Barcode</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control rounded__10 " id="filterProduct"
+                                            name="filterProduct" onkeyup="getProducts();">
+                                    </div>
+                                </div>
+                                <div class="row
+                                            mb-3">
+                                    <label for="filterCategory" class="col-sm-2 col-form-label">Kategori</label>
+                                    <div class="col-sm-10">
+                                        <select class="form-select rounded__10 " name="filterCategory"
+                                            aria-label="Default select example" onchange="getProducts();">
+                                            <option value="" selected>Pilih Kategori</option>
+                                            @foreach ($categories as $category)
+                                                <option value="{{ $category->ID }}">{{ $category->keterangan }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="row mb-3">
-                                <label for="filterCategory" class="col-sm-2 col-form-label">Kategori</label>
-                                <div class="col-sm-10">
-                                    <select class="form-select rounded__10 " name="filterCategory"
-                                        aria-label="Default select example">
-                                        <option value="" selected>Pilih Kategori</option>
-                                        @foreach ($categories as $category)
-                                            <option value="{{ $category->ID }}">{{ $category->keterangan }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
+                            <div class="col-md-6">
+                                <div id="qr-reader" height="250px"></div>
+                                <div id="qr-reader-results"></div>
                             </div>
                         </div>
-                        <div class="modal-footer">
+                        {{-- <div class="modal-footer">
                             <button type="submit" class="btn btn-primary">Cari</button>
-                        </div>
+                        </div> --}}
                     </form>
                 </div>
             </div>
@@ -186,6 +193,19 @@
             // Mengisi konten modal dengan data yang sesuai
             let modalContent = $('#modalMain .modal-content');
 
+            modalContent.html(`
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body d-flex justify-content-center align-items-center">
+                    <svg class="loader" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="25" height="25">
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="#3498db" stroke-width="5" stroke-dasharray="89 89" stroke-linecap="round">
+                            <animateTransform attributeName="transform" dur="1s" type="rotate" from="0 50 50" to="360 50 50" repeatCount="indefinite" />
+                        </circle>
+                    </svg>
+                </div>
+            `);
             // mengirim request ajax
             $.ajax({
                 type: "GET",
@@ -486,5 +506,38 @@
                 }
             })
         }
+
+        var resultContainer = document.getElementById('qr-reader-results');
+        var lastResult, countResults = 0;
+
+        function onScanSuccess(decodedText, decodedResult) {
+            if (!printPriceProduct.includes(decodedText) && lastResult !== decodedText) {
+                lastResult = decodedText;
+                ++countResults;
+                // Handle on success condition with the decoded message.
+                alert(decodedText)
+                $("#filterProduct").val(decodedText);
+                getProducts();
+            } else {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Gagal',
+                    text: 'Produk sudah ditambahkan',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            }
+        }
+
+        var html5QrcodeScanner = new Html5QrcodeScanner(
+            "qr-reader", {
+                fps: 10,
+                qrbox: {
+                    width: 200,
+                    height: 150
+                },
+                rememberLastUsedCamera: false,
+            });
+        html5QrcodeScanner.render(onScanSuccess);
     </script>
 @endpush
