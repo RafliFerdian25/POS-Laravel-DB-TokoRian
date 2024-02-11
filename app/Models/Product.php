@@ -19,7 +19,7 @@ class Product extends Model
     protected $guarded = [];
 
     protected $casts = [
-        'idBarang' => 'string',
+        'IdBarang' => 'string',
     ];
 
     public function type()

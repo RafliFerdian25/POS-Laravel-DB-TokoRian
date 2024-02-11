@@ -136,8 +136,6 @@
             $("#tableExpiredProduct").DataTable({
                 pageLength: 10,
                 info: false,
-                responsive: true,
-                scrollX: true,
             });
 
             getExpiredProduct();
@@ -161,7 +159,7 @@
                                 product.nmBarang,
                                 product.stok,
                                 product.expDate,
-                                `<button class="btn btn-sm btn-warning" onclick="showEdit('${product.IdBarang}', 'expired')">Edit</button>`
+                                `<button class="btn btn-sm btn-warning" onclick="showEdit('${product.IdBarang}')">Edit</button>`
                             ];
                             var rowNode = $('#tableExpiredProduct').DataTable().row.add(rowData)
                                 .draw(
@@ -179,7 +177,7 @@
             });
         }
 
-        function showEdit(idBarang, status) {
+        function showEdit(idBarang) {
             // Mengisi konten modal dengan data yang sesuai
             let modalContent = $('#modalMain .modal-content');
 
