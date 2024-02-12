@@ -100,6 +100,8 @@
             $('#tableWholesalePurchaseProduct').DataTable({
                 pageLength: 10,
                 info: false,
+                responsive: true,
+
             })
 
             $('#addProduct').select2({

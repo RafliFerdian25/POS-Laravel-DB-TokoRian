@@ -66,7 +66,7 @@
                                     <td>{{ $product->stok }}</td>
                                     <td>{{ $product->expDate }}</td>
                                     <td>
-                                        <a href="{{ route('barang.edit',[$product->IdBarang, "empty"]) }}"
+                                        <a href="{{ route('barang.edit', [$product->IdBarang, 'empty']) }}"
                                             class="btn btn-primary">Ubah</a>
                                     </td>
                                 </tr>

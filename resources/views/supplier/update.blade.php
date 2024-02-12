@@ -51,7 +51,7 @@
                                 is-invalid
                             @enderror"
                                     id="phone" name="phone"
-                                    value="@if ($errors->has('phone')){{ old('phone') }}@else{{ $supplier->phone }}@endif">
+                                    value="@if ($errors->has('phone')) {{ old('phone') }}@else{{ $supplier->phone }} @endif">
                                 @error('phone')
                                     <div class="invalid-feedback">
                                         {{ $message }}

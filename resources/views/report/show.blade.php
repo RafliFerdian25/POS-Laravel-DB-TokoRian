@@ -77,8 +77,8 @@
                         '_method': 'delete'
                     })
                     .done((response) => {
-                        $(`#index_`+ idLaporan).remove();
-                        alert('success') ;
+                        $(`#index_` + idLaporan).remove();
+                        alert('success');
                     })
                     .fail((errors) => {
                         alert('Tidak dapat menghapus data');
@@ -89,6 +89,5 @@
         $(function() {
             table = $('#table__laporan').DataTable();
         })
-
     </script>
 @endpush

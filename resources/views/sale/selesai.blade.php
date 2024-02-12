@@ -34,7 +34,7 @@
 
 @push('scripts')
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             if (confirm('Cetak nota?')) {
                 notaKecil('{{ route('transaksi.nota_kecil') }}', 'Nota Kecil');
                 window.location.href = '{{ route('penjualan.index') }}';

@@ -52,9 +52,8 @@
                             @enderror"
                                     name="unit" aria-label="Default select example">
                                     @foreach ($units as $unit)
-                                        <option value="{{ $unit['id'] }}" @if ( $unit['id'] == $product->unit)
-                                            selected
-                                        @endif>{{ $unit['name'] }}</option>
+                                        <option value="{{ $unit['id'] }}"
+                                            @if ($unit['id'] == $product->unit) selected @endif>{{ $unit['name'] }}</option>
                                     @endforeach
                                 </select>
                                 @error('unit')
@@ -178,9 +177,9 @@
                             @enderror"
                                     name="category_id" aria-label="Default select example">
                                     @foreach ($categories as $category)
-                                        <option value="{{ $category->id }}" @if ($category->id == $product->category_id)
-                                            selected
-                                            @endif>{{ $category->name }} </option>
+                                        <option value="{{ $category->id }}"
+                                            @if ($category->id == $product->category_id) selected @endif>{{ $category->name }}
+                                        </option>
                                     @endforeach
                                 </select>
                                 @error('category_id')
@@ -199,9 +198,9 @@
                             @enderror"
                                     name="merk_id" aria-label="Default select example">
                                     @foreach ($merks as $merk)
-                                        <option value="{{ $merk->id }}" @if ($merk->id == $product->merk_id)
-                                            selected
-                                            @endif>{{ $merk->name }} </option>
+                                        <option value="{{ $merk->id }}"
+                                            @if ($merk->id == $product->merk_id) selected @endif>{{ $merk->name }}
+                                        </option>
                                     @endforeach
                                 </select>
                                 @error('merk_id')

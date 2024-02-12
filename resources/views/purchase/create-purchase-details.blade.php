@@ -18,9 +18,8 @@
                                 <div class="input-group">
                                     <input type="text" class="form-control" name="id_produk" id="id_produk">
                                     <span class="input-group-btn">
-                                        <button onclick="tampilProduk()"
-                                            class="btn btn-info btn-flat tampilProdukCoba" type="button"><i
-                                                class="fa fa-arrow-right"></i></button>
+                                        <button onclick="tampilProduk()" class="btn btn-info btn-flat tampilProdukCoba"
+                                            type="button"><i class="fa fa-arrow-right"></i></button>
                                     </span>
                                 </div>
                             </div>
@@ -236,7 +235,6 @@
     </div>
     <!-- END Section layouts   -->
     @includeIf('sale.product')
-
 @endsection
 
 @push('scripts')
@@ -280,6 +278,5 @@
                 return;
             });
         }
-
     </script>
 @endpush

@@ -65,7 +65,7 @@
             <div class="main-card mb-3 card">
                 <div class="card-body">
                     <h5 class="card-title text-center">Daftar Barang</h5>
-                    <table class="mb-0 table" id="tableListProduct">
+                    <table class="display nowrap" style="width:100%" id="tableListProduct">
                         <thead>
                             <tr>
                                 <th>No</th>
@@ -112,6 +112,8 @@
             $("#tableListProduct").DataTable({
                 pageLength: 10,
                 info: false,
+                responsive: true,
+
             });
 
             $('#product').select2({

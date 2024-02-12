@@ -45,7 +45,7 @@
                         <div class="row mb-3">
                             <label for="phone" class="col-sm-2 col-form-label">Telepon</label>
                             <div class="col-sm-10">
-                                <input required value="{{ old('phone') }}" type="number" 
+                                <input required value="{{ old('phone') }}" type="number"
                                     class="form-control rounded__10 @error('phone')
                                 is-invalid
                             @enderror"

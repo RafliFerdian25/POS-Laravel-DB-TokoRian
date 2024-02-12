@@ -92,7 +92,7 @@
             <div class="main-card mb-3 card">
                 <div class="card-body">
                     <h5 class="card-title text-center">Barang Habis</h5>
-                    <table class="mb-0 table" id="tableEmptyProduct">
+                    <table class="display nowrap" style="width:100%" id="tableEmptyProduct">
                         <thead>
                             <tr>
                                 <th>Barcode</th>
@@ -129,6 +129,8 @@
             $("#tableEmptyProduct").DataTable({
                 pageLength: 10,
                 info: false,
+                responsive: true,
+
             });
 
             getEmptyProduct();

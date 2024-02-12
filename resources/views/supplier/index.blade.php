@@ -52,11 +52,17 @@
                                             <td>{{ $supplier->phone }}</td>
                                             <td>
                                                 <div class="d-flex justify-content-center">
-                                                    <a href="{{ route('supplier.edit', $supplier->id) }}" class="btn btn-link btn-lg float-left px-0"><i class="fa fa-edit"></i></a>
-                                                    <form action="{{ route('supplier.destroy', $supplier->id) }}" method="POST">
+                                                    <a href="{{ route('supplier.edit', $supplier->id) }}"
+                                                        class="btn btn-link btn-lg float-left px-0"><i
+                                                            class="fa fa-edit"></i></a>
+                                                    <form action="{{ route('supplier.destroy', $supplier->id) }}"
+                                                        method="POST">
                                                         @method('DELETE')
                                                         @csrf
-                                                        <button type="submit" onclick="return confirm('Yakin ingin menghapus supplier')" class="btn btn-link btn-lg float-right px-0 color__red1"><i class="fa fa-trash"></i></button>
+                                                        <button type="submit"
+                                                            onclick="return confirm('Yakin ingin menghapus supplier')"
+                                                            class="btn btn-link btn-lg float-right px-0 color__red1"><i
+                                                                class="fa fa-trash"></i></button>
                                                     </form>
                                                 </div>
                                             </td>

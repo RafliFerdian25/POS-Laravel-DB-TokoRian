@@ -53,9 +53,8 @@
                             @enderror"
                                     name="satuan" aria-label="Default select example">
                                     @foreach ($units as $unit)
-                                        <option value="{{ $unit['satuan'] }}" @if ( $unit['satuan'] == $product->satuan)
-                                            selected
-                                        @endif>{{ $unit['satuan'] }}</option>
+                                        <option value="{{ $unit['satuan'] }}"
+                                            @if ($unit['satuan'] == $product->satuan) selected @endif>{{ $unit['satuan'] }}</option>
                                     @endforeach
                                 </select>
                                 @error('satuan')
@@ -179,9 +178,9 @@
                             @enderror"
                                     name="jenis" aria-label="Default select example">
                                     @foreach ($categories as $category)
-                                        <option value="{{ $category->jenis }}" @if ($category->jenis == $product->jenis)
-                                            selected
-                                            @endif>{{ $category->jenis }} </option>
+                                        <option value="{{ $category->jenis }}"
+                                            @if ($category->jenis == $product->jenis) selected @endif>{{ $category->jenis }}
+                                        </option>
                                     @endforeach
                                 </select>
                                 @error('jenis')

@@ -99,7 +99,7 @@
             <div class="main-card mb-3 card">
                 <div class="card-body">
                     <h5 class="card-title text-center">Barang Kadaluarsa</h5>
-                    <table class="mb-0 table" id="tableExpiredProduct">
+                    <table id="tableExpiredProduct" class="display nowrap" style="width:100%">
                         <thead>
                             <tr>
                                 <th>Barcode</th>
@@ -136,6 +136,8 @@
             $("#tableExpiredProduct").DataTable({
                 pageLength: 10,
                 info: false,
+                responsive: true,
+
             });
 
             getExpiredProduct();

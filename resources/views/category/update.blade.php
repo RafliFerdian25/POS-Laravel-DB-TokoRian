@@ -16,7 +16,8 @@
                         <div class="row mb-3">
                             <label for="id" class="col-sm-2 col-form-label">ID Kategori</label>
                             <div class="col-sm-10">
-                                <input required value="{{ $category->id }}" type="text" maxlength="3" style="text-transform:uppercase"
+                                <input required value="{{ $category->id }}" type="text" maxlength="3"
+                                    style="text-transform:uppercase"
                                     class="form-control rounded__10 @error('id')
                                 is-invalid
                             @enderror"

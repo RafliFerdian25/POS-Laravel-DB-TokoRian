@@ -97,7 +97,7 @@
             <div class="main-card mb-3 card">
                 <div class="card-body">
                     <h5 class="card-title text-center">Barang</h5>
-                    <table class="mb-0 table" id="tableProduct">
+                    <table class="display nowrap" style="width:100%" id="tableProduct">
                         <thead>
                             <tr>
                                 <th>No</th>
@@ -141,6 +141,8 @@
             $("#tableProduct").DataTable({
                 pageLength: 10,
                 info: false,
+                responsive: true,
+
             });
 
             getProducts();
