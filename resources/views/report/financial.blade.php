@@ -18,10 +18,17 @@
                         <div class="row justify-content-center justify-content-lg-start">
                             <form action="" id="formBulan" class="col-6 col-lg-12">
                                 @csrf
-                                <input type="text" name="daterange" id="daterange" class="form-control mb-3">
-                                <input type="month" name="month" id="month" class="form-control mb-3"
-                                    @if ($typeReport == 'Bulanan') value="{{ $date }}" @endif
-                                    onchange="laporanBulanan()">
+                                <div class="row">
+                                    <label for="daterange" class="col">Rentang Tanggal :</label>
+                                    <input type="text" name="daterange" id="daterange" class="form-control mb-3 col">
+                                </div>
+
+                                <div class="row">
+                                    <label for="month" class="col">Bulan :</label>
+                                    <input type="month" name="month" id="month" class="form-control mb-3 col"
+                                        @if ($typeReport == 'Bulanan') value="{{ $date }}" @endif
+                                        onchange="laporanBulanan()">
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -143,7 +150,7 @@
                                         </td>
                                         <td class="text-center">{{ $jenis->total }}</td>
                                         <td class="text-center">
-                                            <a href="">
+                                            <a href="{{ route('report.category.detail', $jenis->jenis) }}">
                                                 <button type="button" id="PopoverCustomT-1" class="btn btn-primary btn-sm">
                                                     Details
                                                 </button>

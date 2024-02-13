@@ -142,6 +142,35 @@ class ReportController extends Controller
     }
 
     /**
+     * Laporan Detail Kategori 
+     */
+    public function categoryDetail(Category $category)
+    {
+        $data = [
+            'title' => 'Laporan Kategori',
+            'category' => $category,
+        ];
+
+        return view('report.categoryDetail', $data);
+    }
+
+    /**
+     * Mendapatkan data laporan detail kategori
+     */
+    public function getCategoryDetail(Request $request, Category $category)
+    {
+        $date = Carbon::parse($request->reportDate);
+
+        return ResponseFormatter::success(
+            [
+                'date' => $date,
+                'category' => $category,
+            ],
+            'Data kategori berhasil diambil'
+        );
+    }
+
+    /**
      * Melihat laporan penjualan produk 
      */
     public function monthlyProductReport()
