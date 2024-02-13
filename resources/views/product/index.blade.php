@@ -97,7 +97,7 @@
             <div class="main-card mb-3 card">
                 <div class="card-body">
                     <h5 class="card-title text-center">Barang</h5>
-                    <table class="display nowrap" style="width:100%" id="tableProduct">
+                    <table class="display nowrap" id="tableProduct">
                         <thead>
                             <tr>
                                 <th>No</th>
@@ -139,10 +139,7 @@
         $(document).ready(function() {
             // datatable reponsive
             $("#tableProduct").DataTable({
-                pageLength: 10,
-                info: false,
-                responsive: true,
-
+                scrollX: true,
             });
 
             getProducts();

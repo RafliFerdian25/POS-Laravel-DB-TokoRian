@@ -10,14 +10,18 @@
                         <i class="pe-7s-note2 icon-gradient bg-plum-plate">
                         </i>
                     </div>
-                    <div>Laporan Bulanan
+                    <div>Laporan {{ $typeReport }}
                         <div class="page-title-subheading">
-                            Laporan
+                            Laporan keuangan {{ $typeReport == 'Bulanan' ? 'Bulan' : 'Tanggal' }}
+                            <span class="fw-bold">{{ $dateString }}</span>
                         </div>
                         <div class="row justify-content-center justify-content-lg-start">
                             <form action="" id="formBulan" class="col-6 col-lg-12">
-                                <input type="month" name="laporan_bulan" id="laporan_bulan" class="form-control mb-3"
-                                    onchange="laporanBulanan(this)" value="{{ $tanggal }}">
+                                @csrf
+                                <input type="text" name="daterange" id="daterange" class="form-control mb-3">
+                                <input type="month" name="month" id="month" class="form-control mb-3"
+                                    @if ($typeReport == 'Bulanan') value="{{ $date }}" @endif
+                                    onchange="laporanBulanan()">
                             </form>
                         </div>
                     </div>
@@ -36,7 +40,7 @@
                             <div class="widget-heading col-10 widget__title">Total Pendapatan</div>
                         </div>
                         <div class="widget-content-right">
-                            <div class="widget-numbers mb-2"><span>Rp. {{ format_uang($report[0]->income) }}</span></div>
+                            <div class="widget-numbers mb-2"><span>Rp. {{ format_uang($report->income) }}</span></div>
                             <div class="perubahan row">
                                 {{-- <div class="widget-subheading col-10" id="total_pendapatan">
                                     -2000000
@@ -55,7 +59,7 @@
                             <div class="widget-heading col-10 widget__title">Total Keuntungan</div>
                         </div>
                         <div class="widget-content-right">
-                            <div class="widget-numbers mb-2"><span>Rp {{ format_uang($report[0]->profit) }}</span></div>
+                            <div class="widget-numbers mb-2"><span>Rp {{ format_uang($report->profit) }}</span></div>
                             <div class="change row" id="change">
                                 {{-- <div class="widget-subheading col-10" id="total_keuntungan">
                                     2000000
@@ -74,7 +78,7 @@
                             <div class="widget-heading col-10 widget__title">Total Order</div>
                         </div>
                         <div class="widget-content-right">
-                            <div class="widget-numbers mb-2"><span>{{ format_uang($report[0]->total_transaction) }}</span>
+                            <div class="widget-numbers mb-2"><span>{{ format_uang($report->total_transaction) }}</span>
                             </div>
                             <div class="change row" id="change">
                                 {{-- <div class="widget-subheading col-10" id="total_order">
@@ -94,7 +98,7 @@
                             <div class="widget-heading col-10 widget__title">Total Barang Terjual</div>
                         </div>
                         <div class="widget-content-right">
-                            <div class="widget-numbers mb-2"><span>{{ format_uang($report[0]->total_item) }}</span></div>
+                            <div class="widget-numbers mb-2"><span>{{ format_uang($report->total_item) }}</span></div>
                             <div class="change row" id="change">
                                 {{-- <div class="widget-subheading col-10" id="total_barang">
                                     -8
@@ -190,7 +194,8 @@
                                         <td class="text-center">{{ $barang->total }}</td>
                                         <td class="text-center">
                                             <a href="{{ route('laporan.barang.bulanan', $barang->idBarang) }}">
-                                                <button type="button" id="PopoverCustomT-1" class="btn btn-primary btn-sm">
+                                                <button type="button" id="PopoverCustomT-1"
+                                                    class="btn btn-primary btn-sm">
                                                     Details
                                                 </button>
                                             </a>
@@ -257,10 +262,32 @@
             });
         });
 
-        function laporanBulanan(input) {
-            let formBulan = $("#formBulan");
-            formBulan.submit();
-            // Upload log ke server
+        function laporanBulanan() {
+            $("#daterange").val(null);
+            $("#formBulan").submit();
         }
+
+        $(function() {
+            $('#daterange').daterangepicker({
+                opens: 'right',
+                maxDate: moment(),
+            });
+
+            @if ($typeReport == 'Harian')
+                $('#daterange').data('daterangepicker').setStartDate(moment('{{ $date[0] }}', 'YYYY-MM-DD')
+                    .format('MM/DD/YYYY'));
+                $('#daterange').data('daterangepicker').setEndDate(moment('{{ $date[1] }}', 'YYYY-MM-DD')
+                    .format('MM/DD/YYYY'));
+            @else
+                $('#daterange').val(null);
+            @endif
+
+            $('#daterange').on('apply.daterangepicker', function(ev, picker) {
+                $("#daterange").val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format(
+                    'YYYY-MM-DD'));
+                $("#month").val(null);
+                $("#formBulan").submit();
+            });
+        });
     </script>
 @endpush

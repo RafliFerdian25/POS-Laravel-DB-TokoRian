@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\FormatDate;
 use App\Helpers\ResponseFormatter;
 use App\Models\Barang;
 use App\Models\Category;
@@ -20,30 +21,61 @@ class ReportController extends Controller
     public function ReportSaleMonthly(Request $request)
     {
         $title = 'POS TOKO | Laporan';
-        if ($request->laporan_bulan == null) {
-            $tanggal = date('Y-m');
-        } else {
-            // $tanggal = explode("-",$request->laporan_bulan);
-            $tanggal = date('Y-m', strtotime($request->laporan_bulan));
+        $typeReport = null;
+        $date = null;
+        $startDate = null;
+        $endDate = null;
+        if ($request->daterange == null && $request->month == null) {
+            $date = Carbon::now();
+            $typeReport = "Bulanan";
+        } elseif ($request->daterange != null) {
+            $daterange = explode(' - ', $request->daterange);
+            $startDate = Carbon::parse($daterange[0]);
+            $endDate = Carbon::parse($daterange[1]);
+            $typeReport = "Harian";
+        } elseif ($request->month != null) {
+            $date = Carbon::parse($request->month);
+            $typeReport = "Bulanan";
         }
-        $tahun = Carbon::parse($tanggal)->format('Y');
-        $bulan = Carbon::parse($tanggal)->format('m');
 
         $setting = Toko::first();
         $transactions = Kasir::selectRaw('noTransaksi, max(tanggal) as tanggal, sum(total) as total, sum(laba) as laba, sum(jumlah) as jumlah')
-            ->whereMonth('tanggal', $bulan)
-            ->whereYear('tanggal', $tahun)
+            ->when($typeReport == 'Bulanan', function ($query) use ($date) {
+                return $query->whereMonth('tanggal', $date->month)
+                    ->whereYear('tanggal', $date->year);
+            })
+            ->when($typeReport == 'Harian', function ($query) use ($startDate, $endDate) {
+                return $query->whereBetween('tanggal', [$startDate, $endDate]);
+            })
             ->orderBy('noTransaksi', 'desc')
             ->groupBy('noTransaksi')
             ->get();
-        $report = Kasir::whereMonth('tanggal', $bulan)
-            ->whereYear('tanggal', $tahun)
-            ->selectRaw('sum(total) as income, sum(laba) as profit, (select count(noUrut) from t_kasir where month(`tanggal`) = ' . $bulan . ' and year(`tanggal`) = ' . $tahun . ' and noUrut = 1) as total_transaction, sum(jumlah) as total_item')
-            ->get();
+
+        $report = Kasir::selectRaw('sum(total) as income, sum(laba) as profit, COUNT(noUrut) as total_transaction, sum(jumlah) as total_item')
+            ->when($typeReport == 'Bulanan', function ($query) use ($date) {
+                return $query->whereMonth('tanggal', $date->month)
+                    ->whereYear('tanggal', $date->year);
+            })
+            ->when($typeReport == 'Harian', function ($query) use ($startDate, $endDate) {
+                return $query->whereBetween('tanggal', [$startDate, $endDate]);
+            })
+            ->first();
+
+        // Jika report tidak kosong, menghitung total transaksi
+        if (!$report->isEmpty) {
+            $report->total_transaction = (int)$report->total_transaction;
+        } else {
+            $report->total_transaction = 0;
+        }
 
         $productTerlaris = Kasir::selectRaw('nmBarang as namaBarang, sum(jumlah) as total, idBarang')
-            ->whereMonth('tanggal', $bulan)
-            ->whereYear('tanggal', $tahun)
+            ->when($typeReport == 'Bulanan', function ($query) use ($date) {
+                return $query->whereMonth('tanggal', $date->month)
+                    ->whereYear('tanggal', $date->year);
+            })
+            ->when($typeReport == 'Harian', function ($query) use ($startDate, $endDate) {
+                return $query->whereBetween('tanggal', [$startDate, $endDate]);
+            })
             ->groupBy('namaBarang', 'idBarang')
             ->orderBy('total', 'desc')
             ->limit(10)
@@ -52,8 +84,13 @@ class ReportController extends Controller
         $jenisTerlaris = Category::selectRaw('p_jenis.jenis, sum(t_kasir.jumlah) as total')
             ->join('t_barang', 't_barang.jenis', '=', 'p_jenis.jenis')
             ->join('t_kasir', 't_kasir.idBarang', '=', 't_barang.idBarang')
-            ->whereMonth('t_kasir.tanggal', $bulan)
-            ->whereYear('t_kasir.tanggal', $tahun)
+            ->when($typeReport == 'Bulanan', function ($query) use ($date) {
+                return $query->whereMonth('tanggal', $date->month)
+                    ->whereYear('tanggal', $date->year);
+            })
+            ->when($typeReport == 'Harian', function ($query) use ($startDate, $endDate) {
+                return $query->whereBetween('tanggal', [$startDate, $endDate]);
+            })
             ->groupBy('jenis')
             ->orderBy('total', 'desc')
             ->get();
@@ -63,7 +100,9 @@ class ReportController extends Controller
             'transactions' => $transactions,
             'title' => $title,
             'report' => $report,
-            'tanggal' => $tanggal,
+            'typeReport' => $typeReport,
+            'dateString' => $typeReport == 'Bulanan' ? FormatDate::month($date->month) : $startDate->copy()->format('d M Y') . ' - ' . $endDate->copy()->format('d M Y'),
+            'date' => $typeReport == 'Bulanan' ? $date->format('Y-m') : $daterange,
             'barangTerlaris' => $productTerlaris,
             'jenisTerlaris' => $jenisTerlaris,
         ];

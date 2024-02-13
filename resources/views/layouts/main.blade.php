@@ -27,6 +27,9 @@
     {{-- Chart JS --}}
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.min.js"></script>
 
+    {{-- Daterangepicker --}}
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
     {{-- Toastr --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
@@ -264,6 +267,9 @@
 
     {{-- Chart JS --}}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    {{-- Daterangepicker --}}
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
     <!-- JS -->
     <script type="text/javascript" src="{{ asset('assets/scripts/main.js') }}"></script>
