@@ -271,22 +271,52 @@
             $('#daterange').daterangepicker({
                 opens: 'right',
                 maxDate: moment(),
+                ranges: {
+                    'Hari Ini': [moment(), moment()],
+                    'Kemarin': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    '7 Hari Terakhir': [moment().subtract(6, 'days'), moment()],
+                    '30 Hari Terakhir': [moment().subtract(29, 'days'), moment()],
+                    'Bulan Ini': [moment().startOf('month'), moment().endOf('month')],
+                    'Bulan Kemarin': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1,
+                        'month').endOf('month')],
+                    'Tahun Ini': [moment().startOf('year'), moment().endOf('year')],
+                    'Tahun Kemarin': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1,
+                        'year').endOf('year')],
+                },
+                locale: {
+                    format: 'DD/MM/YYYY',
+                    separator: ' - ',
+                    applyLabel: 'Pilih',
+                    cancelLabel: 'Batal',
+                    fromLabel: 'Dari',
+                    toLabel: 'Ke',
+                    customRangeLabel: 'Custom',
+                    weekLabel: 'W',
+                    daysOfWeek: ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'],
+                    monthNames: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli',
+                        'Agustus', 'September', 'Oktober', 'November', 'Desember'
+                    ],
+                    firstDay: 1
+                }
             });
 
             @if ($typeReport == 'Harian')
                 $('#daterange').data('daterangepicker').setStartDate(moment('{{ $date[0] }}', 'YYYY-MM-DD')
-                    .format('MM/DD/YYYY'));
+                    .format('DD/MM/YYYY'));
                 $('#daterange').data('daterangepicker').setEndDate(moment('{{ $date[1] }}', 'YYYY-MM-DD')
-                    .format('MM/DD/YYYY'));
+                    .format('DD/MM/YYYY'));
             @else
                 $('#daterange').val(null);
             @endif
 
             $('#daterange').on('apply.daterangepicker', function(ev, picker) {
-                $("#daterange").val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format(
+                $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format(
                     'YYYY-MM-DD'));
                 $("#month").val(null);
                 $("#formBulan").submit();
+            });
+            $('#daterange').on('cancel.daterangepicker', function(ev, picker) {
+                $(this).val(null);
             });
         });
     </script>
