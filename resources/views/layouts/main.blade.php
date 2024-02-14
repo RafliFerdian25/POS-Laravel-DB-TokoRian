@@ -268,6 +268,9 @@
     {{-- Chart JS --}}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    {{-- Highchart --}}
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+
     {{-- Daterangepicker --}}
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
@@ -287,6 +290,7 @@
     <script src="{{ asset('assets/js/loader.js') }}"></script>
     <script src="{{ asset('assets/js/empty.js') }}"></script>
     <script src="{{ asset('assets/js/customAlert.js') }}"></script>
+    <script src="{{ asset('assets/js/utilities.js') }}"></script>
 
     @stack('scripts')
 </body>
