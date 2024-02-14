@@ -198,7 +198,7 @@ class ReportController extends Controller
             $report->total_transaction = 0;
         }
 
-        $bestSellingProducts = Kasir::selectRaw('nmBarang as name, sum(jumlah) as total, id')
+        $bestSellingProducts = Kasir::selectRaw('nmBarang as name, sum(jumlah) as total, idBarang')
             ->whereHas('product', function ($query) use ($category) {
                 $query->where('jenis', $category->jenis);
             })
@@ -209,12 +209,12 @@ class ReportController extends Controller
             ->when($typeReport == 'Harian', function ($query) use ($startDate, $endDate) {
                 return $query->whereBetween('tanggal', [$startDate, $endDate]);
             })
-            ->groupBy('name', 'id')
+            ->groupBy('name', 'idBarang')
             ->orderBy('total', 'desc')
             ->limit(10)
             ->get();
 
-        $transactions = Kasir::selectRaw('max(tanggal) as tanggal, sum(total) as total, sum(laba) as laba, sum(jumlah) as jumlah')
+        $transactionsByDate = Kasir::selectRaw('max(tanggal) as tanggal, sum(total) as total, sum(laba) as profit, sum(jumlah) as jumlah')
             ->whereHas('product', function ($query) use ($category) {
                 $query->where('jenis', $category->jenis);
             })
@@ -225,8 +225,20 @@ class ReportController extends Controller
             ->when($typeReport == 'Harian', function ($query) use ($startDate, $endDate) {
                 return $query->whereBetween('tanggal', [$startDate, $endDate]);
             })
-            ->orderBy('noTransaksi', 'asc')
             ->groupBy('tanggal')
+            ->orderBy('tanggal', 'asc')
+            ->get();
+
+        $transactionsByNoTransaction = Kasir::selectRaw('noTransaksi, max(tanggal) as tanggal, sum(total) as total, sum(laba) as profit, sum(jumlah) as jumlah')
+            ->when($typeReport == 'Bulanan', function ($query) use ($date) {
+                return $query->whereMonth('tanggal', $date->month)
+                    ->whereYear('tanggal', $date->year);
+            })
+            ->when($typeReport == 'Harian', function ($query) use ($startDate, $endDate) {
+                return $query->whereBetween('tanggal', [$startDate, $endDate]);
+            })
+            ->orderBy('tanggal', 'asc')
+            ->groupBy('noTransaksi')
             ->get();
 
         return ResponseFormatter::success(
@@ -237,7 +249,8 @@ class ReportController extends Controller
                 'report' => $report,
                 'typeReport' => $typeReport,
                 'bestSellingProducts' => $bestSellingProducts,
-                'transactions' => $transactions
+                'transactionsByDate' => $transactionsByDate,
+                'transactionsByNoTransaction' => $transactionsByNoTransaction,
             ],
             'Data kategori berhasil diambil'
         );

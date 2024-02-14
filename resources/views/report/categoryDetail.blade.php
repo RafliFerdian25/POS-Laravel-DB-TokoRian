@@ -184,13 +184,37 @@
         {{-- END Terlaris --}}
         <!-- END CARD DASHBOARD -->
 
+        <!-- Barang Terjual -->
+        <div class="productSaleTransactionSection">
+            <div class="main-card mb-3 card">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Riwayat Penjualan</h5>
+                    <table class="mb-0 table" id="tableProductSaleTransaction">
+                        <thead>
+                            <tr>
+                                <th>No. Transaksi</th>
+                                <th>Tanggal</th>
+                                <th>Total Item</th>
+                                <th>Total Harga</th>
+                                <th>Keuntungan</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableProductSaleTransactionBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- end barang terjual -->
+
     </div>
 @endsection
 
 @push('scripts')
     <script>
         $(document).ready(function() {
-            $("#laporan_bulanan").DataTable({
+            $("#tableProductSaleTransaction").DataTable({
                 pageLength: 3,
                 paging: false,
                 info: false,
@@ -267,6 +291,7 @@
                     $('#total_product').text(response.data.report.total_product);
                     $('#tableBestSellingProducts tbody').empty();
 
+                    // table data barang terjual terbaik
                     response.data.bestSellingProducts.forEach((item, index) => {
                         $('#tableBestSellingProducts tbody').append(`
                         <tr>
@@ -292,10 +317,6 @@
                     `);
                     });
 
-                    let dataTotal = response.data.transactions.map(transaction => parseInt(transaction
-                        .total))
-                    console.log(dataTotal);
-
                     // chart
                     Highcharts.chart('chartReport', {
                         title: {
@@ -319,8 +340,9 @@
                                 text: 'Tanggal'
                             },
                             type: 'datetime', // Menggunakan tipe datetime
-                            categories: response.data.transactions.map(transaction => Date.parse(
-                                transaction.tanggal)), // Mengonversi tanggal ke timestamp
+                            categories: response.data.transactionsByDate.map(transaction => Date
+                                .parse(
+                                    transaction.tanggal)), // Mengonversi tanggal ke timestamp
                             accessibility: {
                                 rangeDescription: 'Date'
                             },
@@ -339,19 +361,16 @@
 
                         series: [{
                             name: 'Total Pendapatan',
-                            data: response.data.transactions.map(transaction => parseInt(
-                                transaction
-                                .total)),
+                            data: response.data.transactionsByDate.map(transaction =>
+                                parseInt(
+                                    transaction
+                                    .total)),
                         }, {
                             name: 'Total Keuntungan',
-                            data: response.data.transactions.map(transaction => parseInt(
-                                transaction
-                                .profit))
-                        }, {
-                            name: 'Jumlah Barang Terjual',
-                            data: response.data.transactions.map(transaction => parseInt(
-                                transaction
-                                .jumlah))
+                            data: response.data.transactionsByDate.map(transaction =>
+                                parseInt(
+                                    transaction
+                                    .profit))
                         }],
 
                         responsive: {
@@ -370,6 +389,32 @@
                         }
                     });
 
+                    // table data barang terjual
+                    $('#tableProductSaleTransactionBody').empty();
+                    console.log(response.data.transactionsByNoTransaction);
+                    if (response.data.transactionsByNoTransaction.length > 0) {
+                        $.each(response.data.transactionsByNoTransaction, function(index, transaction) {
+                            var rowData = [
+                                transaction.noTransaksi,
+                                transaction.tanggal,
+                                transaction.jumlah,
+                                transaction.total,
+                                transaction.profit,
+                                `<button class="btn btn-sm btn-warning" onclick="showEdit('${transaction.noTransaksi}')">Detail</button>`
+                            ];
+                            var rowNode = $('#tableProductSaleTransaction').DataTable().row.add(
+                                    rowData)
+                                .draw(
+                                    false)
+                                .node();
+
+                            // $(rowNode).find('td').eq(0).addClass('text-center');
+                            // $(rowNode).find('td').eq(4).addClass('text-center text-nowrap');
+                        });
+                    } else {
+                        $('#tableProductSaleTransactionBody').html(tableEmpty(5,
+                            'barang kadaluarsa'));
+                    }
                 }
             });
         };
