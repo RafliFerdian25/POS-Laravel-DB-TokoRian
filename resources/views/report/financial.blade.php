@@ -76,19 +76,19 @@
                     </div>
                 </div>
             </div>
-            <!-- total order -->
+            <!-- total Transaksi -->
             <div class="col-sm-6 col-md-4 col-xl-3 p-3">
                 <div class="card mb-0 widget-content row">
                     <div class="content">
                         <div class="widget-content-left row mb-2">
                             <i class="pe-7s-news-paper col-2" style="font-size: 30px;"></i>
-                            <div class="widget-heading col-10 widget__title">Total Order</div>
+                            <div class="widget-heading col-10 widget__title">Total Transaksi</div>
                         </div>
                         <div class="widget-content-right">
                             <div class="widget-numbers mb-2"><span>{{ format_uang($report->total_transaction) }}</span>
                             </div>
                             <div class="change row" id="change">
-                                {{-- <div class="widget-subheading col-10" id="total_order">
+                                {{-- <div class="widget-subheading col-10" id="total_Transaksi">
                                     -20
                                 </div> --}}
                             </div>

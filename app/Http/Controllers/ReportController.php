@@ -51,7 +51,7 @@ class ReportController extends Controller
             ->groupBy('noTransaksi')
             ->get();
 
-        $report = Kasir::selectRaw('sum(total) as income, sum(laba) as profit, COUNT(noUrut) as total_transaction, sum(jumlah) as total_item')
+        $report = Kasir::selectRaw('sum(total) as income, sum(laba) as profit, COUNT(DISTINCT noTransaksi) as total_transaction, sum(jumlah) as total_item')
             ->when($typeReport == 'Bulanan', function ($query) use ($date) {
                 return $query->whereMonth('tanggal', $date->month)
                     ->whereYear('tanggal', $date->year);
@@ -178,7 +178,7 @@ class ReportController extends Controller
             $typeReport = "Bulanan";
         }
 
-        $report = Kasir::selectRaw('sum(total) as income, sum(laba) as profit, COUNT(noUrut) as total_transaction, sum(jumlah) as total_product')
+        $report = Kasir::selectRaw('sum(total) as income, sum(laba) as profit, COUNT(DISTINCT noTransaksi) as total_transaction, sum(jumlah) as total_product')
             ->whereHas('product', function ($query) use ($category) {
                 $query->where('jenis', $category->jenis);
             })
@@ -214,7 +214,7 @@ class ReportController extends Controller
             ->limit(10)
             ->get();
 
-        $transactionsByDate = Kasir::selectRaw('max(tanggal) as tanggal, sum(total) as total, sum(laba) as profit, sum(jumlah) as jumlah')
+        $transactionsByDate = Kasir::selectRaw('tanggal, sum(total) as total, sum(laba) as profit, sum(jumlah) as jumlah')
             ->whereHas('product', function ($query) use ($category) {
                 $query->where('jenis', $category->jenis);
             })
@@ -229,7 +229,10 @@ class ReportController extends Controller
             ->orderBy('tanggal', 'asc')
             ->get();
 
-        $transactionsByNoTransaction = Kasir::selectRaw('noTransaksi, max(tanggal) as tanggal, sum(total) as total, sum(laba) as profit, sum(jumlah) as jumlah')
+        $transactionsByNoTransaction = Kasir::selectRaw('noTransaksi, max(tanggal) as tanggal, sum(total) as income, sum(laba) as profit, sum(jumlah) as total_product')
+            ->whereHas('product', function ($query) use ($category) {
+                $query->where('jenis', $category->jenis);
+            })
             ->when($typeReport == 'Bulanan', function ($query) use ($date) {
                 return $query->whereMonth('tanggal', $date->month)
                     ->whereYear('tanggal', $date->year);
@@ -237,8 +240,8 @@ class ReportController extends Controller
             ->when($typeReport == 'Harian', function ($query) use ($startDate, $endDate) {
                 return $query->whereBetween('tanggal', [$startDate, $endDate]);
             })
-            ->orderBy('tanggal', 'asc')
             ->groupBy('noTransaksi')
+            ->orderBy('tanggal', 'asc')
             ->get();
 
         return ResponseFormatter::success(

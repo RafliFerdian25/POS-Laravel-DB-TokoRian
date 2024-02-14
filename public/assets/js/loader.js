@@ -1,8 +1,12 @@
-const tableLoader = (colSpan, dataImage) => {
+const tableLoader = (colSpan) => {
     return `<tr>
                 <td colspan="${colSpan}" class="text-center">
                     <div class="d-flex w-100 align-items-center justify-content-center py-3">
-                        <object data="${dataImage}" type="image/svg+xml" style="height: 48px !important"></object>
+                        <svg class="loader" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="25" height="25">
+                            <circle cx="50" cy="50" r="45" fill="none" stroke="#3498db" stroke-width="5" stroke-dasharray="89 89" stroke-linecap="round">
+                                <animateTransform attributeName="transform" dur="1s" type="rotate" from="0 50 50" to="360 50 50" repeatCount="indefinite" />
+                            </circle>
+                        </svg>
                     </div>
                 </td>
             </tr>`;
@@ -10,7 +14,11 @@ const tableLoader = (colSpan, dataImage) => {
 
 const inlineLoader = (dataImage) => {
     return `<div style="display: inline !important">
-                <object data="${dataImage}" type="image/svg+xml" style="height: 40px; vertical-align: middle; transform: translate(-4px, -1px); display: inline !important"></object>
+                <svg class="loader" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="25" height="25">
+                    <circle cx="50" cy="50" r="45" fill="none" stroke="#3498db" stroke-width="5" stroke-dasharray="89 89" stroke-linecap="round">
+                        <animateTransform attributeName="transform" dur="1s" type="rotate" from="0 50 50" to="360 50 50" repeatCount="indefinite" />
+                    </circle>
+                </svg>
             </div>`;
 };
 

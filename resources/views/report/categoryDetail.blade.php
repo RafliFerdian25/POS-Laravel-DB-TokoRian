@@ -27,7 +27,7 @@
                                     <label for="month" class="col">Bulan :</label>
                                     <input type="month" name="month" id="month" class="form-control mb-3 col"
                                         @if ($typeReport == 'Bulanan') value="{{ date('Y-m') }}" @endif
-                                        onchange="getReportCategory()">
+                                        onchange="getReportCategory('bulanan')">
                                 </div>
                             </form>
                         </div>
@@ -189,7 +189,7 @@
             <div class="main-card mb-3 card">
                 <div class="card-body">
                     <h5 class="card-title text-center">Riwayat Penjualan</h5>
-                    <table class="mb-0 table" id="tableProductSaleTransaction">
+                    <table class="display nowrap" style="100%" id="tableProductSaleTransaction">
                         <thead>
                             <tr>
                                 <th>No. Transaksi</th>
@@ -215,9 +215,7 @@
     <script>
         $(document).ready(function() {
             $("#tableProductSaleTransaction").DataTable({
-                pageLength: 3,
-                paging: false,
-                info: false,
+                // scrollX: true,
             });
 
             getReportCategory()
@@ -269,14 +267,27 @@
                 $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format(
                     'YYYY-MM-DD'));
                 $("#month").val(null);
-                getReportCategory()
+                getReportCategory('harian')
             });
             $('#daterange').on('cancel.daterangepicker', function(ev, picker) {
                 $(this).val(null);
             });
         });
 
-        const getReportCategory = () => {
+        const getReportCategory = (typeReport) => {
+            if (typeReport == 'harian') {
+                $('#month').val(null);
+            } else if (typeReport == 'bulanan') {
+                $('#daterange').val(null);
+            }
+
+            $('#income').html(inlineLoader())
+            $('#profit').html(inlineLoader())
+            $('#total_transaction').html(inlineLoader())
+            $('#total_product').html(inlineLoader())
+            $('#tableBestSellingProducts tbody').html(tableLoader(4))
+            $('#tableProductSaleTransactionBody').html(tableLoader(6))
+
             $.ajax({
                 type: "GET",
                 url: `{{ url('laporan/kategori/detail/' . $category->jenis . '/data') }}`,
@@ -390,15 +401,14 @@
                     });
 
                     // table data barang terjual
-                    $('#tableProductSaleTransactionBody').empty();
-                    console.log(response.data.transactionsByNoTransaction);
+                    $('#tableProductSaleTransaction').DataTable().clear().draw();
                     if (response.data.transactionsByNoTransaction.length > 0) {
                         $.each(response.data.transactionsByNoTransaction, function(index, transaction) {
                             var rowData = [
                                 transaction.noTransaksi,
                                 transaction.tanggal,
-                                transaction.jumlah,
-                                transaction.total,
+                                transaction.total_product,
+                                transaction.income,
                                 transaction.profit,
                                 `<button class="btn btn-sm btn-warning" onclick="showEdit('${transaction.noTransaksi}')">Detail</button>`
                             ];
@@ -412,7 +422,7 @@
                             // $(rowNode).find('td').eq(4).addClass('text-center text-nowrap');
                         });
                     } else {
-                        $('#tableProductSaleTransactionBody').html(tableEmpty(5,
+                        $('#tableProductSaleTransactionBody').html(tableEmpty(6,
                             'barang kadaluarsa'));
                     }
                 }
