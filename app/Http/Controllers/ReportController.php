@@ -164,6 +164,7 @@ class ReportController extends Controller
         $date = null;
         $startDate = null;
         $endDate = null;
+
         if ($request->daterange == null && $request->month == null) {
             $date = Carbon::now();
             $typeReport = "Bulanan";
@@ -178,6 +179,9 @@ class ReportController extends Controller
         }
 
         $report = Kasir::selectRaw('sum(total) as income, sum(laba) as profit, COUNT(noUrut) as total_transaction, sum(jumlah) as total_product')
+            ->whereHas('product', function ($query) use ($category) {
+                $query->where('jenis', $category->jenis);
+            })
             ->when($typeReport == 'Bulanan', function ($query) use ($date) {
                 return $query->whereMonth('tanggal', $date->month)
                     ->whereYear('tanggal', $date->year);
@@ -195,6 +199,9 @@ class ReportController extends Controller
         }
 
         $bestSellingProducts = Kasir::selectRaw('nmBarang as name, sum(jumlah) as total, id')
+            ->whereHas('product', function ($query) use ($category) {
+                $query->where('jenis', $category->jenis);
+            })
             ->when($typeReport == 'Bulanan', function ($query) use ($date) {
                 return $query->whereMonth('tanggal', $date->month)
                     ->whereYear('tanggal', $date->year);
@@ -208,6 +215,9 @@ class ReportController extends Controller
             ->get();
 
         $transactions = Kasir::selectRaw('max(tanggal) as tanggal, sum(total) as total, sum(laba) as laba, sum(jumlah) as jumlah')
+            ->whereHas('product', function ($query) use ($category) {
+                $query->where('jenis', $category->jenis);
+            })
             ->when($typeReport == 'Bulanan', function ($query) use ($date) {
                 return $query->whereMonth('tanggal', $date->month)
                     ->whereYear('tanggal', $date->year);
