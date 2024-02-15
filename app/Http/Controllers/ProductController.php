@@ -199,6 +199,7 @@ class ProductController extends Controller
                 $validated = $request->validate([
                     'IdBarang' => 'required',
                     'nmBarang' => 'required',
+                    'merk_id' => 'required|exists:p_merk,id',
                     'satuan' => 'required',
                     'isi' => 'required',
                     'hargaPokok' => 'required|numeric|min:0|max:999999999',
@@ -211,6 +212,7 @@ class ProductController extends Controller
                 $validated = $request->validate([
                     'IdBarang' => 'required|unique:t_barang',
                     'nmBarang' => 'required',
+                    'merk_id' => 'required|exists:p_merk,id',
                     'satuan' => 'required',
                     'isi' => 'required',
                     'hargaPokok' => 'required|numeric|min:0|max:999999999',
@@ -226,6 +228,7 @@ class ProductController extends Controller
             Product::where('IdBarang', $product->IdBarang)->update([
                 'IdBarang' => $validated['IdBarang'],
                 'nmBarang' => strtoupper($validated['nmBarang']),
+                'merk_id' => $validated['merk_id'],
                 'satuan' => $validated['satuan'],
                 'isi' => $validated['isi'],
                 'hargaPokok' => $validated['hargaPokok'],
