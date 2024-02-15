@@ -145,6 +145,7 @@
     </div>
     {{-- End modal --}}
 @endsection
+
 @push('scripts')
     @if (session('error'))
         <script>
@@ -165,7 +166,6 @@
             });
 
             // Do this before you initialize any of your modals
-            $.fn.modal.Constructor.prototype.enforceFocus = function() {};
             getProducts();
         });
 
@@ -366,7 +366,7 @@
                         </div>
                         </form>
                     `);
-                    console.log();
+
                     initSelect2Merk(response.product.merk);
 
                     $(`#${formId}`).validate({
@@ -381,6 +381,9 @@
                                 required: true,
                                 maxlength: 50,
                                 minlength: 3,
+                            },
+                            merk_id: {
+                                required: true,
                             },
                             satuan: {
                                 required: true,
@@ -425,6 +428,9 @@
                                 required: "Nama barang tidak boleh kosong",
                                 maxlength: "Nama barang maksimal 50 karakter",
                                 minlength: "Nama barang minimal 3 karakter",
+                            },
+                            merk_id: {
+                                required: "Merk tidak boleh kosong",
                             },
                             satuan: {
                                 required: "Satuan tidak boleh kosong",
@@ -516,7 +522,6 @@
         }
 
         const initSelect2Merk = (merk) => {
-            // $('#merk_id').html(`<option value="${id}" selected>${id}</option>`);
             $('#merk_id').select2({
                 dropdownParent: $('#modalEdit'),
                 theme: "bootstrap-5",
