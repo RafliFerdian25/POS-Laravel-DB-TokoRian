@@ -112,6 +112,28 @@
     </div>
 @endsection
 
+@section('modal')
+    {{-- Modal --}}
+    <div class="modal fade modalEdit" id="modalEdit" role="dialog" tabindex="-1" aria-labelledby="modalEditLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- End modal --}}
+@endsection
+
 @push('scripts')
     @if (session('error'))
         <script>
@@ -222,6 +244,16 @@
                                 </div>
                             </div>
                             <div class="row mb-3">
+                                <label for="merk_id" class="col-sm-2 col-form-label">Merk</label>
+                                <div class="col-sm-10">
+                                    <div class="select2-input select2-info" style="width: 100%">
+                                        <select id="merk_id" name="merk_id" class="form-control rounded__10">
+                                            <option value="">&nbsp;</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
                                 <label for="satuan" class="col-sm-2 col-form-label">Satuan</label>
                                 <div class="col-sm-10">
                                     <select required
@@ -300,6 +332,8 @@
                         </div>
                         </form>
                     `);
+
+                    initSelect2Merk(response.product.merk);
 
                     $(`#${formId}`).validate({
                         rules: {
@@ -447,6 +481,73 @@
 
             // Menampilkan modal
             $('#modalMain').modal('show');
+        }
+
+        const initSelect2Merk = (merk) => {
+            // $('#merk_id').html(`<option value="${id}" selected>${id}</option>`);
+            $('#merk_id').select2({
+                dropdownParent: $('#modalEdit'),
+                theme: "bootstrap-5",
+                placeholder: 'Masukkan Merk Barang',
+                width: '100%',
+                allowClear: true,
+                minimumInputLength: 1, // Minimum characters required to start searching
+                language: {
+                    inputTooShort: function(args) {
+                        var remainingChars = args.minimum - args.input.length;
+                        return "Masukkan kata kunci setidaknya " + remainingChars +
+                            " karakter";
+                    },
+                    searching: function() {
+                        return "Sedang mengambil data...";
+                    },
+                    noResults: function() {
+                        return "Merk tidak ditemukan";
+                    },
+                    errorLoading: function() {
+                        return "Terjadi kesalahan saat memuat data";
+                    },
+                },
+                templateSelection: function(data, container) {
+                    if (data.id === '') {
+                        return data.text;
+                    }
+                    var match = data.text.match(/^(.*?) \(/);
+                    var resultName = match[1];
+
+                    return $('<span class="custom-selection">' + resultName + '</span>');
+                },
+                ajax: {
+                    url: "{{ route('merk.search.data') }}", // URL to fetch data from
+                    dataType: 'json', // Data type expected from the server
+                    processResults: function(response) {
+                        var merks = response.data.merks;
+                        var options = [];
+
+                        merks.forEach(function(merk) {
+                            options.push({
+                                id: merk.id, // Use the merk
+                                text: merk.merk + ' (' + merk.keterangan +
+                                    ')'
+                            });
+                        });
+
+                        return {
+                            results: options // Processed results with id and text properties
+                        };
+                    },
+                    cache: true, // Cache the results for better performance
+                }
+            })
+            // Periksa apakah nilai id sudah ada dalam opsi saat ini
+            if ($('#merk_id').find('option[value="' + merk.id + '"]').length === 0) {
+                // Jika tidak, tambahkan elemen <option> baru
+                var $newOption = new Option(`${merk.merk} (${merk.keterangan})`, merk.id, true, true);
+                $('#merk_id').append($newOption).trigger('change');
+            } else {
+                // Jika sudah ada, langsung atur nilai dan perbarui tampilan
+                $('#merk_id').val(id).trigger('change');
+            }
         }
     </script>
 @endpush
