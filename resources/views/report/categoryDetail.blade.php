@@ -117,20 +117,20 @@
             </div>
 
         </div>
-        {{-- Terlaris --}}
+        {{-- Report --}}
         <div class="row">
-            {{-- Jenis terlaris --}}
+            {{-- Chart Laporan Penjualan --}}
             <div class="col-md-8">
                 <div class="main-card mb-3 card">
                     <div class="card-header">
-                        Jenis Terlaris
+                        Laporan Penjualan
                     </div>
                     <div class="card-body">
-                        <div id="chartReport"></div>
+                        <div id="dailyFinancialReportChart"></div>
                     </div>
                 </div>
             </div>
-            {{-- End Jenis terlaris --}}
+            {{-- End hart Laporan Penjualan --}}
             {{-- Barang terlaris --}}
             <div class="col-md-4">
                 <div class="main-card mb-3 card">
@@ -181,7 +181,37 @@
             </div>
             {{-- End Barang terlaris --}}
         </div>
-        {{-- END Terlaris --}}
+        {{-- END Report --}}
+        {{-- Report --}}
+        <div class="row">
+            {{-- Chart Laporan Penjualan --}}
+            <div class="col-md-6">
+                <div class="main-card mb-3 card">
+                    <div class="card-header">
+                        Laporan Penjualan
+                    </div>
+                    <div class="card-body">
+                        <div id="monthlyFinancialReportChart"></div>
+                    </div>
+                </div>
+            </div>
+            {{-- End hart Laporan Penjualan --}}
+            {{-- Barang terlaris --}}
+            <div class="col-md-6">
+                <div class="main-card mb-3 card">
+                    <div class="card-header">
+                        <div>
+                            Barang Terlaris
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="dailyTransactionReportChart"></div>
+                    </div>
+                </div>
+            </div>
+            {{-- End Barang terlaris --}}
+        </div>
+        {{-- END Report --}}
         <!-- END CARD DASHBOARD -->
 
         <!-- Barang Terjual -->
@@ -328,8 +358,152 @@
                     `);
                     });
 
-                    // chart
-                    Highcharts.chart('chartReport', {
+                    // dailyFinancialReportChart
+                    Highcharts.chart('dailyFinancialReportChart', {
+                        title: {
+                            text: 'Laporan Penjualan Kategori {{ $category->keterangan }}',
+                            align: 'center'
+                        },
+
+                        subtitle: {
+                            text: 'Bulanan',
+                            align: 'center'
+                        },
+
+                        yAxis: {
+                            title: {
+                                text: 'Jumlah Penjualan'
+                            }
+                        },
+
+                        xAxis: {
+                            title: {
+                                text: 'Tanggal'
+                            },
+                            type: 'datetime', // Menggunakan tipe datetime
+                            categories: response.data.transactionsByDate.map(transaction => Date
+                                .parse(
+                                    transaction.tanggal)), // Mengonversi tanggal ke timestamp
+                            accessibility: {
+                                rangeDescription: 'Date'
+                            },
+                            labels: {
+                                format: '{value:%e}', // Menampilkan nilai tanggal
+                            }
+                        },
+
+                        plotOptions: {
+                            series: {
+                                label: {
+                                    connectorAllowed: true
+                                },
+                            }
+                        },
+
+                        series: [{
+                            name: 'Total Pendapatan',
+                            data: response.data.transactionsByDate.map(transaction =>
+                                parseInt(
+                                    transaction
+                                    .total)),
+                        }, {
+                            name: 'Total Keuntungan',
+                            data: response.data.transactionsByDate.map(transaction =>
+                                parseInt(
+                                    transaction
+                                    .profit))
+                        }],
+
+                        responsive: {
+                            rules: [{
+                                condition: {
+                                    maxWidth: 500
+                                },
+                                chartOptions: {
+                                    legend: {
+                                        layout: 'horizontal',
+                                        align: 'center',
+                                        verticalAlign: 'bottom'
+                                    }
+                                }
+                            }]
+                        }
+                    });
+
+                    // monthlyFinancialReportChart
+                    Highcharts.chart('monthlyFinancialReportChart', {
+                        title: {
+                            text: 'Laporan Penjualan Kategori {{ $category->keterangan }}',
+                            align: 'center'
+                        },
+
+                        subtitle: {
+                            text: 'Bulanan',
+                            align: 'center'
+                        },
+
+                        yAxis: {
+                            title: {
+                                text: 'Jumlah Penjualan'
+                            }
+                        },
+
+                        xAxis: {
+                            title: {
+                                text: 'Tanggal'
+                            },
+                            type: 'datetime', // Menggunakan tipe datetime
+                            categories: response.data.transactionsByDate.map(transaction => Date
+                                .parse(
+                                    transaction.tanggal)), // Mengonversi tanggal ke timestamp
+                            accessibility: {
+                                rangeDescription: 'Date'
+                            },
+                            labels: {
+                                format: '{value:%e}', // Menampilkan nilai tanggal
+                            }
+                        },
+
+                        plotOptions: {
+                            series: {
+                                label: {
+                                    connectorAllowed: true
+                                },
+                            }
+                        },
+
+                        series: [{
+                            name: 'Total Pendapatan',
+                            data: response.data.transactionsByDate.map(transaction =>
+                                parseInt(
+                                    transaction
+                                    .total)),
+                        }, {
+                            name: 'Total Keuntungan',
+                            data: response.data.transactionsByDate.map(transaction =>
+                                parseInt(
+                                    transaction
+                                    .profit))
+                        }],
+
+                        responsive: {
+                            rules: [{
+                                condition: {
+                                    maxWidth: 500
+                                },
+                                chartOptions: {
+                                    legend: {
+                                        layout: 'horizontal',
+                                        align: 'center',
+                                        verticalAlign: 'bottom'
+                                    }
+                                }
+                            }]
+                        }
+                    });
+
+                    // dailyTransactionReportChart
+                    Highcharts.chart('dailyTransactionReportChart', {
                         title: {
                             text: 'Laporan Penjualan Kategori {{ $category->keterangan }}',
                             align: 'center'
