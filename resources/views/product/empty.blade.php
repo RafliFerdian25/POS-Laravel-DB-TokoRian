@@ -348,6 +348,9 @@
                                 maxlength: 50,
                                 minlength: 3,
                             },
+                            merk_id: {
+                                required: true,
+                            },
                             satuan: {
                                 required: true,
                             },
@@ -391,6 +394,9 @@
                                 required: "Nama barang tidak boleh kosong",
                                 maxlength: "Nama barang maksimal 50 karakter",
                                 minlength: "Nama barang minimal 3 karakter",
+                            },
+                            merk_id: {
+                                required: "Merk tidak boleh kosong",
                             },
                             satuan: {
                                 required: "Satuan tidak boleh kosong",
