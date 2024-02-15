@@ -159,7 +159,13 @@
                 pageLength: 10,
                 info: false,
                 responsive: true,
-
+                order: [
+                    [3, 'asc']
+                ],
+                columnDefs: [{
+                    targets: [3], // Kolom "Tanggal" ada di indeks 1 (0-indexed)
+                    type: "date-eu" // Tentukan tipe pengurutan khusus untuk format "DD/MM/YYYY"
+                }],
             });
 
             getExpiredProduct();
@@ -182,7 +188,7 @@
                                 product.IdBarang,
                                 product.nmBarang,
                                 product.stok,
-                                product.expDate,
+                                moment(product.expDate).format('DD/MM/YYYY'),
                                 `<button class="btn btn-sm btn-warning" onclick="showEdit('${product.IdBarang}')">Edit</button>`
                             ];
                             var rowNode = $('#tableExpiredProduct').DataTable().row.add(rowData)
