@@ -29,13 +29,14 @@ class ProductController extends Controller
             'setting' => Toko::first(),
             'title' => 'POS TOKO | Barang',
             'categories' => Category::get(),
+            'merk' => Merk::get()
         ];
 
         return view('product.index', $data);
     }
     public function data(Request $request)
     {
-        $query = Product::when($request->filterProduct != null, function ($query) use ($request) {
+        $query = Product::with('merk')->when($request->filterProduct != null, function ($query) use ($request) {
             return $query->where('nmBarang', 'LIKE', '%' . $request->filterProduct . '%')->orWhere('IdBarang', 'LIKE', '%' . $request->filterProduct . '%');
         })
             ->when($request->filterCategory != null, function ($query) use ($request) {
@@ -179,7 +180,7 @@ class ProductController extends Controller
         $title = 'POS TOKO | Barang';
         $units = Unit::orderBy('satuan')->get();
         $data = [
-            'product' => $product,
+            'product' => $product->load('merk'),
             'categories' => $categories,
             'units' => $units,
             'title' => $title,

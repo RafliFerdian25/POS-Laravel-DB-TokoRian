@@ -27,6 +27,16 @@
                             </div>
                         </div>
                         <div class="row mb-3">
+                            <label for="merk_id" class="col-sm-2 col-form-label">Merk</label>
+                            <div class="col-sm-10">
+                                <div class="select2-input select2-info" style="width: 100%">
+                                    <select id="merk_id" name="merk_id" class="form-control rounded__10">
+                                        <option value="">&nbsp;</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
                             <label for="satuan" class="col-sm-2 col-form-label">Satuan</label>
                             <div class="col-sm-10">
                                 <select required class="form-select rounded__10 " name="satuan" id="satuan"
@@ -96,16 +106,6 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="row mb-3">
-                            <label for="merk_id" class="col-sm-2 col-form-label">Merk</label>
-                            <div class="col-sm-10">
-                                <div class="select2-input select2-info" style="width: 100%">
-                                    <select id="merk_id" name="merk_id" class="form-control rounded__10">
-                                        <option value="">&nbsp;</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
                         <div class="submit text-end">
                             <button type="submit" id="submitButton" class=" btn btn-primary">Simpan</button>
                         </div>
@@ -135,16 +135,22 @@
 
     <script>
         $(document).ready(function() {
+            initSelect2Merk()
+        });
+
+
+        const initSelect2Merk = () => {
             $('#merk_id').select2({
                 theme: "bootstrap-5",
-                placeholder: 'Masukkan Nama atau Barcode Barang',
+                placeholder: 'Masukkan Merk Barang',
                 width: '100%',
                 allowClear: true,
                 minimumInputLength: 1, // Minimum characters required to start searching
                 language: {
                     inputTooShort: function(args) {
                         var remainingChars = args.minimum - args.input.length;
-                        return "Masukkan kata kunci setidaknya " + remainingChars + " karakter";
+                        return "Masukkan kata kunci setidaknya " + remainingChars +
+                            " karakter";
                     },
                     searching: function() {
                         return "Sedang mengambil data...";
@@ -187,7 +193,7 @@
                     cache: true, // Cache the results for better performance
                 }
             })
-        });
+        }
 
         // submit form
         $(`#formAddProduct`).validate({
@@ -355,7 +361,7 @@
                         $('#submitButton').prop('disabled', false);
                         if (xhr.responseJSON) {
                             errorAlert("Gagal!",
-                                `Ubah Mesin Gagal. ${xhr.responseJSON.meta.message} Error: ${xhr.responseJSON.data.error}`
+                                `Menambah barang gagal. ${xhr.responseJSON.meta.message} Error: ${xhr.responseJSON.data.error}`
                             );
                         } else {
                             errorAlert("Gagal!",

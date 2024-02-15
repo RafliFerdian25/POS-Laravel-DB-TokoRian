@@ -227,6 +227,8 @@
                 </div>
             </div>
         </div>
+
+        @yield('modal')
         {{-- End modal --}}
     </div>
     <!-- JQUERY -->
