@@ -196,7 +196,7 @@
 
         function showEdit(idBarang, status) {
             // Mengisi konten modal dengan data yang sesuai
-            let modalContent = $('#modalMain .modal-content');
+            let modalContent = $('#modalEdit .modal-content');
 
             modalContent.html(`
                 <div class="modal-header">
@@ -462,7 +462,7 @@
                                         .then(() => {
                                             getEmptyProduct();
                                             // menyembunyikan modal
-                                            $('#modalMain').modal('hide');
+                                            $('#modalEdit').modal('hide');
                                         });
                                 },
                                 error: function(xhr, status, error) {
@@ -486,7 +486,7 @@
             });
 
             // Menampilkan modal
-            $('#modalMain').modal('show');
+            $('#modalEdit').modal('show');
         }
 
         const initSelect2Merk = (merk) => {
