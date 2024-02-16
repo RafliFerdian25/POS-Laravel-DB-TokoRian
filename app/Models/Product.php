@@ -34,6 +34,6 @@ class Product extends Model
 
     public function purchase()
     {
-        return $this->hasMany(Kasir::class, 'idBarang', 'idBarang');
+        return $this->hasMany(Kasir::class, 'idBarang', 'IdBarang');
     }
 }

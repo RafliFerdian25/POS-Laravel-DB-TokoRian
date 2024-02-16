@@ -6,6 +6,7 @@ use App\Helpers\ResponseFormatter;
 use App\Models\Product;
 use App\Models\Barcode;
 use App\Models\Category;
+use App\Models\Kasir;
 use App\Models\Merk;
 use App\Models\Unit;
 use App\Models\Toko;
@@ -363,6 +364,7 @@ class ProductController extends Controller
             'setting' => Toko::first(),
             'title' => 'POS TOKO | Barang Habis',
             'categories' => Category::get(),
+            'typeReport' => 'Bulanan'
         ];
         return view('product.empty', $data);
     }
@@ -372,26 +374,62 @@ class ProductController extends Controller
      */
     public function emptyData(Request $request)
     {
-        $query = Product::select('IdBarang', 'nmBarang', 'expDate', 'stok')
+        $typeReport = null;
+        $date = null;
+        $startDate = null;
+        $endDate = null;
+
+        if ($request->daterange == null && $request->month == null) {
+            $date = Carbon::now();
+            $typeReport = "Bulanan";
+        } elseif ($request->daterange != null) {
+            $date = Carbon::now();
+            $daterange = explode(' - ', $request->daterange);
+            $startDate = Carbon::parse($daterange[0]);
+            $endDate = Carbon::parse($daterange[1]);
+            $typeReport = "Harian";
+        } elseif ($request->month != null) {
+            $date = Carbon::parse($request->month);
+            $typeReport = "Bulanan";
+        }
+
+        $threeMonthAgo = null;
+        if ($typeReport == 'Bulanan') {
+            $threeMonthAgo = $date->copy()->subMonths(3);
+        }
+        $query = Product::select('t_barang.IdBarang', 't_barang.nmBarang', 'stok', DB::raw('COALESCE(SUM(t_kasir.jumlah), 0) as total_product_sold'), DB::raw('COALESCE(MAX(t_kasir.tanggal), 0) as last_product_sold'))
+            ->leftJoin('t_kasir', 't_barang.IdBarang', '=', 't_kasir.idBarang')
+            ->whereNotIn('t_barang.IdBarang', function ($query) {
+                $query->select('IdBarang')->from('t_belanja');
+            })
+            ->when($typeReport == 'Bulanan', function ($query) use ($date, $threeMonthAgo) {
+                return $query->whereBetween('tanggal', [$threeMonthAgo->startOfMonth(), $date->copy()->endOfMonth()]);
+            }, function ($query) use ($startDate, $endDate) {
+                return $query->whereBetween('tanggal', [$startDate, $endDate]);
+            })
             ->when($request->filled('filterStock'), function ($query) use ($request) {
                 return $query->where('stok', '<=', $request->filterStock);
             }, function ($query) {
-                return $query->where('stok', '<=', 0);
+                return $query->where('stok', '<=', 3);
             })
             ->when($request->filled('filterName'), function ($query) use ($request) {
-                return $query->where('nmBarang', 'LIKE', '%' . $request->filterName . '%');
+                return $query->where('t_barang.nmBarang', 'LIKE', '%' . $request->filterName . '%');
             })
             ->when($request->filled('filterCategory'), function ($query) use ($request) {
-                return $query->where('jenis', $request->filterCategory);
+                return $query->where('t_barang.jenis', $request->filterCategory);
             })
-            ->orderBy('nmBarang', 'asc')
+            ->groupBy('t_barang.IdBarang', 't_barang.nmBarang', 'stok')
+            ->orderBy(DB::raw('SUM(t_kasir.jumlah)'), 'desc')
             ->limit(200);
 
         $products = $query->get();
-        $countProduct = $query->count();
+        $countProduct = $query->distinct()->count();
 
         return ResponseFormatter::success(
             [
+                'dateString' => $typeReport == 'Bulanan' ? $threeMonthAgo->format('F Y') . " - " . $date->format('F Y') : $startDate->copy()->format('d M Y') . ' - ' . $endDate->copy()->format('d M Y'),
+                'date' => $typeReport == 'Bulanan' ? $date->format('Y-m') : $daterange,
+                'typeReport' => $typeReport,
                 'products' => $products,
                 'countProduct' => $countProduct
             ],

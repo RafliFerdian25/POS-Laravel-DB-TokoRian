@@ -77,6 +77,21 @@
                                         name="filterStock">
                                 </div>
                             </div>
+                            <div class="row mb-3">
+                                <label for="daterange" class="col-sm-2 col-form-label">Rentang Tanggal</label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="daterange" id="daterange" class="form-control rounded__10">
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label for="month" class="col-sm-2 col-form-label">Bulan</label>
+                                <div class="col-sm-10">
+                                    <input type="month" name="month" id="month" class="form-control rounded__10"
+                                        @if ($typeReport == 'Bulanan') value="{{ date('Y-m') }}" @endif
+                                        onchange="getEmptyProduct('bulanan')">
+                                </div>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary">Cari</button>
@@ -91,14 +106,16 @@
         <div class="productSection">
             <div class="main-card mb-3 card">
                 <div class="card-body">
-                    <h5 class="card-title text-center">Barang Habis</h5>
+                    <h5 class="card-title text-center">Barang Habis (Terjual <span id="dateString"></span>)</h5>
                     <table class="display nowrap" style="width:100%" id="tableEmptyProduct">
                         <thead>
                             <tr>
+                                <th>No</th>
                                 <th>Barcode</th>
                                 <th>Nama Barang</th>
                                 <th>Stok</th>
                                 <th>Tanggal Habis</th>
+                                <th>Terjual</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -150,17 +167,25 @@
         $(document).ready(function() {
             $("#tableEmptyProduct").DataTable({
                 pageLength: 10,
-                info: false,
                 responsive: true,
 
             });
 
+            initDateRange('{{ $typeReport }}', getEmptyProduct);
             getEmptyProduct();
         });
 
-        const getEmptyProduct = () => {
+        const getEmptyProduct = (typeReport) => {
+            // mengosongkan inputan tanggal
+            if (typeReport == 'harian') {
+                $('#month').val(null);
+            } else if (typeReport == 'bulanan') {
+                $('#daterange').val(null);
+            }
+
+            // mengosongkan tabel
             $('#tableEmptyProduct').DataTable().clear().draw();
-            $('#tableEmptyProductBody').html(tableLoader(5, `{{ asset('assets/svg/Ellipsis-2s-48px.svg') }}`));
+            $('#tableEmptyProductBody').html(tableLoader(7, `{{ asset('assets/svg/Ellipsis-2s-48px.svg') }}`));
 
             $.ajax({
                 type: "GET",
@@ -169,13 +194,17 @@
                 dataType: "json",
                 success: function(response) {
                     $('#countProduct').html(response.data.countProduct);
+                    $('#dateString').html(response.data.dateString);
                     if (response.data.products.length > 0) {
                         $.each(response.data.products, function(index, product) {
                             var rowData = [
+                                index + 1,
                                 product.IdBarang,
                                 product.nmBarang,
                                 product.stok,
-                                product.expDate,
+                                // product.last_product_sold,
+                                product.total_product_sold,
+                                product.total_product_sold,
                                 `<button class="btn btn-sm btn-warning" onclick="showEdit('${product.IdBarang}')">Edit</button>`
                             ];
                             var rowNode = $('#tableEmptyProduct').DataTable().row.add(rowData)
@@ -187,7 +216,7 @@
                             // $(rowNode).find('td').eq(4).addClass('text-center text-nowrap');
                         });
                     } else {
-                        $('#tableEmptyProductBody').html(tableEmpty(5,
+                        $('#tableEmptyProductBody').html(tableEmpty(7,
                             'barang habis'));
                     }
                 }
@@ -339,7 +368,7 @@
                         rules: {
                             IdBarang: {
                                 required: true,
-                                maxlength: 15,
+                                maxlength: 17,
                                 minlength: 3,
                                 number: true
                             },
@@ -437,7 +466,7 @@
                             event.preventDefault();
                             var formData = new FormData(form);
                             $('#updateButton').html(
-                                '<svg class="spinners-2" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;"><path d="M12 22c5.421 0 10-4.579 10-10h-2c0 4.337-3.663 8-8 8s-8-3.663-8-8c0-4.336 3.663-8 8-8V2C6.579 2 2 6.58 2 12c0 5.421 4.579 10 10 10z"></path></svg>'
+                                '<svg class="spinners-2" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" style="fill: rgba(257 257 257 1);transform: ;msFilter:;"><path d="M12 22c5.421 0 10-4.579 10-10h-2c0 4.337-3.663 8-8 8s-8-3.663-8-8c0-4.336 3.663-8 8-8V2C6.579 2 2 6.58 2 12c0 5.421 4.579 10 10 10z"></path></svg>'
                             );
                             $('#updateButton').prop('disabled', true);
                             $.ajax({
