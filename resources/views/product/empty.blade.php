@@ -202,10 +202,10 @@
                                 product.IdBarang,
                                 product.nmBarang,
                                 product.stok,
-                                // product.last_product_sold,
+                                product.last_product_sold,
                                 product.total_product_sold,
-                                product.total_product_sold,
-                                `<button class="btn btn-sm btn-warning" onclick="showEdit('${product.IdBarang}')">Edit</button>`
+                                `<button class="btn btn-sm btn-warning" onclick="showEdit('${product.IdBarang}')">Edit</button>
+                                <button class="btn btn-sm btn-primary" onclick="addWholesalePurchase('${product.IdBarang}')">Tambah Belanja</button>`
                             ];
                             var rowNode = $('#tableEmptyProduct').DataTable().row.add(rowData)
                                 .draw(
@@ -583,6 +583,91 @@
                 // Jika sudah ada, langsung atur nilai dan perbarui tampilan
                 $('#merk_id').val(id).trigger('change');
             }
+        }
+
+        const addWholesalePurchase = (IdBarang) => {
+            Swal.fire({
+                title: "Tambah Pembelian Grosir",
+                html: `
+                <form id="formAddWholesalePurchase">
+                    @csrf
+                    <div class="">
+                        <label for="qty" class="col-sm-4 col-form-label">Jumlah Barang</label>
+                        <div class="">
+                            <input required type="number" class="form-control rounded__10 " id="qty" name="qty" min="1">
+                        </div>
+                    </div>
+                </form>
+                `,
+                showCancelButton: true,
+                confirmButtonText: "Tambah",
+                cancelButtonText: "Batal",
+                customClass: {
+                    confirmButton: "btn btn-primary",
+                    cancelButton: "btn btn-danger"
+                },
+                preConfirm: () => {
+                    const qty = Swal.getPopup().querySelector('#qty').value;
+
+                    if (!qty) {
+                        Swal.showValidationMessage(`Jumlah Barang tidak boleh kosong`);
+                    }
+
+                    return {
+                        qty: qty,
+                    }
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ route('wholesale.purchase.store') }}",
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            IdBarang: IdBarang,
+                            qty: result.value.qty,
+                        },
+                        success: function(response) {
+                            Swal.fire({
+                                    title: "Berhasil!",
+                                    text: response.meta.message,
+                                    icon: "success",
+                                    showCancelButton: false,
+                                    confirmButtonText: "Okay",
+                                    customClass: {
+                                        confirmButton: "btn btn-success"
+                                    },
+                                })
+                                .then(() => {
+                                    getEmptyProduct()
+                                });
+                        },
+                        error: function(xhr, status, error) {
+                            if (xhr.responseJSON) {
+                                errorAlert("Gagal!",
+                                    `Tambah Belanja Barang Gagal. ${xhr.responseJSON.meta.message} Error: ${xhr.responseJSON.data.error}`
+                                );
+                            } else {
+                                errorAlert("Gagal!",
+                                    `Terjadi kesalahan pada server. Error: ${xhr.responseText}`
+                                );
+                            }
+                            return false;
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        title: "Batal",
+                        text: "Tambah Belanja Barang dibatalkan",
+                        icon: "info",
+                        showCancelButton: false,
+                        confirmButtonText: "Okay",
+                        customClass: {
+                            confirmButton: "btn btn-primary"
+                        },
+                    });
+                }
+            })
         }
     </script>
 @endpush

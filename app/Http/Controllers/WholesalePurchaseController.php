@@ -63,14 +63,15 @@ class WholesalePurchaseController extends Controller
         try {
             DB::beginTransaction();
             $product = Product::where('IdBarang', $request->IdBarang)->first();
+            $qty = $request->qty ?? 2;
 
             $purchase = WholesalePurchase::create([
                 'IdBarang' => $product->IdBarang,
                 'nmBarang' => $product->nmBarang,
                 'satuan' => $product->satuan,
                 'hargaPokok' => $product->hargaPokok,
-                'jumlah' => 2,
-                'TOTAL' => $product->hargaPokok * 2,
+                'jumlah' => $qty,
+                'TOTAL' => $product->hargaPokok * $qty,
             ]);
 
             DB::commit();
