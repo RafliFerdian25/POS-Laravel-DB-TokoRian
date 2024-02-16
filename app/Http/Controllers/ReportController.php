@@ -169,6 +169,7 @@ class ReportController extends Controller
             $date = Carbon::now();
             $typeReport = "Bulanan";
         } elseif ($request->daterange != null) {
+            $date = Carbon::now();
             $daterange = explode(' - ', $request->daterange);
             $startDate = Carbon::parse($daterange[0]);
             $endDate = Carbon::parse($daterange[1]);
@@ -214,7 +215,7 @@ class ReportController extends Controller
             ->limit(10)
             ->get();
 
-        $transactionsByDate = Kasir::selectRaw('tanggal, sum(total) as total, sum(laba) as profit, sum(jumlah) as jumlah')
+        $transactionsByDate = Kasir::selectRaw('tanggal, sum(total) as income, sum(laba) as profit, sum(jumlah) as total_product')
             ->whereHas('product', function ($query) use ($category) {
                 $query->where('jenis', $category->jenis);
             })
@@ -227,6 +228,18 @@ class ReportController extends Controller
             })
             ->groupBy('tanggal')
             ->orderBy('tanggal', 'asc')
+            ->get();
+
+        $transactionsByLastYear = Kasir::selectRaw('max(tanggal) as month, sum(total) as income, sum(laba) as profit, sum(jumlah) as total_product')
+            ->whereHas('product', function ($query) use ($category) {
+                $query->where('jenis', $category->jenis);
+            })
+            ->when(true, function ($query) use ($date) {
+                $startOfYear = Carbon::parse($date->copy()->subYears(2))->startOfYear();
+                return $query->whereBetween('tanggal', [$startOfYear, $date->endOfMonth()]);
+            })
+            ->groupBy(DB::raw('month(tanggal)'), DB::raw('year(tanggal)'))
+            ->orderBy('month', 'asc')
             ->get();
 
         $transactionsByNoTransaction = Kasir::selectRaw('noTransaksi, max(tanggal) as tanggal, sum(total) as income, sum(laba) as profit, sum(jumlah) as total_product')
@@ -254,6 +267,7 @@ class ReportController extends Controller
                 'bestSellingProducts' => $bestSellingProducts,
                 'transactionsByDate' => $transactionsByDate,
                 'transactionsByNoTransaction' => $transactionsByNoTransaction,
+                'transactionsByLastYear' => $transactionsByLastYear,
             ],
             'Data kategori berhasil diambil'
         );

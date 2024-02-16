@@ -185,7 +185,7 @@
         {{-- Report --}}
         <div class="row">
             {{-- Chart Laporan Penjualan --}}
-            <div class="col-md-6">
+            <div class="col">
                 <div class="main-card mb-3 card">
                     <div class="card-header">
                         Laporan Penjualan
@@ -196,20 +196,6 @@
                 </div>
             </div>
             {{-- End hart Laporan Penjualan --}}
-            {{-- Barang terlaris --}}
-            <div class="col-md-6">
-                <div class="main-card mb-3 card">
-                    <div class="card-header">
-                        <div>
-                            Barang Terlaris
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div id="dailyTransactionReportChart"></div>
-                    </div>
-                </div>
-            </div>
-            {{-- End Barang terlaris --}}
         </div>
         {{-- END Report --}}
         <!-- END CARD DASHBOARD -->
@@ -360,6 +346,9 @@
 
                     // dailyFinancialReportChart
                     Highcharts.chart('dailyFinancialReportChart', {
+                        chart: {
+                            type: 'spline'
+                        },
                         title: {
                             text: 'Laporan Penjualan Kategori {{ $category->keterangan }}',
                             align: 'center'
@@ -372,7 +361,7 @@
 
                         yAxis: {
                             title: {
-                                text: 'Jumlah Penjualan'
+                                text: 'Laporan Keuangan'
                             }
                         },
 
@@ -391,7 +380,10 @@
                                 format: '{value:%e}', // Menampilkan nilai tanggal
                             }
                         },
-
+                        tooltip: {
+                            crosshairs: true,
+                            shared: true
+                        },
                         plotOptions: {
                             series: {
                                 label: {
@@ -405,13 +397,19 @@
                             data: response.data.transactionsByDate.map(transaction =>
                                 parseInt(
                                     transaction
-                                    .total)),
+                                    .income)),
                         }, {
                             name: 'Total Keuntungan',
                             data: response.data.transactionsByDate.map(transaction =>
                                 parseInt(
                                     transaction
                                     .profit))
+                        }, {
+                            name: 'Jumlah Barang Terjual',
+                            data: response.data.transactionsByDate.map(transaction =>
+                                parseInt(
+                                    transaction
+                                    .total_product)),
                         }],
 
                         responsive: {
@@ -432,6 +430,9 @@
 
                     // monthlyFinancialReportChart
                     Highcharts.chart('monthlyFinancialReportChart', {
+                        chart: {
+                            type: 'spline'
+                        },
                         title: {
                             text: 'Laporan Penjualan Kategori {{ $category->keterangan }}',
                             align: 'center'
@@ -450,20 +451,23 @@
 
                         xAxis: {
                             title: {
-                                text: 'Tanggal'
+                                text: 'Bulan'
                             },
                             type: 'datetime', // Menggunakan tipe datetime
-                            categories: response.data.transactionsByDate.map(transaction => Date
+                            categories: response.data.transactionsByLastYear.map(transaction => Date
                                 .parse(
-                                    transaction.tanggal)), // Mengonversi tanggal ke timestamp
+                                    transaction.month)), // Mengonversi tanggal ke timestamp
                             accessibility: {
                                 rangeDescription: 'Date'
                             },
                             labels: {
-                                format: '{value:%e}', // Menampilkan nilai tanggal
+                                format: '{value:%m-%Y}', // Menampilkan nilai tanggal
                             }
                         },
-
+                        tooltip: {
+                            crosshairs: true,
+                            shared: true
+                        },
                         plotOptions: {
                             series: {
                                 label: {
@@ -474,88 +478,22 @@
 
                         series: [{
                             name: 'Total Pendapatan',
-                            data: response.data.transactionsByDate.map(transaction =>
+                            data: response.data.transactionsByLastYear.map(transaction =>
                                 parseInt(
                                     transaction
-                                    .total)),
+                                    .income)),
                         }, {
                             name: 'Total Keuntungan',
-                            data: response.data.transactionsByDate.map(transaction =>
+                            data: response.data.transactionsByLastYear.map(transaction =>
                                 parseInt(
                                     transaction
                                     .profit))
-                        }],
-
-                        responsive: {
-                            rules: [{
-                                condition: {
-                                    maxWidth: 500
-                                },
-                                chartOptions: {
-                                    legend: {
-                                        layout: 'horizontal',
-                                        align: 'center',
-                                        verticalAlign: 'bottom'
-                                    }
-                                }
-                            }]
-                        }
-                    });
-
-                    // dailyTransactionReportChart
-                    Highcharts.chart('dailyTransactionReportChart', {
-                        title: {
-                            text: 'Laporan Penjualan Kategori {{ $category->keterangan }}',
-                            align: 'center'
-                        },
-
-                        subtitle: {
-                            text: 'Bulanan',
-                            align: 'center'
-                        },
-
-                        yAxis: {
-                            title: {
-                                text: 'Jumlah Penjualan'
-                            }
-                        },
-
-                        xAxis: {
-                            title: {
-                                text: 'Tanggal'
-                            },
-                            type: 'datetime', // Menggunakan tipe datetime
-                            categories: response.data.transactionsByDate.map(transaction => Date
-                                .parse(
-                                    transaction.tanggal)), // Mengonversi tanggal ke timestamp
-                            accessibility: {
-                                rangeDescription: 'Date'
-                            },
-                            labels: {
-                                format: '{value:%e}', // Menampilkan nilai tanggal
-                            }
-                        },
-
-                        plotOptions: {
-                            series: {
-                                label: {
-                                    connectorAllowed: true
-                                },
-                            }
-                        },
-
-                        series: [{
-                            name: 'Total Pendapatan',
-                            data: response.data.transactionsByDate.map(transaction =>
-                                parseInt(
-                                    transaction
-                                    .total)),
                         }, {
-                            name: 'Total Keuntungan',
-                            data: response.data.transactionsByDate.map(transaction =>
+                            name: 'Jumlah Barang Terjual',
+                            data: response.data.transactionsByLastYear.map(transaction =>
                                 parseInt(
                                     transaction
-                                    .profit))
+                                    .total_product)),
                         }],
 
                         responsive: {
