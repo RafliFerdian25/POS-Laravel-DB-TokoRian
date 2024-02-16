@@ -278,7 +278,7 @@
         // Menampilkan modal edit product
         const showEdit = (idBarang) => {
             // Mengisi konten modal dengan data yang sesuai
-            let modalContent = $('#modalMain .modal-content');
+            let modalContent = $('#modalEdit .modal-content');
 
             modalContent.html(`
                 <div class="modal-header">
@@ -531,6 +531,7 @@
                                     _token: '{{ csrf_token() }}',
                                     IdBarang: $('#IdBarang').val(),
                                     nmBarang: $('#nmBarang').val(),
+                                    merk_id: $('#merk_id').val(),
                                     satuan: $('#satuan').val(),
                                     isi: $('#isi').val(),
                                     hargaPokok: $('#hargaPokok').val(),
@@ -556,7 +557,7 @@
                                         .then(() => {
                                             getPrintPriceProduct();
                                             // menutup modal
-                                            $('#modalMain').modal('hide');
+                                            $('#modalEdit').modal('hide');
                                         });
                                 },
                                 error: function(xhr, status, error) {
@@ -580,7 +581,7 @@
             });
 
             // Menampilkan modal
-            $('#modalMain').modal('show');
+            $('#modalEdit').modal('show');
         }
 
         const initSelect2Merk = (merk) => {
@@ -590,7 +591,7 @@
                 theme: "bootstrap-5",
                 placeholder: 'Masukkan Merk Barang',
                 width: '100%',
-                allowClear: true,
+                // allowClear: true,
                 minimumInputLength: 1, // Minimum characters required to start searching
                 language: {
                     inputTooShort: function(args) {

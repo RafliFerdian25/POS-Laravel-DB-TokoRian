@@ -119,10 +119,9 @@
                                             <td>{{ $merk->name }}</td>
                                             <td>
                                                 <div class="d-flex justify-content-center">
-                                                    <a href="{{ route('merk.edit', $merk->ID) }}"
-                                                        class="btn btn-link btn-lg float-left px-0"><i
+                                                    <a href="" class="btn btn-link btn-lg float-left px-0"><i
                                                             class="fa fa-edit"></i></a>
-                                                    <form action="{{ route('merk.destroy', $merk->ID) }}" method="POST">
+                                                    <form action="" method="POST">
                                                         @method('DELETE')
                                                         @csrf
                                                         <button type="submit"
