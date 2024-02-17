@@ -76,6 +76,7 @@
                                     <th>No</th>
                                     <th>Barcode</th>
                                     <th>Nama</th>
+                                    <th>Stok</th>
                                     <th>Satuan</th>
                                     <th>Harga Pokok</th>
                                     <th>Jumlah</th>
@@ -214,6 +215,7 @@
                                 index + 1,
                                 product.IdBarang,
                                 product.nmBarang,
+                                product.product.stok,
                                 product.satuan,
                                 product.hargaPokok,
                                 product.jumlah,
@@ -297,6 +299,14 @@
                                     </div>
                                 </div>
                                 <div class="row mb-3">
+                                    <label for="stok" class="col-sm-2 col-form-label">Stok</label>
+                                    <div class="col-sm-10">
+                                        <input required value="${response.data.wholesalePurchaseProduct.product.stok}" type="number"
+                                            class="form-control rounded__10 "
+                                            min="0" id="stok" name="stok">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
                                     <label for="hargaPokok" class="col-sm-2 col-form-label">Harga Pokok</label>
                                     <div class="col-sm-10">
                                         <input required value="${response.data.wholesalePurchaseProduct.hargaPokok}" type="number"
@@ -305,7 +315,7 @@
                                     </div>
                                 </div>
                                 <div class="row mb-3">
-                                    <label for="jumlah" class="col-sm-2 col-form-label">jumlah</label>
+                                    <label for="jumlah" class="col-sm-2 col-form-label">Jumlah</label>
                                     <div class="col-sm-10">
                                         <input required value="${response.data.wholesalePurchaseProduct.jumlah}" type="number"
                                             class="form-control rounded__10 "
@@ -337,6 +347,11 @@
                             satuan: {
                                 required: true,
                             },
+                            stok: {
+                                required: true,
+                                number: true,
+                                min: 0
+                            },
                             hargaPokok: {
                                 required: true,
                                 number: true,
@@ -362,6 +377,11 @@
                             },
                             satuan: {
                                 required: "Satuan tidak boleh kosong",
+                            },
+                            stok: {
+                                required: "Stok tidak boleh kosong",
+                                number: "Stok harus berupa angka",
+                                min: "Stok minimal 0"
                             },
                             hargaPokok: {
                                 required: "Harga pokok tidak boleh kosong",
@@ -391,6 +411,7 @@
                                     IdBarang: $('#IdBarang').val(),
                                     nmBarang: $('#nmBarang').val(),
                                     satuan: $('#satuan').val(),
+                                    stok: $('#stok').val(),
                                     hargaPokok: $('#hargaPokok').val(),
                                     jumlah: $('#jumlah').val(),
                                 },

@@ -18,6 +18,6 @@ class WholesalePurchase extends Model
 
     public function product()
     {
-        return $this->belongsTo(Product::class, 'idBarang');
+        return $this->belongsTo(Product::class, 'IdBarang', 'IdBarang');
     }
 }

@@ -14,10 +14,6 @@ grafik penjualan (Transaksi, barang terjual) keseluruhan
 grafik penjualan (Pendapatan, keuntungan) kategori
 grafik penjualan (Transaksi, barang terjual) kategori
 
-// CRUD tabel barang habis
-Filter tanggal
-Kolom penjualan barang berdasarkan tanggal
-
 // View Laporan Barang Detail
 grafik penjualan barang harian dalam sebulan (grafik batang/garis)
 grafik penjualan barang bulanan dalam setahun (grafik batang/garis)
@@ -57,6 +53,8 @@ delete penjualan gas
 // CRUD tabel barang habis
 ✅ read barang habis
 ✅ update barang habis
+✅ Filter tanggal
+✅ Kolom penjualan barang dan tanggal habis berdasarkan tanggal
 
 // CRUD tabel barang
 ✅ read tabel barang

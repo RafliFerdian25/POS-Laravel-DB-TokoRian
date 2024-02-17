@@ -21,7 +21,7 @@ class WholesalePurchaseController extends Controller
     public function index()
     {
         $title = 'POS TOKO | Belanja';
-        return view('purchase.purchase', compact('title'));
+        return view('purchase.index', compact('title'));
     }
 
     /**
@@ -31,7 +31,7 @@ class WholesalePurchaseController extends Controller
      */
     public function indexData()
     {
-        $wholesalePurchases = WholesalePurchase::select('id', 'IdBarang', 'nmBarang', 'satuan', 'hargaPokok', 'jumlah', 'total')
+        $wholesalePurchases = WholesalePurchase::with('product:IdBarang,stok')->select('id', 'IdBarang', 'nmBarang', 'satuan', 'hargaPokok', 'jumlah', 'total')
             ->orderBy('nmBarang', 'desc')
             ->get();
 
@@ -93,10 +93,9 @@ class WholesalePurchaseController extends Controller
     public function edit(WholesalePurchase $wholesalePurchase)
     {
         $units = Unit::orderBy('satuan')->get();
-        // dd($wholesalePurchase);
 
         return ResponseFormatter::success([
-            'wholesalePurchaseProduct' => $wholesalePurchase,
+            'wholesalePurchaseProduct' => $wholesalePurchase->load('product:IdBarang,stok'),
             'units' => $units
         ], 'Data berhasil diambil');
     }
@@ -114,6 +113,7 @@ class WholesalePurchaseController extends Controller
         $rules = [
             'jumlah' => 'required|numeric|min:1',
             'hargaPokok' => 'required|numeric|min:1',
+            'stok' => 'required|numeric|min:0'
         ];
 
         $validated = Validator::make($request->all(), $rules);
@@ -130,6 +130,10 @@ class WholesalePurchaseController extends Controller
                 'jumlah' => $request->jumlah,
                 'hargaPokok' => $request->hargaPokok,
                 'TOTAL' => $request->jumlah * $request->hargaPokok
+            ]);
+
+            Product::where('IdBarang', $wholesalePurchase->IdBarang)->update([
+                'stok' => $request->stok
             ]);
             DB::commit();
             return ResponseFormatter::success(null, 'Data berhasil diubah');

@@ -93,6 +93,7 @@ class ReportController extends Controller
             })
             ->groupBy('jenis')
             ->orderBy('total', 'desc')
+            ->limit(10)
             ->get();
 
         $data = [
