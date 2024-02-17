@@ -107,4 +107,5 @@ Route::controller(MerkController::class)->group(function () {
     Route::post('/merk', 'store')->name('merk.store');
     Route::get('/merk/{merk:id}/edit', 'edit')->name('merk.edit');
     Route::put('/merk/{merk:id}', 'update')->name('merk.update');
+    Route::delete('/merk/{merk:id}', 'destroy')->name('merk.destroy');
 });

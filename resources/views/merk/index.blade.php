@@ -103,18 +103,12 @@
                                 index + 1,
                                 merk.merk,
                                 merk.keterangan,
-                                `<div class="d-flex justify-content-center">
-                                                    <button onclick="showEdit('${merk.id}')" class="btn btn-link btn-lg float-left px-0"><i
-                                                            class="fa fa-edit"></i></button>
-                                                    <form action="" method="POST">
-                                                        @method('DELETE')
-                                                        @csrf
-                                                        <button type="submit"
-                                                            onclick="return confirm('Yakin ingin menghapus merk')"
-                                                            class="btn btn-link btn-lg float-right px-0 color__red1"><i
-                                                                class="fa fa-trash"></i></button>
-                                                    </form>
-                                                </div>`
+                                `<button onclick="showEdit('${merk.id}')" class="btn btn-link btn-lg"><i
+                                        class="fa fa-edit"></i></button>
+                                <button
+                                    onclick="deleteMerk('${merk.id}','${merk.merk}')"
+                                    class="btn btn-link btn-lg color__red1"><i
+                                        class="fa fa-trash"></i></button>`
                             ];
                             var rowNode = $('#tableMerk').DataTable().row.add(rowData)
                                 .draw(
@@ -122,7 +116,7 @@
                                 .node();
 
                             // $(rowNode).find('td').eq(8).addClass('text-center');
-                            // $(rowNode).find('td').eq(4).addClass('text-center text-nowrap');
+                            $(rowNode).find('td').eq(3).addClass('text-center');
                         });
                     } else {
                         $('#tableMerkBody').html(tableEmpty(4,
@@ -282,6 +276,51 @@
 
             // Menampilkan modal
             $('#modalMain').modal('show');
+        }
+
+        const deleteMerk = (id, name) => {
+            Swal.fire({
+                title: 'Hapus Merk',
+                text: `Apakah Anda yakin ingin menghapus ${name}?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Hapus',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "DELETE",
+                        url: `{{ url('merk/${id}') }}`,
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                        },
+                        success: function(response) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil',
+                                text: 'Hapus Merk Berhasil',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                            getMerks();
+                        },
+                        error: function(xhr, ajaxOptions, thrownError) {
+                            if (xhr.responseJSON) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal',
+                                    text: `Hapus Merk Gagal. ${xhr.responseJSON.meta.message} Error: ${xhr.responseJSON.data.error}`,
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                })
+                            }
+                            return false;
+                        },
+                    });
+                }
+            })
         }
     </script>
 @endpush

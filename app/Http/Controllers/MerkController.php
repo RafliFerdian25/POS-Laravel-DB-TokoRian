@@ -144,10 +144,22 @@ class MerkController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Merk $merk)
     {
-        Merk::destroy($id);
-        return redirect()->route('kategori.index')->with('success', 'Berhasil menghapus merk.');
+        try {
+            DB::beginTransaction();
+            $merk->delete();
+            DB::commit();
+            return ResponseFormatter::success(
+                null,
+                'Data merk berhasil dihapus.'
+            );
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return ResponseFormatter::error([
+                'error' => $e->getMessage()
+            ], 'Data gagal dihapus.', 500);
+        }
     }
 
     /**
