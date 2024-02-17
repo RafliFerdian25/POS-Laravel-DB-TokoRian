@@ -143,9 +143,17 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ url('/kategori') }}" id="navbar__kategori">
+                                <a href="{{ url('/kategori') }}" id="navbar__kategori"
+                                    class="{{ Request::is('kategori*') ? 'mm-active' : '' }}">
                                     <i class="metismenu-icon pe-7s-folder"></i>
                                     Kategori
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ url('/merk') }}" id="navbar__merk"
+                                    class="{{ Request::is('merk*') ? 'mm-active' : '' }}">
+                                    <i class="metismenu-icon pe-7s-folder"></i>
+                                    Merk
                                 </a>
                             </li>
                             <li class="">

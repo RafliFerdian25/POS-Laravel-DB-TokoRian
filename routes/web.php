@@ -101,5 +101,6 @@ Route::controller(WholesalePurchaseController::class)->group(function () {
 
 // Merk
 Route::controller(MerkController::class)->group(function () {
+    Route::get('/merk', 'index')->name('merk.index');
     Route::get('/merk/cari/data', 'searchData')->name('merk.search.data');
 });

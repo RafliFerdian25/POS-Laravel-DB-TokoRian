@@ -19,6 +19,12 @@ grafik penjualan barang harian dalam sebulan (grafik batang/garis)
 grafik penjualan barang bulanan dalam setahun (grafik batang/garis)
 tanggal terakhir belanja barang
 
+// CRUD tabel merk
+read merk
+create merk
+update merk
+delete merk
+
 // CRUD tabel barang pernah kadaluarsa
 menambahkan tabel barang yang pernah kadaluarsa
 read barang pernah kadaluarsa

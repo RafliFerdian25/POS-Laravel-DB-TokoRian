@@ -9,6 +9,18 @@ use Illuminate\Http\Request;
 class MerkController extends Controller
 {
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $title = 'POS TOKO | Kategori';
+        $merks = Merk::all();
+        return view('merk.index', compact('title', 'merks'));
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
