@@ -29,11 +29,12 @@ Route::get('/', function () {
 
 /** LAPORAN */
 Route::controller(ReportController::class)->group(function () {
-    Route::get('/laporan/penjualan/bulanan', 'ReportSaleMonthly')->name('laporan.penjualan.bulanan');
+    Route::get('/laporan/penjualan', 'ReportSale')->name('laporan.penjualan');
+    Route::get('/laporan/penjualan/data', 'getReportSale')->name('laporan.penjualan.data');
     Route::get('/laporan/kategori', 'categoryIndex')->name('laporan.kategori');
     Route::get('/laporan/kategori/data', 'getCategoriesReport')->name('laporan.kategori.data');
-    Route::get('/laporan/kategori/detail/{category:ID}', 'categoryDetail')->name('report.category.detail');
-    Route::get('/laporan/kategori/detail/{category:ID}/data', 'getCategoryDetail')->name('report.category.detail.data');
+    Route::get('/laporan/kategori/{category:ID}/detail', 'categoryDetail')->name('report.category.detail');
+    Route::get('/laporan/kategori/{category:ID}/detail/data', 'getCategoryDetail')->name('report.category.detail.data');
     Route::get('/laporan/barang', 'monthlyProductReport')->name('monthly.product.report');
     Route::get('/laporan/barang/data', 'monthlyProductReportData')->name('monthly.product.report.data');
 });

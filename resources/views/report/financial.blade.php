@@ -10,13 +10,12 @@
                         <i class="pe-7s-note2 icon-gradient bg-plum-plate">
                         </i>
                     </div>
-                    <div>Laporan {{ $typeReport }}
+                    <div>Laporan Penjualan
                         <div class="page-title-subheading">
-                            Laporan keuangan {{ $typeReport == 'Bulanan' ? 'Bulan' : 'Tanggal' }}
-                            <span class="fw-bold">{{ $dateString }}</span>
+                            Laporan keuangan <span class="fw-bold" id="dateString"></span>
                         </div>
                         <div class="row justify-content-center justify-content-lg-start">
-                            <form action="" id="formBulan" class="col-6 col-lg-12">
+                            <form id="formBulan" class="col-6 col-lg-12">
                                 @csrf
                                 <div class="row">
                                     <label for="daterange" class="col">Rentang Tanggal :</label>
@@ -26,8 +25,8 @@
                                 <div class="row">
                                     <label for="month" class="col">Bulan :</label>
                                     <input type="month" name="month" id="month" class="form-control mb-3 col"
-                                        @if ($typeReport == 'Bulanan') value="{{ $date }}" @endif
-                                        onchange="laporanBulanan()">
+                                        @if ($typeReport == 'Bulanan') value="{{ date('Y-m') }}" @endif
+                                        onchange="getReportSale('bulanan')">
                                 </div>
                             </form>
                         </div>
@@ -47,7 +46,7 @@
                             <div class="widget-heading col-10 widget__title">Total Pendapatan</div>
                         </div>
                         <div class="widget-content-right">
-                            <div class="widget-numbers mb-2"><span>Rp. {{ format_uang($report->income) }}</span></div>
+                            <div class="widget-numbers mb-2"><span id="income">Rp. </span></div>
                             <div class="perubahan row">
                                 {{-- <div class="widget-subheading col-10" id="total_pendapatan">
                                     -2000000
@@ -66,7 +65,7 @@
                             <div class="widget-heading col-10 widget__title">Total Keuntungan</div>
                         </div>
                         <div class="widget-content-right">
-                            <div class="widget-numbers mb-2"><span>Rp {{ format_uang($report->profit) }}</span></div>
+                            <div class="widget-numbers mb-2"><span id="profit">Rp. </span></div>
                             <div class="change row" id="change">
                                 {{-- <div class="widget-subheading col-10" id="total_keuntungan">
                                     2000000
@@ -85,7 +84,7 @@
                             <div class="widget-heading col-10 widget__title">Total Transaksi</div>
                         </div>
                         <div class="widget-content-right">
-                            <div class="widget-numbers mb-2"><span>{{ format_uang($report->total_transaction) }}</span>
+                            <div class="widget-numbers mb-2"><span id="total_transaction"></span>
                             </div>
                             <div class="change row" id="change">
                                 {{-- <div class="widget-subheading col-10" id="total_Transaksi">
@@ -105,7 +104,7 @@
                             <div class="widget-heading col-10 widget__title">Total Barang Terjual</div>
                         </div>
                         <div class="widget-content-right">
-                            <div class="widget-numbers mb-2"><span>{{ format_uang($report->total_item) }}</span></div>
+                            <div class="widget-numbers mb-2"><span id="total_product"></span></div>
                             <div class="change row" id="change">
                                 {{-- <div class="widget-subheading col-10" id="total_barang">
                                     -8
@@ -126,7 +125,8 @@
                         Jenis Terlaris
                     </div>
                     <div class="table-responsive">
-                        <table class="align-middle mb-0 table table-borderless table-striped table-hover">
+                        <table class="align-middle mb-0 table table-borderless table-striped table-hover"
+                            id="tableBestSellingCategories">
                             <thead>
                                 <tr>
                                     <th class="text-center">#</th>
@@ -136,28 +136,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($jenisTerlaris as $jenis)
-                                    <tr>
-                                        <td class="text-center text-muted">{{ $loop->iteration }}</td>
-                                        <td>
-                                            <div class="widget-content p-0">
-                                                <div class="widget-content-wrapper">
-                                                    <div class="widget-content-left flex2">
-                                                        {{ $jenis->jenis }}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="text-center">{{ $jenis->total }}</td>
-                                        <td class="text-center">
-                                            <a href="{{ route('report.category.detail', $jenis->jenis) }}">
-                                                <button type="button" id="PopoverCustomT-1" class="btn btn-primary btn-sm">
-                                                    Details
-                                                </button>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -176,7 +154,8 @@
                         </div>
                     </div>
                     <div class="table-responsive">
-                        <table class="align-middle mb-0 table table-borderless table-striped table-hover">
+                        <table class="align-middle mb-0 table table-borderless table-striped table-hover"
+                            id="tableBestSellingProducts">
                             <thead>
                                 <tr>
                                     <th class="text-center">#</th>
@@ -186,29 +165,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($barangTerlaris as $barang)
-                                    <tr>
-                                        <td class="text-center text-muted">{{ $loop->iteration }}</td>
-                                        <td>
-                                            <div class="widget-content p-0">
-                                                <div class="widget-content-wrapper">
-                                                    <div class="widget-content-left flex2">
-                                                        {{ $barang->namaBarang }}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="text-center">{{ $barang->total }}</td>
-                                        <td class="text-center">
-                                            <a href="{{ route('laporan.barang.bulanan', $barang->idBarang) }}">
-                                                <button type="button" id="PopoverCustomT-1"
-                                                    class="btn btn-primary btn-sm">
-                                                    Details
-                                                </button>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -218,61 +174,69 @@
         </div>
         {{-- END Terlaris --}}
         <!-- END CARD DASHBOARD -->
-        {{--  --}}
+
+        {{-- Chart Monthly Report --}}
+        <div class="row">
+            {{-- Chart Laporan Penjualan --}}
+            <div class="col-lg-6">
+                <div class="main-card mb-3 card">
+                    <div class="card-header">
+                        Laporan Penjualan
+                    </div>
+                    <div class="card-body">
+                        <div id="dailyFinancialReportChart"></div>
+                    </div>
+                </div>
+            </div>
+            {{-- End hart Laporan Penjualan --}}
+
+            {{-- Chart Laporan Penjualan --}}
+            <div class="col-lg-6">
+                <div class="main-card mb-3 card">
+                    <div class="card-header">
+                        Laporan Penjualan Bulanan
+                    </div>
+                    <div class="card-body">
+                        <div id="monthlyFinancialReportChart"></div>
+                    </div>
+                </div>
+            </div>
+            {{-- End chart Laporan Penjualan --}}
+        </div>
+        {{-- END Chart Monthly Report --}}
+
         <!-- Barang Terjual -->
         <div class="barang__terjual__section">
             <div class="main-card mb-3 card">
                 <div class="card-body">
                     <h5 class="card-title text-center">Riwayat Penjualan</h5>
-                    <table class="mb-0 table" id="barang_terjual">
+                    <table class="mb-0 table" id="transactionByNoTransactions">
                         <thead>
                             <tr>
                                 <th>No. Transaksi</th>
                                 <th>Tanggal</th>
                                 <th>Total Item</th>
-                                <th>Total Harga</th>
+                                <th>Total Pendapatan</th>
                                 <th>Keuntungan</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @foreach ($transactions as $transaction)
-                                <tr>
-                                    <td scope="row">{{ $transaction->noTransaksi }}</td>
-                                    <td>{{ $transaction->tanggal }}</td>
-                                    <td>{{ $transaction->jumlah }}</td>
-                                    <td>{{ $transaction->total }}</td>
-                                    <td>{{ $transaction->laba }}</td>
-                                    <td>
-                                        <a href="{{ route('laporan.show', $transaction->noTransaksi) }}"
-                                            class="btn btn-primary">Detail</a>
-                                    </td>
-                                </tr>
-                            @endforeach
+                        <tbody id="transactionByNoTransactionsBody">
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
         <!-- end barang terjual -->
-
     </div>
 @endsection
 
 @push('scripts')
     <script>
         $(document).ready(function() {
-            $("#laporan_bulanan").DataTable({
-                pageLength: 3,
-                paging: false,
-                info: false,
-            });
+            initializeDataTable("transactionByNoTransactions");
+            getReportSale()
         });
-
-        function laporanBulanan() {
-            $("#daterange").val(null);
-            $("#formBulan").submit();
-        }
 
         $(function() {
             $('#daterange').daterangepicker({
@@ -320,11 +284,289 @@
                 $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format(
                     'YYYY-MM-DD'));
                 $("#month").val(null);
-                $("#formBulan").submit();
+                getReportSale('harian');
             });
             $('#daterange').on('cancel.daterangepicker', function(ev, picker) {
                 $(this).val(null);
             });
         });
+
+        const getReportSale = (typeReport) => {
+            if (typeReport == 'harian') {
+                $('#month').val(null);
+            } else if (typeReport == 'bulanan') {
+                $('#daterange').val(null);
+            }
+
+            $('#income').html(inlineLoader())
+            $('#profit').html(inlineLoader())
+            $('#total_transaction').html(inlineLoader())
+            $('#total_product').html(inlineLoader())
+            $('#tableBestSellingCategories tbody').html(tableLoader(4))
+            $('#tableBestSellingProducts tbody').html(tableLoader(4))
+            $('#transactionByNoTransactionsBody').html(tableLoader(6))
+
+            $.ajax({
+                type: "GET",
+                url: `{{ url('laporan/penjualan/data') }}`,
+                data: {
+                    daterange: $('#daterange').val(),
+                    month: $('#month').val()
+                },
+                success: function(response) {
+                    $('#income').text(formatCurrency(response.data.report.income));
+                    $('#profit').text(formatCurrency(response.data.report.profit));
+                    $('#total_transaction').text(response.data.report.total_transaction);
+                    $('#total_product').text(response.data.report.total_product);
+                    $('#tableBestSellingCategories tbody').empty();
+                    $('#tableBestSellingProducts tbody').empty();
+
+                    // table data barang terjual terbaik
+                    response.data.bestSellingCategories.forEach((item, index) => {
+                        $('#tableBestSellingCategories tbody').append(`
+                            <tr>
+                                <td class="text-center text-muted">${index + 1}</td>
+                                <td>
+                                    <div class="widget-content p-0">
+                                        <div class="widget-content-wrapper">
+                                            <div class="widget-content-left flex2">
+                                                ${item.name}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-center">${item.total}</td>
+                                <td class="text-center">
+                                    <a href="{{ url('/laporan/kategori/${item.id}/detail') }}">
+                                        <button type="button" id="PopoverCustomT-1" class="btn btn-primary btn-sm">
+                                            Detail
+                                        </button>
+                                    </a>
+                                </td>
+                            </tr>
+                        `);
+                    });
+
+                    response.data.bestSellingProducts.forEach((item, index) => {
+                        $('#tableBestSellingProducts tbody').append(`
+                            <tr>
+                                <td class="text-center text-muted">${index + 1}</td>
+                                <td>
+                                    <div class="widget-content p-0">
+                                        <div class="widget-content-wrapper">
+                                            <div class="widget-content-left flex2">
+                                                ${item.name}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-center">${item.total}</td>
+                                <td class="text-center">
+                                    <a href="">
+                                        <button type="button" id="PopoverCustomT-1" class="btn btn-primary btn-sm">
+                                            Details
+                                        </button>
+                                    </a>
+                                </td>
+                            </tr>
+                        `);
+                    });
+
+                    // dailyFinancialReportChart
+                    Highcharts.chart('dailyFinancialReportChart', {
+                        chart: {
+                            type: 'spline'
+                        },
+                        title: {
+                            text: 'Laporan Penjualan Harian ',
+                            align: 'center'
+                        },
+
+                        subtitle: {
+                            text: 'Harian',
+                            align: 'center'
+                        },
+
+                        yAxis: {
+                            title: {
+                                text: 'Jumlah Penjualan'
+                            }
+                        },
+
+                        xAxis: {
+                            title: {
+                                text: 'Tanggal'
+                            },
+                            type: 'datetime', // Menggunakan tipe datetime
+                            categories: response.data.transactionsByDate.map(transaction => Date
+                                .parse(
+                                    transaction.tanggal)), // Mengonversi tanggal ke timestamp
+                            accessibility: {
+                                rangeDescription: 'Date'
+                            },
+                            labels: {
+                                format: '{value:%e}', // Menampilkan nilai tanggal
+                            }
+                        },
+                        tooltip: {
+                            crosshairs: true,
+                            shared: true
+                        },
+                        plotOptions: {
+                            series: {
+                                label: {
+                                    connectorAllowed: true
+                                },
+                            }
+                        },
+
+                        series: [{
+                            name: 'Total Pendapatan',
+                            data: response.data.transactionsByDate.map(transaction =>
+                                parseInt(
+                                    transaction
+                                    .income)),
+                        }, {
+                            name: 'Total Keuntungan',
+                            data: response.data.transactionsByDate.map(transaction =>
+                                parseInt(
+                                    transaction
+                                    .profit))
+                        }, {
+                            name: 'Jumlah Barang Terjual',
+                            data: response.data.transactionsByDate.map(transaction =>
+                                parseInt(
+                                    transaction
+                                    .total_product)),
+                        }],
+
+                        responsive: {
+                            rules: [{
+                                condition: {
+                                    maxWidth: 500
+                                },
+                                chartOptions: {
+                                    legend: {
+                                        layout: 'horizontal',
+                                        align: 'center',
+                                        verticalAlign: 'bottom'
+                                    }
+                                }
+                            }]
+                        }
+                    });
+
+                    // monthlyFinancialReportChart
+                    Highcharts.chart('monthlyFinancialReportChart', {
+                        chart: {
+                            type: 'spline'
+                        },
+                        title: {
+                            text: 'Laporan Penjualan Bulanan ',
+                            align: 'center'
+                        },
+
+                        subtitle: {
+                            text: 'Bulanan',
+                            align: 'center'
+                        },
+
+                        yAxis: {
+                            title: {
+                                text: 'Jumlah Penjualan'
+                            }
+                        },
+
+                        xAxis: {
+                            title: {
+                                text: 'Bulan'
+                            },
+                            type: 'datetime', // Menggunakan tipe datetime
+                            categories: response.data.transactionsByYear.map(transaction => Date
+                                .parse(
+                                    transaction.month)), // Mengonversi tanggal ke timestamp
+                            accessibility: {
+                                rangeDescription: 'Date'
+                            },
+                            labels: {
+                                format: '{value:%m-%Y}', // Menampilkan nilai tanggal
+                            }
+                        },
+                        tooltip: {
+                            crosshairs: true,
+                            shared: true
+                        },
+                        plotOptions: {
+                            series: {
+                                label: {
+                                    connectorAllowed: true
+                                },
+                            }
+                        },
+
+                        series: [{
+                            name: 'Total Pendapatan',
+                            data: response.data.transactionsByYear.map(transaction =>
+                                parseInt(
+                                    transaction
+                                    .income)),
+                        }, {
+                            name: 'Total Keuntungan',
+                            data: response.data.transactionsByYear.map(transaction =>
+                                parseInt(
+                                    transaction
+                                    .profit))
+                        }, {
+                            name: 'Jumlah Barang Terjual',
+                            data: response.data.transactionsByYear.map(transaction =>
+                                parseInt(
+                                    transaction
+                                    .total_product)),
+                        }],
+
+                        responsive: {
+                            rules: [{
+                                condition: {
+                                    maxWidth: 500
+                                },
+                                chartOptions: {
+                                    legend: {
+                                        layout: 'horizontal',
+                                        align: 'center',
+                                        verticalAlign: 'bottom'
+                                    }
+                                }
+                            }]
+                        }
+                    });
+
+                    // table data barang terjual
+                    $('#transactionByNoTransactions').DataTable().clear().draw();
+                    if (response.data.transactionByNoTransactions.length > 0) {
+                        $.each(response.data.transactionByNoTransactions, function(index, transaction) {
+                            var rowData = [
+                                transaction.no_transaction,
+                                transaction.date,
+                                transaction.total_product,
+                                transaction.income,
+                                transaction.profit,
+                                `<button class="btn btn-sm btn-warning" onclick="showEdit('${transaction.noTransaksi}')">Detail</button>`
+                            ];
+                            var rowNode = $('#transactionByNoTransactions').DataTable().row.add(
+                                    rowData)
+                                .draw(
+                                    false)
+                                .node();
+
+                            // $(rowNode).find('td').eq(0).addClass('text-center');
+                            // $(rowNode).find('td').eq(4).addClass('text-center text-nowrap');
+                        });
+                    } else {
+                        $('#transactionByNoTransactionsBody').html(tableEmpty(6,
+                            'Riwayat Penjualan'));
+                    }
+                }
+            });
+        };
     </script>
 @endpush

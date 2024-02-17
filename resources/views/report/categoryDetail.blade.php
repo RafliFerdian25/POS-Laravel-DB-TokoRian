@@ -182,22 +182,24 @@
             {{-- End Barang terlaris --}}
         </div>
         {{-- END Report --}}
-        {{-- Report --}}
+
+        {{-- Chart Monthly Report --}}
         <div class="row">
             {{-- Chart Laporan Penjualan --}}
             <div class="col">
                 <div class="main-card mb-3 card">
                     <div class="card-header">
-                        Laporan Penjualan
+                        Laporan Penjualan Bulanan
                     </div>
                     <div class="card-body">
                         <div id="monthlyFinancialReportChart"></div>
                     </div>
                 </div>
             </div>
-            {{-- End hart Laporan Penjualan --}}
+            {{-- End chart Laporan Penjualan --}}
         </div>
-        {{-- END Report --}}
+        {{-- END Chart Monthly Report --}}
+
         <!-- END CARD DASHBOARD -->
 
         <!-- Barang Terjual -->
@@ -306,7 +308,7 @@
 
             $.ajax({
                 type: "GET",
-                url: `{{ url('laporan/kategori/detail/' . $category->jenis . '/data') }}`,
+                url: `{{ url('laporan/kategori/' . $category->jenis . '/detail/data') }}`,
                 data: {
                     daterange: $('#daterange').val(),
                     month: $('#month').val()
@@ -355,7 +357,7 @@
                         },
 
                         subtitle: {
-                            text: 'Bulanan',
+                            text: 'Harian',
                             align: 'center'
                         },
 
