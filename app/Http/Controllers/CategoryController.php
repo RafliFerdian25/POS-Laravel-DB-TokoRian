@@ -18,8 +18,7 @@ class CategoryController extends Controller
     {
         $title = 'POS TOKO | Kategori';
         $categories = Category::withCount('products')->get();
-        $merks = Merk::all();
-        return view('category.index', compact('categories', 'title', 'merks'));
+        return view('category.index', compact('categories', 'title'));
     }
 
     /**

@@ -34,7 +34,7 @@
                     <div class="content">
                         <div class="widget-content-left row mb-2">
                             <i class="pe-7s-cash col-2" style="font-size: 30px;"></i>
-                            <div class="widget-heading col-10 widget__title">Total Barang</div>
+                            <div class="widget-heading col-10 widget__title">Total Merk</div>
                         </div>
                         <div class="widget-content-right">
                             <div class="widget-numbers mb-2"><span id="countMerk">-</span></div>
@@ -64,6 +64,7 @@
                                         <th>ID</th>
                                         <th>Nama</th>
                                         <th>Keterangan</th>
+                                        <th>Jumlah Barang</th>
                                         <th class="text-center">Aksi</th>
                                     </tr>
                                 </thead>
@@ -83,7 +84,7 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            $('#merk').DataTable();
+            $('#tableMerk').DataTable();
 
             getMerks();
         });
@@ -103,6 +104,7 @@
                                 index + 1,
                                 merk.merk,
                                 merk.keterangan,
+                                merk.products_count,
                                 `<button onclick="showEdit('${merk.id}')" class="btn btn-link btn-lg"><i
                                         class="fa fa-edit"></i></button>
                                 <button
