@@ -93,7 +93,7 @@
         <!-- end barang terjual -->
 
         <!-- Barang -->
-        <div class="expiredProductSection">
+        <div class="productSection">
             <div class="main-card mb-3 card">
                 <div class="card-body">
                     <h5 class="card-title text-center">Barang</h5>
@@ -163,6 +163,10 @@
             // datatable reponsive
             $("#tableProduct").DataTable({
                 scrollX: true,
+                columnDefs: [{
+                    targets: [8], // Kolom "Tanggal" ada di indeks 1 (0-indexed)
+                    type: "date-eu" // Tentukan tipe pengurutan khusus untuk format "DD/MM/YYYY"
+                }],
             });
 
             // Do this before you initialize any of your modals
@@ -191,7 +195,9 @@
                                 product.hargaJual,
                                 product.hargaGrosir,
                                 product.stok,
-                                product.expDate,
+                                product.expDate != null ? moment(product.expDate, 'YYYY-MM-DD')
+                                .format(
+                                    'DD-MM-YYYY') : '-',
                                 product.jenis,
                                 product.merk.merk,
                                 `<button class="btn btn-sm btn-warning" onclick="showEdit('${product.IdBarang}')">Edit</button>
@@ -202,7 +208,7 @@
                                     false)
                                 .node();
 
-                            // $(rowNode).find('td').eq(0).addClass('text-center');
+                            $(rowNode).find('td').eq(8).addClass('text-center');
                             // $(rowNode).find('td').eq(4).addClass('text-center text-nowrap');
                         });
                     } else {

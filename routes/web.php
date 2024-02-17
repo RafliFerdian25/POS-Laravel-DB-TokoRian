@@ -53,8 +53,8 @@ Route::resource('/transaksi', SaleDetailController::class)
 
 // Barang
 Route::controller(ProductController::class)->group(function () {
-    Route::get('/barang/data', 'data')->name('barang.data');
     Route::get('/barang', 'index')->name('barang.index');
+    Route::get('/barang/data', 'data')->name('barang.data');
     Route::get('/barang/create', 'create')->name('barang.create');
     Route::post('/barang', 'store')->name('barang.store');
     Route::get('/barang/{product:idBarang}/edit', 'edit')->name('barang.edit');

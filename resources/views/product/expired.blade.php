@@ -188,7 +188,8 @@
                                 product.IdBarang,
                                 product.nmBarang,
                                 product.stok,
-                                moment(product.expDate).format('DD/MM/YYYY'),
+                                product.expDate ?? moment(product.expDate, 'YYYY-MM-DD').format(
+                                    'DD-MM-YYYY'),
                                 `<button class="btn btn-sm btn-warning" onclick="showEdit('${product.IdBarang}')">Edit</button>`
                             ];
                             var rowNode = $('#tableExpiredProduct').DataTable().row.add(rowData)
