@@ -147,7 +147,6 @@ const initDateRange = (typeReport, callbackFunction) => {
 // Function to initialize DataTable based on screen size
 const initializeDataTable = (tableId) => {
     var screenWidth = $(window).width();
-    console.log(screenWidth);
 
     // Check if the screen width is below 992 pixels
     if (screenWidth < 992) {
@@ -159,4 +158,12 @@ const initializeDataTable = (tableId) => {
         // Initialize DataTable with scrollX
         $("#" + tableId).DataTable();
     }
+}
+
+const calculateAverage = (data) => {
+    const sum = data.reduce((acc, value) => acc + value, 0);
+    const average = sum / data.length;
+
+    // Format the average value with two decimal places
+    return parseFloat(average.toFixed(0));
 }

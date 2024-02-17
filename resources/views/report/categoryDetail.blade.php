@@ -412,6 +412,33 @@
                                 parseInt(
                                     transaction
                                     .total_product)),
+                        }, {
+                            name: 'Rata - Rata Pendapatan',
+                            visible: false,
+                            data: response.data.transactionsByDate.map(transaction =>
+                                calculateAverage(
+                                    response.data.transactionsByDate
+                                    .map(transaction => parseInt(transaction
+                                        .income))
+                                )),
+                        }, {
+                            name: 'Rata - Rata Keuntungan',
+                            visible: false,
+                            data: response.data.transactionsByDate.map(transaction =>
+                                calculateAverage(
+                                    response.data.transactionsByDate
+                                    .map(transaction => parseInt(transaction
+                                        .profit))
+                                )),
+                        }, {
+                            name: 'Rata - Rata Barang Terjual',
+                            visible: false,
+                            data: response.data.transactionsByDate.map(transaction =>
+                                calculateAverage(
+                                    response.data.transactionsByDate
+                                    .map(transaction => parseInt(transaction
+                                        .total_product))
+                                )),
                         }],
 
                         responsive: {
@@ -496,6 +523,33 @@
                                 parseInt(
                                     transaction
                                     .total_product)),
+                        }, {
+                            name: 'Rata - Rata Pendapatan',
+                            visible: false,
+                            data: response.data.transactionsByLastYear.map(transaction =>
+                                calculateAverage(
+                                    response.data.transactionsByLastYear
+                                    .map(transaction => parseInt(transaction
+                                        .income))
+                                )),
+                        }, {
+                            name: 'Rata - Rata Keuntungan',
+                            visible: false,
+                            data: response.data.transactionsByLastYear.map(transaction =>
+                                calculateAverage(
+                                    response.data.transactionsByLastYear
+                                    .map(transaction => parseInt(transaction
+                                        .profit))
+                                )),
+                        }, {
+                            name: 'Rata - Rata Barang Terjual',
+                            visible: false,
+                            data: response.data.transactionsByLastYear.map(transaction =>
+                                calculateAverage(
+                                    response.data.transactionsByLastYear
+                                    .map(transaction => parseInt(transaction
+                                        .total_product))
+                                )),
                         }],
 
                         responsive: {

@@ -438,6 +438,33 @@
                                 parseInt(
                                     transaction
                                     .total_product)),
+                        }, {
+                            name: 'Rata - Rata Pendapatan',
+                            visible: false,
+                            data: response.data.transactionsByDate.map(transaction =>
+                                calculateAverage(
+                                    response.data.transactionsByDate
+                                    .map(transaction => parseInt(transaction
+                                        .income))
+                                )),
+                        }, {
+                            name: 'Rata - Rata Keuntungan',
+                            visible: false,
+                            data: response.data.transactionsByDate.map(transaction =>
+                                calculateAverage(
+                                    response.data.transactionsByDate
+                                    .map(transaction => parseInt(transaction
+                                        .profit))
+                                )),
+                        }, {
+                            name: 'Rata - Rata Barang Terjual',
+                            visible: false,
+                            data: response.data.transactionsByDate.map(transaction =>
+                                calculateAverage(
+                                    response.data.transactionsByDate
+                                    .map(transaction => parseInt(transaction
+                                        .total_product))
+                                )),
                         }],
 
                         responsive: {
@@ -474,7 +501,7 @@
                         yAxis: {
                             title: {
                                 text: 'Jumlah Penjualan'
-                            }
+                            },
                         },
 
                         xAxis: {
@@ -499,7 +526,7 @@
                         plotOptions: {
                             series: {
                                 label: {
-                                    connectorAllowed: true
+                                    connectorAllowed: true,
                                 },
                             }
                         },
@@ -522,8 +549,35 @@
                                 parseInt(
                                     transaction
                                     .total_product)),
-                        }],
+                        }, {
+                            name: 'Rata - Rata Pendapatan',
+                            visible: false,
+                            data: response.data.transactionsByYear.map(transaction =>
+                                calculateAverage(
+                                    response.data.transactionsByYear
+                                    .map(transaction => parseInt(transaction
+                                        .income))
+                                )),
+                        }, {
+                            name: 'Rata - Rata Keuntungan',
+                            visible: false,
+                            data: response.data.transactionsByYear.map(transaction =>
+                                calculateAverage(
+                                    response.data.transactionsByYear
+                                    .map(transaction => parseInt(transaction
+                                        .profit))
+                                )),
+                        }, {
+                            name: 'Rata - Rata Barang Terjual',
+                            visible: false,
+                            data: response.data.transactionsByYear.map(transaction =>
+                                calculateAverage(
+                                    response.data.transactionsByYear
+                                    .map(transaction => parseInt(transaction
+                                        .total_product))
+                                )),
 
+                        }],
                         responsive: {
                             rules: [{
                                 condition: {
@@ -537,13 +591,14 @@
                                     }
                                 }
                             }]
-                        }
+                        },
                     });
 
                     // table data barang terjual
                     $('#transactionByNoTransactions').DataTable().clear().draw();
                     if (response.data.transactionByNoTransactions.length > 0) {
-                        $.each(response.data.transactionByNoTransactions, function(index, transaction) {
+                        $.each(response.data.transactionByNoTransactions, function(index,
+                            transaction) {
                             var rowData = [
                                 transaction.no_transaction,
                                 transaction.date,
@@ -552,7 +607,8 @@
                                 transaction.profit,
                                 `<button class="btn btn-sm btn-warning" onclick="showEdit('${transaction.noTransaksi}')">Detail</button>`
                             ];
-                            var rowNode = $('#transactionByNoTransactions').DataTable().row.add(
+                            var rowNode = $('#transactionByNoTransactions').DataTable().row
+                                .add(
                                     rowData)
                                 .draw(
                                     false)
