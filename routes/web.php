@@ -80,7 +80,6 @@ Route::controller(ProductController::class)->group(function () {
 
 // Kategori
 Route::resource('/kategori', CategoryController::class)->except('show');
-Route::resource('/merk', MerkController::class)->except('show', 'index');
 Route::resource('/supplier', SupplierController::class)->except('show');
 
 // Penjualan
@@ -102,5 +101,10 @@ Route::controller(WholesalePurchaseController::class)->group(function () {
 // Merk
 Route::controller(MerkController::class)->group(function () {
     Route::get('/merk', 'index')->name('merk.index');
+    Route::get('/merk/data', 'indexData')->name('merk.data');
     Route::get('/merk/cari/data', 'searchData')->name('merk.search.data');
+    Route::get('/merk/create', 'create')->name('merk.create');
+    Route::post('/merk', 'store')->name('merk.store');
+    Route::get('/merk/{merk:id}/edit', 'edit')->name('merk.edit');
+    Route::put('/merk/{merk:id}', 'update')->name('merk.update');
 });

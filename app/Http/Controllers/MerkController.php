@@ -17,9 +17,16 @@ class MerkController extends Controller
      */
     public function index()
     {
-        $title = 'POS TOKO | Kategori';
+        $title = 'POS TOKO | Merk';
+        return view('merk.index', compact('title'));
+    }
+
+    public function indexData()
+    {
         $merks = Merk::all();
-        return view('merk.index', compact('title', 'merks'));
+        return ResponseFormatter::success([
+            'merks' => $merks,
+        ], 'Data berhasil diambil.');
     }
 
     /**
@@ -83,11 +90,11 @@ class MerkController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Merk $merk)
     {
-        $merk = Merk::findOrFail($id);
-        $title = 'POS TOKO | Kategori';
-        return view('merk.update', compact('merk', 'title'));
+        return ResponseFormatter::success([
+            'merk' => $merk
+        ], 'Data berhasil diambil.');
     }
 
     /**
@@ -97,11 +104,38 @@ class MerkController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Merk $merk)
     {
-        $validated = $request->validate(['name' => 'required']);
-        Merk::where('id', $id)->update($validated);
-        return redirect()->route('kategori.index')->with('success', 'Berhasil mengubah merk.');
+        $rules = [
+            'name' => 'required|unique:p_merk,merk,' . $merk->id,
+            'description' => 'required'
+        ];
+
+        $validated = Validator::make($request->all(), $rules);
+
+        if ($validated->fails()) {
+            return ResponseFormatter::error([
+                'error' => $validated->errors()->first()
+            ], 'Data tidak valid.', 422);
+        }
+
+        try {
+            DB::beginTransaction();
+            $merk->update([
+                'merk' => $request->name,
+                'keterangan' => $request->description
+            ]);
+            DB::commit();
+
+            return ResponseFormatter::success(
+                null,
+                'Data merk berhasil diubah.'
+            );
+        } catch (\Exception $e) {
+            return ResponseFormatter::error([
+                'error' => $e->getMessage()
+            ], 'Data gagal diubah.', 500);
+        }
     }
 
     /**
