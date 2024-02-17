@@ -13,6 +13,10 @@ class Merk extends Model
 
     protected $primaryKey = 'id';
 
+    protected $guarded = ['id'];
+
+    public $timestamps = false;
+
     public function products()
     {
         return $this->hasMany(Product::class);

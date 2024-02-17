@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Helpers\ResponseFormatter;
 use App\Models\Merk;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class MerkController extends Controller
 {
@@ -40,15 +42,39 @@ class MerkController extends Controller
     public function store(Request $request)
     {
         // menyeleksi data yang akan diinputkan
-        $validated = $request->validate([
-            'name' => 'required',
-        ]);
+        $rules = [
+            'name' => 'required|unique:p_merk,merk',
+            'description' => 'required'
+        ];
 
-        // menginput data ke table products
-        Merk::create($validated);
+        $validated = Validator::make($request->all(), $rules);
 
-        // jika data berhasil ditambahkan, akan kembali ke halaman utama
-        return redirect()->route('kategori.index')->with('success', 'Berhasil menambahkan merk.');
+        if ($validated->fails()) {
+            return ResponseFormatter::error([
+                'error' => $validated->errors()->first()
+            ], 'Data tidak valid.', 422);
+        }
+
+        try {
+            // menginput data ke table products
+            DB::beginTransaction();
+            Merk::create([
+                'merk' => $request->name,
+                'keterangan' => $request->description
+            ]);
+            DB::commit();
+
+            return ResponseFormatter::success(
+                [
+                    'redirect' => route('merk.index')
+                ],
+                'Data merk berhasil ditambahkan.'
+            );
+        } catch (\Exception $e) {
+            return ResponseFormatter::error([
+                'error' => $e->getMessage()
+            ], 'Data gagal ditambahkan.', 500);
+        }
     }
 
     /**
