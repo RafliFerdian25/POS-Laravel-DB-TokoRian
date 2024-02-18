@@ -1,29 +1,15 @@
 ## BACKLOG ##
 grafik penjualan kategori harian dalam sebulan (grafik batang/garis)
 
-// View Laporan Barang 
-✅ Total Pendapatan
-✅ Total Keuntungan
-✅ Total Transaksi
-✅ Total barang terjual
-✅ Filter Tanggal 
-✅ Tabel barang terjual
-✅ Tabel transaksi
-grafik penjualan (Pendapatan, keuntungan) keseluruhan
-grafik penjualan (Transaksi, barang terjual) keseluruhan
-grafik penjualan (Pendapatan, keuntungan) kategori
-grafik penjualan (Transaksi, barang terjual) kategori
+// Laporan Penjualan
+grafik penjualan (Pendapatan, keuntungan, barang terjual) keseluruhan
+grafik penjualan (Pendapatan, keuntungan, barang terjual) kategori
 
 // View Laporan Barang Detail
 grafik penjualan barang harian dalam sebulan (grafik batang/garis)
 grafik penjualan barang bulanan dalam setahun (grafik batang/garis)
 tanggal terakhir belanja barang
 
-// CRUD tabel merk
-read merk
-create merk
-update merk
-delete merk
 
 // CRUD tabel barang pernah kadaluarsa
 menambahkan tabel barang yang pernah kadaluarsa
@@ -77,3 +63,18 @@ delete penjualan gas
 ✅ Tabel barang terlaris
 ✅ Tabel transaksi
 ✅ grafik penjualan custom tanggal
+
+// CRUD tabel merk
+✅ read merk
+✅ create merk
+✅ update merk
+✅ delete merk
+
+// Laporan Penjualan 
+✅ Total Pendapatan
+✅ Total Keuntungan
+✅ Total Transaksi
+✅ Total barang terjual
+✅ Filter Tanggal 
+✅ Tabel barang terjual
+✅ Tabel transaksi

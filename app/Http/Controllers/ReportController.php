@@ -37,12 +37,13 @@ class ReportController extends Controller
         $date = null;
         $startDate = null;
         $endDate = null;
+
         if ($request->daterange == null && $request->month == null) {
             $date = Carbon::now();
             $typeReport = "Bulanan";
         } elseif ($request->daterange != null) {
-            $date = Carbon::now();
             $daterange = explode(' - ', $request->daterange);
+            $date = Carbon::parse($daterange[1]);
             $startDate = Carbon::parse($daterange[0]);
             $endDate = Carbon::parse($daterange[1]);
             $typeReport = "Harian";
@@ -144,6 +145,111 @@ class ReportController extends Controller
             'Data laporan berhasil diambil'
         );
     }
+
+    public function getReportSaleByCategory(Request $request)
+    {
+        $typeReport = null;
+        $date = null;
+        $startDate = null;
+        $endDate = null;
+
+        if ($request->daterange == null && $request->month == null) {
+            $date = Carbon::now();
+            $typeReport = "Bulanan";
+        } elseif ($request->daterange != null) {
+            $daterange = explode(' - ', $request->daterange);
+            $date = Carbon::parse($daterange[1]);
+            $startDate = Carbon::parse($daterange[0]);
+            $endDate = Carbon::parse($daterange[1]);
+            $typeReport = "Harian";
+        } elseif ($request->month != null) {
+            $date = Carbon::parse($request->month);
+            $startDate = Carbon::parse($request->month)->startOfMonth();
+            $endDate = Carbon::now()->format('Y-m') == $request->month ? Carbon::now() : Carbon::parse($request->month)->endOfMonth();
+            $typeReport = "Bulanan";
+        }
+        // dd($dateRangeData);
+
+        $categories = Category::get(['jenis']);
+        $categoryByDate = collect([]);
+        $categoryByYear = collect([]);
+        foreach ($categories as $category) {
+            $categoryByDate[$category->jenis] = Kasir::selectRaw('tanggal, jenis, COALESCE(sum(total), 0) as income')
+                ->leftJoin('t_barang', function ($join) {
+                    $join->on('t_kasir.idBarang', '=', 't_barang.idBarang');
+                })
+                ->when($typeReport == 'Bulanan', function ($query) use ($date) {
+                    $query->whereMonth('tanggal', $date->month)
+                        ->whereYear('tanggal', $date->year);
+                })
+                ->when($typeReport == 'Harian', function ($query) use ($startDate, $endDate) {
+                    $query->whereBetween('tanggal', [$startDate, $endDate]);
+                })
+                ->where('t_barang.jenis', $category->jenis)
+                ->groupBy('tanggal', 'jenis')
+                ->orderBy('tanggal', 'asc')
+                ->get();
+
+            $startDateCopy = $startDate->copy();
+            while ($startDateCopy->lte($endDate)) {
+                if (!$categoryByDate[$category->jenis]->contains('tanggal', $startDateCopy->format('Y-m-d'))) {
+                    $categoryByDate[$category->jenis]->push([
+                        'tanggal' => $startDateCopy->format('Y-m-d'),
+                        'income' => 0,
+                        'profit' => 0,
+                        'total_product' => 0,
+                        'jenis' => $category->jenis,
+                    ]);
+                }
+
+                $startDateCopy->addDay();
+            }
+            $categoryByDate[$category->jenis] = $categoryByDate[$category->jenis]->sortBy('tanggal')->values()->all();
+
+
+            // By Year
+            $startOfTwoYearBefore = Carbon::parse($date->copy()->subYears(2))->startOfYear();
+            $categoryByYear[$category->jenis] = Kasir::selectRaw('DATE_FORMAT(tanggal, "%Y-%m") as month, jenis, COALESCE(sum(total), 0) as income')
+                ->leftJoin('t_barang', function ($join) {
+                    $join->on('t_kasir.idBarang', '=', 't_barang.idBarang');
+                })
+                ->when(true, function ($query) use ($date, $startOfTwoYearBefore) {
+                    return $query->whereBetween('tanggal', [$startOfTwoYearBefore, $date->endOfMonth()]);
+                })
+                ->where('t_barang.jenis', $category->jenis)
+                ->groupBy(DB::raw('DATE_FORMAT(tanggal, "%Y-%m")'), 'jenis')
+                ->orderBy('month', 'asc')
+                ->get();
+
+            while ($startOfTwoYearBefore->lte($date)) {
+                if (!$categoryByYear[$category->jenis]->contains('month', $startOfTwoYearBefore->format('Y-m'))) {
+                    $categoryByYear[$category->jenis]->push([
+                        'month' => $startOfTwoYearBefore->format('Y-m'),
+                        'income' => 0,
+                        'profit' => 0,
+                        'total_product' => 0,
+                        'jenis' => $category->jenis,
+                    ]);
+                }
+
+                $startOfTwoYearBefore->addMonth();
+            }
+            $categoryByYear[$category->jenis] = $categoryByYear[$category->jenis]->sortBy('month')->values()->all();
+        }
+
+        return ResponseFormatter::success(
+            [
+                'typeReport' => $typeReport,
+                'dateString' => $typeReport == 'Bulanan' ? FormatDate::month($date->month) : $startDate->copy()->format('d M Y') . ' - ' . $endDate->copy()->format('d M Y'),
+                'date' => $typeReport == 'Bulanan' ? $date->format('Y-m') : $daterange,
+                'categoryByDate' => $categoryByDate,
+                'categoryByYear' => $categoryByYear,
+                'categories' => $categories
+            ],
+            'Data kategori berhasil diambil'
+        );
+    }
+
     public function categoryIndex()
     {
         $data = [
@@ -204,8 +310,8 @@ class ReportController extends Controller
             $date = Carbon::now();
             $typeReport = "Bulanan";
         } elseif ($request->daterange != null) {
-            $date = Carbon::now();
             $daterange = explode(' - ', $request->daterange);
+            $date = Carbon::parse($daterange[1]);
             $startDate = Carbon::parse($daterange[0]);
             $endDate = Carbon::parse($daterange[1]);
             $typeReport = "Harian";
@@ -323,7 +429,7 @@ class ReportController extends Controller
     /**
      * Mendapatkan data laporan penjualan produk
      */
-    public function monthlyProductReportData(Request $request)
+    public function getMonthlyProductReport(Request $request)
     {
         $filterDate = $request->filterDate == null ? Carbon::now() : Carbon::parse($request->filterDate);
         $query = Product::select('t_barang.IdBarang', 't_barang.nmBarang', 'expDate', 'stok', DB::raw('COALESCE(SUM(t_kasir.jumlah), 0) as jumlah'))

@@ -383,8 +383,8 @@ class ProductController extends Controller
             $date = Carbon::now();
             $typeReport = "Bulanan";
         } elseif ($request->daterange != null) {
-            $date = Carbon::now();
             $daterange = explode(' - ', $request->daterange);
+            $date = Carbon::parse($daterange[1]);
             $startDate = Carbon::parse($daterange[0]);
             $endDate = Carbon::parse($daterange[1]);
             $typeReport = "Harian";
