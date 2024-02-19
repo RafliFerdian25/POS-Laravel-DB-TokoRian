@@ -104,6 +104,9 @@ Route::controller(PurchaseController::class)->group(function () {
     Route::get('/pembelian/data', 'indexData')->name('purchase.index.data');
     Route::get('/pembelian/create', 'create')->name('purchase.create');
     Route::post('/pembelian', 'store')->name('purchase.store');
+    Route::get('/pembelian/detail/{purchase:id}/data', 'detail')->name('purchase.detail.data');
+    Route::get('/pembelian/detail/{purchase:id}/create', 'createDetail')->name('purchase.detail.create');
+    Route::post('/pembelian/detail/{purchase:id}', 'storeDetail')->name('purchase.detail.store');
     Route::get('/pembelian/{purchase:id}/edit', 'edit')->name('purchase.edit');
     Route::put('/pembelian/{purchase:id}', 'update')->name('purchase.update');
     Route::delete('/pembelian/{purchase:id}', 'destroy')->name('purchase.destroy');

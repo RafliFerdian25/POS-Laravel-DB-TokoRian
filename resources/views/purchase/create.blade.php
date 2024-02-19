@@ -10,7 +10,7 @@
                     <div class="title__card text-center">
                         Tambah Pembelian Barang
                     </div>
-                    <form action="{{ route('purchase.store') }}" method="POST">
+                    <form method="POST" id="formAddPurchase">
                         @csrf
                         <div class="row mb-3">
                             <label for="supplier_id" class="col-sm-2 col-form-label">Supplier</label>
@@ -24,7 +24,7 @@
                         </div>
                         <div class="submit text-end">
                             <a href="{{ route('purchase.index') }}" class="btn btn-danger">Batal</a>
-                            <button type="submit" class=" btn btn-primary">Lanjut</button>
+                            <button type="submit" id="submitButton" class="btn btn-primary">Lanjut</button>
                         </div>
                     </form>
                 </div>
@@ -41,7 +41,7 @@
         $(document).ready(function() {
             $('#supplier_id').select2({
                 theme: "bootstrap-5",
-                placeholder: 'Masukkan Merk Barang',
+                placeholder: 'Masukkan Supplier Barang',
                 width: '100%',
                 allowClear: true,
                 minimumInputLength: 1, // Minimum characters required to start searching
@@ -55,7 +55,7 @@
                         return "Sedang mengambil data...";
                     },
                     noResults: function() {
-                        return "Merk tidak ditemukan";
+                        return "Supplier tidak ditemukan";
                     },
                     errorLoading: function() {
                         return "Terjadi kesalahan saat memuat data";
@@ -92,6 +92,71 @@
                     cache: true, // Cache the results for better performance
                 }
             })
+        });
+
+        $('#formAddPurchase').validate({
+            rules: {
+                supplier_id: {
+                    required: true
+                }
+            },
+            messages: {
+                supplier_id: {
+                    required: "Supplier harus diisi"
+                }
+            },
+            errorElement: 'span',
+            errorPlacement: function(error, element) {
+                error.addClass('invalid-feedback');
+                element.closest('.form-group').append(error);
+            },
+            highlight: function(element, errorClass, validClass) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function(element, errorClass, validClass) {
+                $(element).removeClass('is-invalid');
+            },
+            submitHandler: function(form) {
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('purchase.store') }}",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        supplier_id: $('#supplier_id').val()
+                    },
+                    success: function(response) {
+                        $('#submitButton').html('Lanjut');
+                        $('#submitButton').prop('disabled', false);
+                        Swal.fire({
+                                title: "Berhasil!",
+                                text: response.meta.message,
+                                icon: "success",
+                                showCancelButton: false,
+                                confirmButtonText: "Okay",
+                                customClass: {
+                                    confirmButton: "btn btn-success"
+                                },
+                            })
+                            .then(() => {
+                                window.location.href = response.data.redirect;
+                            });
+                    },
+                    error: function(xhr, status, error) {
+                        $('#submitButton').html('Lanjut');
+                        $('#submitButton').prop('disabled', false);
+                        if (xhr.responseJSON) {
+                            errorAlert("Gagal!",
+                                `Tambah Pembelian Gagal. ${xhr.responseJSON.meta.message} Error: ${xhr.responseJSON.data.error}`
+                            );
+                        } else {
+                            errorAlert("Gagal!",
+                                `Terjadi kesalahan pada server. Error: ${xhr.responseText}`
+                            );
+                        }
+                        return false;
+                    }
+                });
+            }
         });
     </script>
 @endpush
