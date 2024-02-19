@@ -5,7 +5,7 @@ use App\Http\Controllers\MerkController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\WholesalePurchaseController;
+use App\Http\Controllers\ShoppingController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\SaleDetailController;
@@ -87,17 +87,17 @@ Route::resource('/supplier', SupplierController::class)->except('show');
 // Penjualan
 
 // Belanja
-Route::get('/belanja/detail/{purchase}/create', [WholesalePurchaseController::class, 'createPurchaseDetails'])->name('belanja.create.purchase-details');
-Route::get('/belanja/detail/{purchase}', [WholesalePurchaseController::class, 'storePurchaseDetails'])->name('belanja.store.purchase-details');
+Route::get('/belanja/detail/{purchase}/create', [ShoppingController::class, 'createPurchaseDetails'])->name('belanja.create.purchase-details');
+Route::get('/belanja/detail/{purchase}', [ShoppingController::class, 'storePurchaseDetails'])->name('belanja.store.purchase-details');
 
 // Belanja Barang
-Route::controller(WholesalePurchaseController::class)->group(function () {
+Route::controller(ShoppingController::class)->group(function () {
     Route::get('/belanja', 'index')->name('wholesale.purchase.index');
     Route::get('/belanja/data', 'indexData')->name('wholesale.purchase.index.data');
     Route::post('/belanja', 'store')->name('wholesale.purchase.store');
-    Route::get('/belanja/{wholesalePurchase:id}/edit', 'edit')->name('wholesale.purchase.edit');
-    Route::put('/belanja/{wholesalePurchase:id}', 'update')->name('wholesale.purchase.update');
-    Route::delete('/belanja/{wholesalePurchase:id}', 'destroy')->name('wholesale.purchase.destroy');
+    Route::get('/belanja/{shopping:id}/edit', 'edit')->name('wholesale.purchase.edit');
+    Route::put('/belanja/{shopping:id}', 'update')->name('wholesale.purchase.update');
+    Route::delete('/belanja/{shopping:id}', 'destroy')->name('wholesale.purchase.destroy');
 });
 
 // Merk

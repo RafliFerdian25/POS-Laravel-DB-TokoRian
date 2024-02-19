@@ -9,10 +9,9 @@ class Purchase extends Model
 {
     use HasFactory;
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
+    protected $table = 't_pembelian';
+
+    protected $guarded = ['id'];
 
     public function supplier()
     {

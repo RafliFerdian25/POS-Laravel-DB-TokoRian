@@ -70,7 +70,7 @@
                 <div class="main-card mb-3 card">
                     <div class="card-body">
                         <h5 class="card-title text-center font-size-xlg">Belanja</h5>
-                        <table class="mb-0 table" id="tableWholesalePurchaseProduct">
+                        <table class="mb-0 table" id="tableShoppingProduct">
                             <thead>
                                 <tr>
                                     <th>No</th>
@@ -84,7 +84,7 @@
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody id="tableWholesalePurchaseProductBody">
+                            <tbody id="tableShoppingProductBody">
                             </tbody>
                         </table>
                     </div>
@@ -98,7 +98,7 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            $('#tableWholesalePurchaseProduct').DataTable({
+            $('#tableShoppingProduct').DataTable({
                 pageLength: 10,
                 info: false,
                 responsive: true,
@@ -176,7 +176,7 @@
                             showConfirmButton: false,
                             timer: 1500
                         })
-                        getWholesalePurchaseProduct();
+                        getShoppingProduct();
                     },
                     error: function(xhr, ajaxOptions, thrownError) {
                         if (xhr.responseJSON) {
@@ -195,12 +195,12 @@
                 // $('#product').val(null).trigger('change');
             });
 
-            getWholesalePurchaseProduct();
+            getShoppingProduct();
         });
 
-        const getWholesalePurchaseProduct = () => {
-            $('#tableWholesalePurchaseProduct').DataTable().clear().draw();
-            $('#tableWholesalePurchaseProductBody').html(tableLoader(8,
+        const getShoppingProduct = () => {
+            $('#tableShoppingProduct').DataTable().clear().draw();
+            $('#tableShoppingProductBody').html(tableLoader(8,
                 `{{ asset('assets/svg/Ellipsis-2s-48px.svg') }}`));
 
             $.ajax({
@@ -208,10 +208,10 @@
                 type: "GET",
                 dataType: "json",
                 success: function(response) {
-                    $('#countProduct').html(response.data.wholesalePurchases.length);
-                    if (response.data.wholesalePurchases.length > 0) {
-                        response.data.wholesalePurchases.forEach((product, index) => {
-                            $('#tableWholesalePurchaseProduct').DataTable().row.add([
+                    $('#countProduct').html(response.data.shoppingProducts.length);
+                    if (response.data.shoppingProducts.length > 0) {
+                        response.data.shoppingProducts.forEach((product, index) => {
+                            $('#tableShoppingProduct').DataTable().row.add([
                                 index + 1,
                                 product.IdBarang,
                                 product.nmBarang,
@@ -220,24 +220,24 @@
                                 product.hargaPokok,
                                 product.jumlah,
                                 product.total,
-                                `<button class="btn btn-danger rounded-circle px-2" onclick="deleteWholesalePurchaseProduct('${product.id}','${product.nmBarang}')"><i class="bi bi-trash"></i></button>
-                                    <button class="btn btn-primary rounded-circle px-2" onclick="editWholesalePurchaseProduct('${product.id}')"><i class="bi bi-pencil"></i></button>`
+                                `<button class="btn btn-danger rounded-circle px-2" onclick="deleteShoppingProduct('${product.id}','${product.nmBarang}')"><i class="bi bi-trash"></i></button>
+                                    <button class="btn btn-primary rounded-circle px-2" onclick="editShoppingProduct('${product.id}')"><i class="bi bi-pencil"></i></button>`
                             ]).draw(false).node();
                         });
                     } else {
-                        $('#tableWholesalePurchaseProductBody').html(tableEmpty(8,
+                        $('#tableShoppingProductBody').html(tableEmpty(8,
                             'barang'));
                     }
                 },
                 error: function(error) {
-                    $('#tableWholesalePurchaseProductBody').html(tableEmpty(8,
+                    $('#tableShoppingProductBody').html(tableEmpty(8,
                         'barang'));
                 }
             });
         }
 
         // Menampilkan modal edit product
-        const editWholesalePurchaseProduct = (id) => {
+        const editShoppingProduct = (id) => {
             // Mengisi konten modal dengan data yang sesuai
             let modalContent = $('#modalMain .modal-content');
 
@@ -273,7 +273,7 @@
                                 <div class="row mb-3">
                                     <label for="IdBarang" class="col-sm-2 col-form-label">Kode Barang</label>
                                     <div class="col-sm-10">
-                                        <input required value="${response.data.wholesalePurchaseProduct.IdBarang}" type="text"
+                                        <input required value="${response.data.shoppingProduct.IdBarang}" type="text"
                                             class="form-control rounded__10" disabled
                                             id="IdBarang" name="IdBarang" max="999999999999999" pattern="[0-9]*" inputmode="numeric">
                                     </div>
@@ -281,7 +281,7 @@
                                 <div class="row mb-3">
                                     <label for="nmBarang" class="col-sm-2 col-form-label">Nama Barang</label>
                                     <div class="col-sm-10">
-                                        <input required value="${response.data.wholesalePurchaseProduct.nmBarang}" type="text"
+                                        <input required value="${response.data.shoppingProduct.nmBarang}" type="text"
                                             class="form-control rounded__10 " disabled
                                             id="nmBarang" name="nmBarang" style="text-transform:uppercase">
                                     </div>
@@ -293,7 +293,7 @@
                                             class="form-select rounded__10"
                                             name="satuan" id="satuan" aria-label="Default select example">
                                             ${response.data.units.map((unit) => {
-                                                return `<option value="${unit.satuan}" ${unit.satuan == response.data.wholesalePurchaseProduct.satuan ? "selected" : ""}>${unit.satuan}</option>`
+                                                return `<option value="${unit.satuan}" ${unit.satuan == response.data.shoppingProduct.satuan ? "selected" : ""}>${unit.satuan}</option>`
                                             })}
                                         </select>
                                     </div>
@@ -301,7 +301,7 @@
                                 <div class="row mb-3">
                                     <label for="stok" class="col-sm-2 col-form-label">Stok</label>
                                     <div class="col-sm-10">
-                                        <input required value="${response.data.wholesalePurchaseProduct.product.stok}" type="number"
+                                        <input required value="${response.data.shoppingProduct.product.stok}" type="number"
                                             class="form-control rounded__10 "
                                             min="0" id="stok" name="stok">
                                     </div>
@@ -309,7 +309,7 @@
                                 <div class="row mb-3">
                                     <label for="hargaPokok" class="col-sm-2 col-form-label">Harga Pokok</label>
                                     <div class="col-sm-10">
-                                        <input required value="${response.data.wholesalePurchaseProduct.hargaPokok}" type="number"
+                                        <input required value="${response.data.shoppingProduct.hargaPokok}" type="number"
                                             class="form-control rounded__10 "
                                             min="0" id="hargaPokok" name="hargaPokok">
                                     </div>
@@ -317,7 +317,7 @@
                                 <div class="row mb-3">
                                     <label for="jumlah" class="col-sm-2 col-form-label">Jumlah</label>
                                     <div class="col-sm-10">
-                                        <input required value="${response.data.wholesalePurchaseProduct.jumlah}" type="number"
+                                        <input required value="${response.data.shoppingProduct.jumlah}" type="number"
                                             class="form-control rounded__10 "
                                             min="0" id="jumlah" name="jumlah">
                                     </div>
@@ -403,7 +403,7 @@
                             );
                             $('#updateButton').prop('disabled', true);
                             $.ajax({
-                                url: `{{ url('/belanja/${response.data.wholesalePurchaseProduct.id}') }}`,
+                                url: `{{ url('/belanja/${response.data.shoppingProduct.id}') }}`,
                                 type: "POST",
                                 data: {
                                     _method: 'PUT',
@@ -429,7 +429,7 @@
                                             },
                                         })
                                         .then(() => {
-                                            getWholesalePurchaseProduct();
+                                            getShoppingProduct();
                                             // menutup modal
                                             $('#modalMain').modal('hide');
                                         });
@@ -458,7 +458,7 @@
             $('#modalMain').modal('show');
         }
 
-        const deleteWholesalePurchaseProduct = (id, name) => {
+        const deleteShoppingProduct = (id, name) => {
             Swal.fire({
                 title: 'Hapus Produk',
                 text: `Apakah Anda yakin ingin menghapus ${name}?`,
@@ -484,7 +484,7 @@
                                 showConfirmButton: false,
                                 timer: 1500
                             })
-                            getWholesalePurchaseProduct();
+                            getShoppingProduct();
                         },
                         error: function(xhr, ajaxOptions, thrownError) {
                             if (xhr.responseJSON) {

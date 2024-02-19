@@ -205,7 +205,7 @@
                                 product.last_product_sold,
                                 product.total_product_sold,
                                 `<button class="btn btn-sm btn-warning" onclick="showEdit('${product.IdBarang}')">Edit</button>
-                                <button class="btn btn-sm btn-primary" onclick="addWholesalePurchase('${product.IdBarang}')">Tambah Belanja</button>`
+                                <button class="btn btn-sm btn-primary" onclick="addShopping('${product.IdBarang}')">Tambah Belanja</button>`
                             ];
                             var rowNode = $('#tableEmptyProduct').DataTable().row.add(rowData)
                                 .draw(
@@ -585,11 +585,11 @@
             }
         }
 
-        const addWholesalePurchase = (IdBarang) => {
+        const addShopping = (IdBarang) => {
             Swal.fire({
                 title: "Tambah Pembelian Grosir",
                 html: `
-                <form id="formAddWholesalePurchase">
+                <form id="formAddShopping">
                     @csrf
                     <div class="">
                         <label for="qty" class="col-sm-4 col-form-label">Jumlah Barang</label>

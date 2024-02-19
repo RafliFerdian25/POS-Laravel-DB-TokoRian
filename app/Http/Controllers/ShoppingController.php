@@ -5,13 +5,13 @@ namespace App\Http\Controllers;
 use App\Helpers\ResponseFormatter;
 use App\Models\Category;
 use App\Models\Product;
-use App\Models\WholesalePurchase;
+use App\Models\Shopping;
 use App\Models\Unit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
-class WholesalePurchaseController extends Controller
+class ShoppingController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -21,7 +21,7 @@ class WholesalePurchaseController extends Controller
     public function index()
     {
         $title = 'POS TOKO | Belanja';
-        return view('purchase.index', compact('title'));
+        return view('purchase.shopping', compact('title'));
     }
 
     /**
@@ -31,12 +31,12 @@ class WholesalePurchaseController extends Controller
      */
     public function indexData()
     {
-        $wholesalePurchases = WholesalePurchase::with('product:IdBarang,stok')->select('id', 'IdBarang', 'nmBarang', 'satuan', 'hargaPokok', 'jumlah', 'total')
+        $shoppingProducts = Shopping::with('product:IdBarang,stok')->select('id', 'IdBarang', 'nmBarang', 'satuan', 'hargaPokok', 'jumlah', 'total')
             ->orderBy('nmBarang', 'desc')
             ->get();
 
         return ResponseFormatter::success([
-            'wholesalePurchases' => $wholesalePurchases
+            'shoppingProducts' => $shoppingProducts
         ], 'Data berhasil diambil');
     }
 
@@ -65,7 +65,7 @@ class WholesalePurchaseController extends Controller
             $product = Product::where('IdBarang', $request->IdBarang)->first();
             $qty = $request->qty ?? 2;
 
-            $purchase = WholesalePurchase::create([
+            $purchase = Shopping::create([
                 'IdBarang' => $product->IdBarang,
                 'nmBarang' => $product->nmBarang,
                 'satuan' => $product->satuan,
@@ -87,15 +87,15 @@ class WholesalePurchaseController extends Controller
     /**
      * Edit the specified resource.
      *
-     * @param  \App\Models\WholesalePurchase  $wholesalePurchase
+     * @param  \App\Models\Shopping  $shopping
      * @return \Illuminate\Http\Response
      */
-    public function edit(WholesalePurchase $wholesalePurchase)
+    public function edit(Shopping $shopping)
     {
         $units = Unit::orderBy('satuan')->get();
 
         return ResponseFormatter::success([
-            'wholesalePurchaseProduct' => $wholesalePurchase->load('product:IdBarang,stok'),
+            'shoppingProduct' => $shopping->load('product:IdBarang,stok'),
             'units' => $units
         ], 'Data berhasil diambil');
     }
@@ -108,7 +108,7 @@ class WholesalePurchaseController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, WholesalePurchase $wholesalePurchase)
+    public function update(Request $request, Shopping $shopping)
     {
         $rules = [
             'jumlah' => 'required|numeric|min:1',
@@ -126,13 +126,13 @@ class WholesalePurchaseController extends Controller
 
         try {
             DB::beginTransaction();
-            $wholesalePurchase->update([
+            $shopping->update([
                 'jumlah' => $request->jumlah,
                 'hargaPokok' => $request->hargaPokok,
                 'TOTAL' => $request->jumlah * $request->hargaPokok
             ]);
 
-            Product::where('IdBarang', $wholesalePurchase->IdBarang)->update([
+            Product::where('IdBarang', $shopping->IdBarang)->update([
                 'stok' => $request->stok
             ]);
             DB::commit();
@@ -151,11 +151,11 @@ class WholesalePurchaseController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(WholesalePurchase $wholesalePurchase)
+    public function destroy(Shopping $shopping)
     {
         try {
             DB::beginTransaction();
-            $wholesalePurchase->delete();
+            $shopping->delete();
             DB::commit();
             return ResponseFormatter::success(null, 'Data berhasil dihapus');
         } catch (\Exception $e) {

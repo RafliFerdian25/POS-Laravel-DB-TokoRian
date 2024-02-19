@@ -1,9 +1,12 @@
 ## BACKLOG ##
-grafik penjualan kategori harian dalam sebulan (grafik batang/garis)
 
-// Laporan Penjualan
-grafik penjualan (Pendapatan, keuntungan, barang terjual) keseluruhan
-grafik penjualan (Pendapatan, keuntungan, barang terjual) kategori
+// CRUD Pembelian (Belanja) Barang
+tabel pembelian barang (id, total, amount, supplier_id)
+tabel pembelian detail barang (id, purchase_id, product_id, quantity, expDate, costOfGoodSold)
+read pembelian barang
+create pembelian barang
+update pembelian barang
+delete pembelian barang 
 
 // View Laporan Barang Detail
 grafik penjualan barang harian dalam sebulan (grafik batang/garis)
@@ -78,3 +81,5 @@ delete penjualan gas
 ✅ Filter Tanggal 
 ✅ Tabel barang terjual
 ✅ Tabel transaksi
+✅ grafik penjualan (Pendapatan, keuntungan, barang terjual) keseluruhan
+✅ grafik penjualan (Pendapatan, keuntungan, barang terjual) kategori
