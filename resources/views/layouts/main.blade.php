@@ -180,15 +180,22 @@
 
                             <li class="app-sidebar__heading">Belanja</li>
                             <li>
-                                <a href="{{ url('/supplier') }}" id="navbar__supplier">
+                                <a href="{{ route('purchase.index') }}" id="navbar__purchase"
+                                    class="{{ Request::is('pembelian*') ? 'mm-active' : '' }}">
                                     <i class="metismenu-icon pe-7s-car">
-                                    </i>Supplier
+                                    </i>Pembelian
                                 </a>
                             </li>
                             <li>
                                 <a href="{{ route('wholesale.purchase.index') }}" id="navbar__supplier">
                                     <i class="metismenu-icon pe-7s-car">
                                     </i>Belanja
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ url('/supplier') }}" id="navbar__supplier">
+                                    <i class="metismenu-icon pe-7s-car">
+                                    </i>Supplier
                                 </a>
                             </li>
                         </ul>

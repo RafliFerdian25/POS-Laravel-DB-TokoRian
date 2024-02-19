@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ResponseFormatter;
 use App\Models\Purchase;
 use App\Models\Toko;
 use Illuminate\Http\Request;
@@ -15,14 +16,25 @@ class PurchaseController extends Controller
      */
     public function index()
     {
-        $title = 'POS TOKO | Laporan';
+        $title = 'POS TOKO | Pembelian Barang';
         $setting = Toko::first();
 
         $data = [
             'setting' => $setting,
             'title' => $title,
         ];
-        return view('report.financial', $data);
+        return view('purchase.index', $data);
+    }
+
+    public function indexData()
+    {
+        $purchases = Purchase::with('supplier')->orderBy('created_at', 'desc')->get();
+        return ResponseFormatter::success(
+            [
+                'purchases' => $purchases,
+            ],
+            'Data pembelian berhasil diambil'
+        );
     }
 
     /**
