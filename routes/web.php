@@ -120,3 +120,15 @@ Route::controller(MerkController::class)->group(function () {
     Route::put('/merk/{merk:id}', 'update')->name('merk.update');
     Route::delete('/merk/{merk:id}', 'destroy')->name('merk.destroy');
 });
+
+// Supplier
+Route::controller(SupplierController::class)->group(function () {
+    Route::get('/supplier', 'index')->name('supplier.index');
+    Route::get('/supplier/data', 'indexData')->name('supplier.data');
+    Route::get('/supplier/cari/data', 'searchData')->name('supplier.search.data');
+    Route::get('/supplier/create', 'create')->name('supplier.create');
+    Route::post('/supplier', 'store')->name('supplier.store');
+    Route::get('/supplier/{supplier:id}/edit', 'edit')->name('supplier.edit');
+    Route::put('/supplier/{supplier:id}', 'update')->name('supplier.update');
+    Route::delete('/supplier/{supplier:id}', 'destroy')->name('supplier.destroy');
+});

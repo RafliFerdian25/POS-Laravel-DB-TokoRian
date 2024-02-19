@@ -20,6 +20,11 @@
                     </div>
                 </div>
             </div>
+            <div class="col-3 text-center align-self-center">
+                <a href="{{ url('/pembelian/create') }}">
+                    <button class="btn btn-primary rounded-pill px-3" id="addProduct">Tambah</button>
+                </a>
+            </div>
         </div>
         <!-- END TITLE -->
 
@@ -220,7 +225,7 @@
                         </form>
                     `);
 
-                    initSelect2Supplier(response.product.merk);
+                    initSelect2Supplier(response.purchase.supplier_id);
 
                     // submit form
                     $(`#${formId}`).validate({
@@ -323,7 +328,7 @@
             $('#modalEdit').modal('show');
         }
 
-        const initSelect2Supplier = (merk) => {
+        const initSelect2Supplier = (supplier) => {
             $('#supplier_id').select2({
                 dropdownParent: $('#modalEdit'),
                 theme: "bootstrap-5",
@@ -357,16 +362,16 @@
                     return $('<span class="custom-selection">' + resultName + '</span>');
                 },
                 ajax: {
-                    url: "{{ route('merk.search.data') }}", // URL to fetch data from
+                    url: "{{ route('supplier.search.data') }}", // URL to fetch data from
                     dataType: 'json', // Data type expected from the server
                     processResults: function(response) {
-                        var merks = response.data.merks;
+                        var suppliers = response.data.suppliers;
                         var options = [];
 
-                        merks.forEach(function(merk) {
+                        suppliers.forEach(function(supplier) {
                             options.push({
-                                id: merk.id, // Use the merk
-                                text: merk.merk + ' (' + merk.keterangan +
+                                id: supplier.idSupplier, // Use the supplier
+                                text: supplier.Nama + ' (' + supplier.Produk +
                                     ')'
                             });
                         });
@@ -379,9 +384,9 @@
                 }
             })
             // Periksa apakah nilai id sudah ada dalam opsi saat ini
-            if ($('#supplier_id').find('option[value="' + merk.id + '"]').length === 0) {
+            if ($('#supplier_id').find('option[value="' + supplier.id + '"]').length === 0) {
                 // Jika tidak, tambahkan elemen <option> baru
-                var $newOption = new Option(`${merk.merk} (${merk.keterangan})`, merk.id, true, true);
+                var $newOption = new Option(`${supplier.Nama} (${supplier.Produk})`, supplier.id, true, true);
                 $('#supplier_id').append($newOption).trigger('change');
             } else {
                 // Jika sudah ada, langsung atur nilai dan perbarui tampilan

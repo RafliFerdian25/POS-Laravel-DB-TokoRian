@@ -44,7 +44,14 @@ class PurchaseController extends Controller
      */
     public function create()
     {
-        //
+        $title = 'POS TOKO | Tambah Pembelian Barang';
+        $setting = Toko::first();
+
+        $data = [
+            'setting' => $setting,
+            'title' => $title,
+        ];
+        return view('purchase.create', $data);
     }
 
     /**

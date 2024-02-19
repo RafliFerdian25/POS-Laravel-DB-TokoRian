@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ResponseFormatter;
 use App\Models\Merk;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
@@ -39,7 +40,7 @@ class SupplierController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request -> validate([
+        $validated = $request->validate([
             "name" => "required",
             "address" => "required",
             "phone" => "required|numeric|unique:suppliers",
@@ -47,7 +48,7 @@ class SupplierController extends Controller
 
         Supplier::create($validated);
 
-        return redirect() -> route("supplier.index") -> with("success", "Data Supplier Berhasil Ditambahkan");
+        return redirect()->route("supplier.index")->with("success", "Data Supplier Berhasil Ditambahkan");
     }
 
     /**
@@ -72,7 +73,7 @@ class SupplierController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $validated = $request -> validate([
+        $validated = $request->validate([
             "name" => "required",
             "address" => "required",
             "phone" => "required|numeric|unique:suppliers,phone," . $id,
@@ -80,7 +81,7 @@ class SupplierController extends Controller
 
         Supplier::whereId($id)->update($validated);
 
-        return redirect() -> route("supplier.index") -> with("success", "Data Supplier Berhasil Diubah");
+        return redirect()->route("supplier.index")->with("success", "Data Supplier Berhasil Diubah");
     }
 
     /**
@@ -93,6 +94,20 @@ class SupplierController extends Controller
     {
         Supplier::destroy($id);
 
-        return redirect() -> route("supplier.index") -> with("success", "Data Supplier Berhasil Dihapus");
+        return redirect()->route("supplier.index")->with("success", "Data Supplier Berhasil Dihapus");
+    }
+
+    /**
+     * Search data from storage.
+     */
+    public function searchData(Request $request)
+    {
+        $suppliers = Supplier::where('Nama', 'like', '%' . $request->q . '%')
+            ->orWhere('Produk', 'like', '%' . $request->q . '%')
+            ->get();
+
+        return ResponseFormatter::success([
+            'suppliers' => $suppliers
+        ], 'Data berhasil diambil');
     }
 }
