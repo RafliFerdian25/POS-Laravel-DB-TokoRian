@@ -113,13 +113,13 @@
             getPurchase();
         });
 
-        const getPurchase = () => {
+        const getPurchase = (id) => {
             $('#tablePurchase').DataTable().clear().draw();
             $('#tablePurchaseBody').html(tableLoader(7,
                 `{{ asset('assets/svg/Ellipsis-2s-48px.svg') }}`));
 
             $.ajax({
-                url: "{{ route('purchase.index.data') }}",
+                url: `{{ url('pembelian/detail/${id}/data') }}`,
                 type: "GET",
                 dataType: "json",
                 success: function(response) {
@@ -129,12 +129,12 @@
                             $('#tablePurchase').DataTable().row.add([
                                 index + 1,
                                 purchase.id,
-                                purchase.supplier.nama,
+                                purchase.supplier.Nama,
                                 purchase.total,
                                 purchase.amount,
-                                purchase.created_at,
+                                moment(purchase.created_at).format('DD-MM-Y'),
                                 `<button class="btn btn-danger rounded-circle px-2" onclick="deletePurchase('${purchase.id}')"><i class="bi bi-trash"></i></button>
-                                    <button class="btn btn-primary rounded-circle px-2" onclick="editPurchase('${purchase.id}')"><i class="bi bi-pencil"></i></button>`
+                                    <a href="{{ url('pembelian/detail/${purchase.id}/create') }}" class="btn btn-primary rounded-circle px-2"><i class="bi bi-pencil"></i></a>`
                             ]).draw(false).node();
                         });
                     } else {
@@ -147,185 +147,6 @@
                         'barang'));
                 }
             });
-        }
-
-        // Menampilkan modal edit product
-        const editPurchase = (id) => {
-            // Mengisi konten modal dengan data yang sesuai
-            let modalContent = $('#modalEdit .modal-content');
-
-            modalContent.html(`
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body d-flex justify-content-center align-items-center">
-                    <svg class="loader" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="25" height="25">
-                        <circle cx="50" cy="50" r="45" fill="none" stroke="#3498db" stroke-width="5" stroke-dasharray="89 89" stroke-linecap="round">
-                            <animateTransform attributeName="transform" dur="1s" type="rotate" from="0 50 50" to="360 50 50" repeatCount="indefinite" />
-                        </circle>
-                    </svg>
-                </div>
-            `);
-            // mengirim request ajax
-            $.ajax({
-                type: "GET",
-                url: `{{ url('/pembelian/${id}/edit') }}`,
-                success: function(response) {
-                    let formId = `formEditPurchase${id}`;
-
-                    modalContent.html(`
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <form id="${formId}">
-                            @method('PUT')
-                            @csrf
-                            <div class="modal-body">
-                                <div class="row mb-3">
-                                    <label for="supplier_id" class="col-sm-2 col-form-label">Supplier</label>
-                                    <div class="col-sm-10">
-                                        <div class="select2-input select2-info" style="width: 100%">
-                                            <select id="supplier_id" name="supplier_id" class="form-control rounded__10">
-                                                <option value="">&nbsp;</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="total" class="col-sm-2 col-form-label">Stok</label>
-                                    <div class="col-sm-10">
-                                        <input required disabled value="${response.data.purchase.total}" type="number"
-                                            class="form-control rounded__10 "
-                                            min="0" id="total" name="total">
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="amount" class="col-sm-2 col-form-label">Harga Pokok</label>
-                                    <div class="col-sm-10">
-                                        <input required disabled value="${response.data.purchase.amount}" type="number"
-                                            class="form-control rounded__10 "
-                                            min="0" id="amount" name="amount">
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="created_at" class="col-sm-2 col-form-label">Jumlah</label>
-                                    <div class="col-sm-10">
-                                        <input required value="${response.data.purchase.created_at}" type="date"
-                                            class="form-control rounded__10" max="{{ date('Y-m-d') }}"
-                                            id="created_at" name="created_at">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                <button type="submit" id="updateButton" class="btn btn-primary">Simpan</button>
-                            </div>
-                        </form>
-                    `);
-
-                    initSelect2Supplier(response.purchase.supplier_id);
-
-                    // submit form
-                    $(`#${formId}`).validate({
-                        rules: {
-                            supplier_id: {
-                                required: true,
-                            },
-                            total: {
-                                required: true,
-                            },
-                            amount: {
-                                required: true,
-                            },
-                            created_at: {
-                                required: true,
-                            },
-                        },
-                        messages: {
-                            supplier_id: {
-                                required: "Supplier tidak boleh kosong",
-                            },
-                            total: {
-                                required: "Stok tidak boleh kosong",
-                            },
-                            amount: {
-                                required: "Harga Pokok tidak boleh kosong",
-                            },
-                            created_at: {
-                                required: "Tanggal tidak boleh kosong",
-                            },
-                        },
-                        errorClass: "invalid-feedback",
-                        highlight: function(element) {
-                            $(element).closest('.form-control').removeClass('valid')
-                                .addClass('is-invalid');
-                        },
-                        unhighlight: function(element) {
-                            $(element).closest('.form-control').removeClass('is-invalid');
-                        },
-                        success: function(element) {
-                            $(element).closest('.form-control').removeClass('is-invalid');
-                        },
-                        submitHandler: function(form, event) {
-                            event.preventDefault();
-                            $('#updateButton').html(
-                                '<svg class="spinners-2" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;"><path d="M12 22c5.421 0 10-4.579 10-10h-2c0 4.337-3.663 8-8 8s-8-3.663-8-8c0-4.336 3.663-8 8-8V2C6.579 2 2 6.58 2 12c0 5.421 4.579 10 10 10z"></path></svg>'
-                            );
-                            $('#updateButton').prop('disabled', true);
-                            $.ajax({
-                                url: `{{ url('/pembelian/${response.data.purchase.id}') }}`,
-                                type: "POST",
-                                data: {
-                                    _method: 'PUT',
-                                    _token: '{{ csrf_token() }}',
-                                    supplier_id: $('#supplier_id').val(),
-                                    total: $('#total').val(),
-                                    amount: $('#amount').val(),
-                                    created_at: $('#created_at').val(),
-                                },
-                                success: function(response) {
-                                    $('#updateButton').html('Update');
-                                    $('#updateButton').prop('disabled', false);
-                                    Swal.fire({
-                                            title: "Berhasil!",
-                                            text: response.meta.message,
-                                            icon: "success",
-                                            showCancelButton: false,
-                                            confirmButtonText: "Okay",
-                                            customClass: {
-                                                confirmButton: "btn btn-success"
-                                            },
-                                        })
-                                        .then(() => {
-                                            getPurchase();
-                                            // menutup modal
-                                            $('#modalEdit').modal('hide');
-                                        });
-                                },
-                                error: function(xhr, status, error) {
-                                    $('#updateButton').html('Update');
-                                    $('#updateButton').prop('disabled', false);
-                                    if (xhr.responseJSON) {
-                                        errorAlert("Gagal!",
-                                            `Ubah Mesin Gagal. ${xhr.responseJSON.meta.message} Error: ${xhr.responseJSON.data.error}`
-                                        );
-                                    } else {
-                                        errorAlert("Gagal!",
-                                            `Terjadi kesalahan pada server. Error: ${xhr.responseText}`
-                                        );
-                                    }
-                                    return false;
-                                }
-                            });
-                        }
-                    })
-                }
-            });
-
-            // Menampilkan modal
-            $('#modalEdit').modal('show');
         }
 
         const initSelect2Supplier = (supplier) => {

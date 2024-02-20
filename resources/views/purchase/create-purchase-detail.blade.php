@@ -71,8 +71,10 @@
                                 <th>No</th>
                                 <th>Barcode</th>
                                 <th>Nama Barang</th>
-                                <th>Tanggal Kadaluarsa</th>
-                                <th>Harga Pokok</th>
+                                <th>Tanggal Kadaluarsa Lama</th>
+                                <th>Tanggal Kadaluarsa Baru</th>
+                                <th>Harga Pokok Lama</th>
+                                <th>Harga Pokok Baru</th>
                                 <th>Total Barang</th>
                                 <th>Total Pembelian</th>
                                 <th>Aksi</th>
@@ -124,7 +126,14 @@
     @endif
     <script>
         $(document).ready(function() {
-            initializeDataTable('tableListProduct');
+            $('#tableListProduct').DataTable({
+                "scrollX": true,
+                "columnDefs": [{
+                    "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+                    "className": "text-center"
+                }],
+
+            })
 
             $('#product').select2({
                 theme: "bootstrap-5",
@@ -230,21 +239,26 @@
                 data: $('#formFilterProduct').serialize(),
                 dataType: "json",
                 success: function(response) {
-                    printPriceProduct = response.data.products.map((product) => {
-                        return product.idBarang;
-                    });
                     $('#countProduct').html(response.data.countProduct);
-                    if (response.data.products.length > 0) {
-                        $.each(response.data.products, function(index, product) {
+                    if (response.data.purchaseDetails.length > 0) {
+                        printPriceProduct = response.data.purchaseDetails.map((purchase) => {
+                            return purchase.idBarang;
+                        });
+                        $.each(response.data.purchaseDetails, function(index, purchaseDetail) {
                             var rowData = [
                                 index + 1,
-                                product.idBarang,
-                                product.nmBarang,
-                                product.product.expDate != null ? moment(product.product
+                                purchaseDetail.product_id,
+                                purchaseDetail.product.nmBarang,
+                                purchaseDetail.product.expDate != null ? moment(purchaseDetail
+                                    .product
                                     .expDate).format('DD-MM-YYYY') : '-',
-                                product.hargaJual,
-                                `<button class="btn btn-sm btn-warning" onclick="showEdit('${product.idBarang}')">Edit</button>
-                                <button class="btn btn-sm btn-danger" onclick="deleteProduct('${product.ID}')"><i class="bi bi-trash"></i></button>`
+                                purchaseDetail.exp_date != null ? moment(purchaseDetail
+                                    .exp_date).format('DD-MM-YYYY') : '-',
+                                purchaseDetail.product.hargaPokok,
+                                purchaseDetail.cost_of_good_sold,
+                                purchaseDetail.quantity,
+                                purchaseDetail.sub_amount,
+                                `<button class="btn btn-sm btn-danger" onclick="deleteProduct('${purchaseDetail.id}')"><i class="bi bi-trash"></i></button>`
                             ];
                             var rowNode = $('#tableListProduct').DataTable().row.add(rowData)
                                 .draw(
@@ -642,7 +656,7 @@
         const deleteProduct = (id) => {
             Swal.fire({
                 title: 'Hapus Produk',
-                text: `Apakah Anda yakin ingin menghapus ${id == 'all' ? 'semua':''} produk?`,
+                text: `Apakah Anda yakin ingin menghapus produk?`,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Hapus',
@@ -653,7 +667,7 @@
                 if (result.isConfirmed) {
                     $.ajax({
                         type: "DELETE",
-                        url: `{{ url('barang/cetak-harga/${id}') }}`,
+                        url: `{{ url('pembelian/detail/${id}') }}`,
                         data: {
                             _token: '{{ csrf_token() }}',
                         },

@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ResponseFormatter;
 use App\Models\Purchase;
+use App\Models\PurchaseDetail;
 use App\Models\Toko;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class PurchaseController extends Controller
@@ -79,20 +81,31 @@ class PurchaseController extends Controller
             );
         }
 
-        $purchase = Purchase::create([
-            'supplier_id' => $request->supplier_id,
-            'total' => 0,
-            'amount' => 0,
-            // 'status' => 'pending'
-        ]);
-
-        return ResponseFormatter::success(
-            [
-                'purchase' => $purchase,
-                'redirect' => route('purchase.detail.create', $purchase->id)
-            ],
-            'Pembelian berhasil ditambahkan'
-        );
+        try {
+            DB::beginTransaction();
+            $purchase = Purchase::create([
+                'supplier_id' => $request->supplier_id,
+                'total' => 0,
+                'amount' => 0,
+                // 'status' => 'pending'
+            ]);
+            DB::commit();
+            return ResponseFormatter::success(
+                [
+                    'purchase' => $purchase,
+                    'redirect' => route('purchase.detail.create', $purchase->id)
+                ],
+                'Pembelian berhasil ditambahkan'
+            );
+        } catch (\Exception $e) {
+            return ResponseFormatter::error(
+                [
+                    'message' => 'Gagal menambahkan pembelian'
+                ],
+                'Gagal menambahkan pembelian',
+                500
+            );
+        }
     }
 
     public function createDetail(Purchase $purchase)
@@ -108,15 +121,84 @@ class PurchaseController extends Controller
         return view('purchase.create-purchase-detail', $data);
     }
 
-    public function detail(Purchase $purchase)
+    public function detailData(Purchase $purchase)
     {
-        $purchase->load('purchaseDetails', 'purchaseDetails.product');
+        $purchaseDetails = PurchaseDetail::with('product')->where('purchase_id', $purchase->id)->get();
         return ResponseFormatter::success(
             [
-                'purchase' => $purchase
+                'purchaseDetails' => $purchaseDetails
             ],
             'Data detail pembelian berhasil diambil'
         );
+    }
+
+    public function storeDetail(Purchase $purchase, Request $request)
+    {
+        $rules = [
+            'IdBarang' => 'required|exists:t_barang,IdBarang',
+        ];
+
+        $validated = Validator::make($request->all(), $rules);
+
+        if ($validated->fails()) {
+            return ResponseFormatter::error(
+                [
+                    'message' => $validated->errors()->first()
+                ],
+                'Validasi gagal',
+                422
+            );
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $purchaseDetail = PurchaseDetail::create([
+                'purchase_id' => $purchase->id,
+                'product_id' => $request->IdBarang,
+                'quantity' => 0,
+                'exp_date' => date('Y-m-d'),
+                'cost_of_good_sold' => 0,
+                'sub_amount' => 0,
+            ]);
+
+            DB::commit();
+            return ResponseFormatter::success(
+                [
+                    'purchaseDetail' => $purchaseDetail,
+                ],
+                'Detail pembelian berhasil ditambahkan'
+            );
+        } catch (\Exception $e) {
+            return ResponseFormatter::error(
+                [
+                    'message' => 'Gagal menambahkan detail pembelian'
+                ],
+                'Gagal menambahkan detail pembelian',
+                500
+            );
+        }
+    }
+
+    public function destroyDetail(PurchaseDetail $purchaseDetail)
+    {
+        try {
+            DB::beginTransaction();
+            $purchaseDetail->delete();
+            DB::commit();
+            return ResponseFormatter::success(
+                null,
+                'Pembelian berhasil dihapus'
+            );
+        } catch (\Exception $e) {
+            return ResponseFormatter::error(
+                [
+                    'message' => 'Gagal menghapus pembelian'
+                ],
+                'Gagal menghapus pembelian',
+                500
+            );
+        }
     }
 
     /**
