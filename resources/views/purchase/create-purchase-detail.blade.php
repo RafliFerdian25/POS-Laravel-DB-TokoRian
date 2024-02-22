@@ -37,24 +37,53 @@
             </div>
             <div class="col-sm-12 col-md-8 col-xl-9 p-3">
                 <div class="main-card mb-3 card">
-                    <div class="card-body">
-                        <h5 class="card-title text-center">Tambah Barang</h5>
-                        @csrf
-                        <div class="form-group form-show-validation row select2-form-input">
-                            <label for="product" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-sm-right">Nama
-                                / Barcode Barang
-                                <span class="required-label">*</span></label>
-                            <div class="col-lg-9 col-md-9 col-sm-8">
-                                <div class="select2-input select2-info" style="width: 100%">
-                                    <select id="product" name="product" class="form-control rounded__10">
-                                        <option value="">&nbsp;</option>
-                                    </select>
+                    <form id="formAddProductPurchase">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Tambah Barang</h5>
+                            @csrf
+                            <div class="form-group form-show-validation row select2-form-input">
+                                <label for="product_id" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-sm-left">Nama
+                                    / Barcode Barang
+                                    <span class="required-label">*</span></label>
+                                <div class="col-lg-9 col-md-9 col-sm-8">
+                                    <div class="select2-input select2-info" style="width: 100%">
+                                        <select id="product_id" name="product_id" class="form-control rounded__10">
+                                            <option value="">&nbsp;</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group form-show-validation row select2-form-input">
+                                <label for="exp_date" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-sm-left">Tanggal
+                                    Kadaluarsa
+                                    <span class="required-label">*</span></label>
+                                <div class="col-lg-9 col-md-9 col-sm-8">
+                                    <input type="date" class="form-control rounded__10" id="exp_date" name="exp_date">
+                                </div>
+                            </div>
+                            <div class="form-group form-show-validation row select2-form-input">
+                                <label for="cost_of_good_sold" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-sm-left">Harga
+                                    Pokok
+                                    <span class="required-label">*</span></label>
+                                <div class="col-lg-9 col-md-9 col-sm-8">
+                                    <input type="number" class="form-control rounded__10" id="cost_of_good_sold"
+                                        name="cost_of_good_sold" min="1">
+                                </div>
+                            </div>
+                            <div class="form-group form-show-validation row select2-form-input">
+                                <label for="quantity" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-sm-left">Jumlah
+                                    <span class="required-label">*</span></label>
+                                <div class="col-lg-9 col-md-9 col-sm-8">
+                                    <input type="number" class="form-control rounded__10" id="quantity" name="quantity"
+                                        min="1">
                                 </div>
                             </div>
                         </div>
-                        <div id="qr-reader" style="min-width:300px"></div>
-                        <div id="qr-reader-results"></div>
-                    </div>
+                        <div class="card-footer justify-content-end">
+                            <button type="submit" class="btn btn-primary rounded-pill px-3 text-right"
+                                id="submitButton">Tambah</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -135,7 +164,7 @@
 
             })
 
-            $('#product').select2({
+            $('#product_id').select2({
                 theme: "bootstrap-5",
                 placeholder: 'Masukkan Nama atau Barcode Barang',
                 width: '100%',
@@ -187,42 +216,6 @@
                     },
                     cache: true, // Cache the results for better performance
                 }
-            }).on('change', function(e) {
-                // Mendapatkan nilai yang dipilih
-                var IdBarang = $(this).val();
-
-                $.ajax({
-                    type: "POST",
-                    url: "{{ url('/pembelian/detail/' . $purchase->id) }}",
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        IdBarang: IdBarang,
-                    },
-                    success: function(response) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil',
-                            text: 'Menambah Produk Berhasil',
-                            showConfirmButton: false,
-                            timer: 1500
-                        })
-                        getProduct();
-                    },
-                    error: function(xhr, ajaxOptions, thrownError) {
-                        if (xhr.responseJSON) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Gagal',
-                                text: `Tambah Produk Gagal. ${xhr.responseJSON.meta.message} Error: ${xhr.responseJSON.data.error}`,
-                                showConfirmButton: false,
-                                timer: 1500
-                            })
-                        }
-                        return false;
-                    },
-                });
-
-                // $('#product').val(null).trigger('change');
             });
 
             getProduct();
@@ -249,16 +242,16 @@
                                 index + 1,
                                 purchaseDetail.product_id,
                                 purchaseDetail.product.nmBarang,
-                                purchaseDetail.product.expDate != null ? moment(purchaseDetail
-                                    .product
-                                    .expDate).format('DD-MM-YYYY') : '-',
+                                purchaseDetail.exp_date_old != null ? moment(purchaseDetail
+                                    .exp_date_old).format('DD-MM-YYYY') : '-',
                                 purchaseDetail.exp_date != null ? moment(purchaseDetail
                                     .exp_date).format('DD-MM-YYYY') : '-',
-                                purchaseDetail.product.hargaPokok,
+                                purchaseDetail.cost_of_good_sold_old,
                                 purchaseDetail.cost_of_good_sold,
                                 purchaseDetail.quantity,
                                 purchaseDetail.sub_amount,
-                                `<button class="btn btn-sm btn-danger" onclick="deleteProduct('${purchaseDetail.id}')"><i class="bi bi-trash"></i></button>`
+                                `<button class="btn btn-sm btn-warning" onclick="showEdit('${purchaseDetail.product_id}')">Edit</button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteProduct('${purchaseDetail.id}')"><i class="bi bi-trash"></i></button>`
                             ];
                             var rowNode = $('#tableListProduct').DataTable().row.add(rowData)
                                 .draw(
@@ -653,6 +646,99 @@
             }
         }
 
+        $('#formAddProductPurchase').validate({
+            rules: {
+                product_id: {
+                    required: true,
+                },
+                exp_date: {
+                    date: true,
+                },
+                cost_of_good_sold: {
+                    required: true,
+                    min: 1,
+                },
+                quantity: {
+                    required: true,
+                    min: 1,
+                },
+            },
+            messages: {
+                product_id: {
+                    required: "Barang tidak boleh kosong",
+                },
+                exp_date: {
+                    date: "Tanggal kadaluarsa tidak valid",
+                },
+                cost_of_good_sold: {
+                    required: "Harga pokok tidak boleh kosong",
+                },
+                quantity: {
+                    required: "Jumlah tidak boleh kosong",
+                },
+            },
+            errorClass: "invalid-feedback",
+            highlight: function(element) {
+                $(element).closest('.form-control').removeClass('valid')
+                    .addClass('is-invalid');
+            },
+            unhighlight: function(element) {
+                $(element).closest('.form-control').removeClass('is-invalid');
+            },
+            success: function(element) {
+                $(element).closest('.form-control').removeClass('is-invalid');
+            },
+            submitHandler: function(form, event) {
+                event.preventDefault();
+                $('#submitButton').html(
+                    '<svg class="spinners-2" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;"><path d="M12 22c5.421 0 10-4.579 10-10h-2c0 4.337-3.663 8-8 8s-8-3.663-8-8c0-4.336 3.663-8 8-8V2C6.579 2 2 6.58 2 12c0 5.421 4.579 10 10 10z"></path></svg>'
+                );
+                $('#submitButton').prop('disabled', true);
+                $.ajax({
+                    url: `{{ url('pembelian/detail/' . $purchase->id) }}`,
+                    type: "POST",
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        product_id: $('#product_id').val(),
+                        exp_date: $('#exp_date').val(),
+                        cost_of_good_sold: $('#cost_of_good_sold').val(),
+                        quantity: $('#quantity').val(),
+                    },
+                    success: function(response) {
+                        $('#submitButton').html('Tambah');
+                        $('#submitButton').prop('disabled', false);
+                        Swal.fire({
+                                title: "Berhasil!",
+                                text: response.meta.message,
+                                icon: "success",
+                                showCancelButton: false,
+                                confirmButtonText: "Okay",
+                                customClass: {
+                                    confirmButton: "btn btn-success"
+                                },
+                            })
+                            .then(() => {
+                                getProduct();
+                            });
+                    },
+                    error: function(xhr, status, error) {
+                        $('#submitButton').html('Tambah');
+                        $('#submitButton').prop('disabled', false);
+                        if (xhr.responseJSON) {
+                            errorAlert("Gagal!",
+                                `Tambah Produk Gagal. ${xhr.responseJSON.meta.message} Error: ${xhr.responseJSON.data.error}`
+                            );
+                        } else {
+                            errorAlert("Gagal!",
+                                `Terjadi kesalahan pada server. Error: ${xhr.responseText}`
+                            );
+                        }
+                        return false;
+                    }
+                });
+            }
+        })
+
         const deleteProduct = (id) => {
             Swal.fire({
                 title: 'Hapus Produk',
@@ -697,65 +783,5 @@
                 }
             })
         }
-
-        var resultContainer = document.getElementById('qr-reader-results');
-        var lastResult, countResults = 0;
-
-        function onScanSuccess(decodedText, decodedResult) {
-            if (!printPriceProduct.includes(decodedText) && lastResult !== decodedText) {
-                lastResult = decodedText;
-                ++countResults;
-                // Handle on success condition with the decoded message.
-                $.ajax({
-                    type: "POST",
-                    url: "{{ route('barang.cetak-harga.store') }}",
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        IdBarang: decodedText,
-                    },
-                    success: function(response) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil',
-                            text: 'Menambah Produk Berhasil',
-                            showConfirmButton: false,
-                            timer: 1500
-                        })
-                        getProduct();
-                    },
-                    error: function(xhr, ajaxOptions, thrownError) {
-                        if (xhr.responseJSON) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Gagal',
-                                text: `Tambah Produk Gagal. ${xhr.responseJSON.meta.message} Error: ${xhr.responseJSON.data.error}`,
-                                showConfirmButton: false,
-                                timer: 1500
-                            })
-                        }
-                        return false;
-                    },
-                });
-            } else {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Gagal',
-                    text: 'Produk sudah ditambahkan',
-                    showConfirmButton: false,
-                    timer: 1500
-                })
-            }
-        }
-
-        var html5QrcodeScanner = new Html5QrcodeScanner(
-            "qr-reader", {
-                fps: 10,
-                qrbox: {
-                    width: 400,
-                    height: 250
-                },
-                rememberLastUsedCamera: true,
-            });
-        html5QrcodeScanner.render(onScanSuccess);
     </script>
 @endpush

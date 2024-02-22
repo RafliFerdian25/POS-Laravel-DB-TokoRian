@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ResponseFormatter;
+use App\Models\Barcode;
+use App\Models\Product;
 use App\Models\Purchase;
 use App\Models\PurchaseDetail;
 use App\Models\Toko;
@@ -135,7 +137,9 @@ class PurchaseController extends Controller
     public function storeDetail(Purchase $purchase, Request $request)
     {
         $rules = [
-            'IdBarang' => 'required|exists:t_barang,IdBarang',
+            'product_id' => 'required|exists:t_barang,IdBarang|unique:t_pembelian_detail,product_id,NULL,id,purchase_id,' . $purchase->id,
+            'cost_of_good_sold' => 'required|numeric',
+            'quantity' => 'required|numeric',
         ];
 
         $validated = Validator::make($request->all(), $rules);
@@ -143,7 +147,7 @@ class PurchaseController extends Controller
         if ($validated->fails()) {
             return ResponseFormatter::error(
                 [
-                    'message' => $validated->errors()->first()
+                    'error' => $validated->errors()->first()
                 ],
                 'Validasi gagal',
                 422
@@ -152,15 +156,50 @@ class PurchaseController extends Controller
 
         try {
             DB::beginTransaction();
+            $product = Product::find($request->product_id);
 
             $purchaseDetail = PurchaseDetail::create([
                 'purchase_id' => $purchase->id,
-                'product_id' => $request->IdBarang,
-                'quantity' => 0,
-                'exp_date' => date('Y-m-d'),
-                'cost_of_good_sold' => 0,
-                'sub_amount' => 0,
+                'product_id' => $request->product_id,
+                'quantity' =>  $request->quantity,
+                'exp_date' => $request->exp_date,
+                'exp_date_old' => $product->expDate,
+                'cost_of_good_sold' => $request->cost_of_good_sold,
+                'cost_of_good_sold_old' => $product->hargaPokok,
+                'sub_amount' => $request->cost_of_good_sold * $request->quantity,
             ]);
+
+            // Update total pembelian
+            $purchase->amount += $purchaseDetail->sub_amount;
+            $purchase->total += $purchaseDetail->quantity;
+
+            $purchase->save();
+
+            // update tanggal kadaluarsa produk
+            if ($product->expDate == null || $product->expDate > $request->exp_date || $product->stok <= 0) {
+                $product->expDate = $request->exp_date;
+            }
+
+            // update harga pokok
+            if ($product->hargaPokok < $request->cost_of_good_sold || $product->stok <= 0) {
+                $product->hargaPokok = $request->cost_of_good_sold;
+            }
+
+            if ($product->stok < 0) {
+                $product->stok = ($product->stok + ($product->stok * -1)) + $request->quantity;
+            } else {
+                $product->stok += $request->quantity;
+            }
+
+            // update data produk
+            $product->save();
+
+            // cetak harga
+            $productController = new ProductController();
+            $newRequest = new Request([
+                'IdBarang' => $product->IdBarang,
+            ]);
+            $productController->storePrintPrice($newRequest);
 
             DB::commit();
             return ResponseFormatter::success(
@@ -172,7 +211,8 @@ class PurchaseController extends Controller
         } catch (\Exception $e) {
             return ResponseFormatter::error(
                 [
-                    'message' => 'Gagal menambahkan detail pembelian'
+                    'message' => 'Gagal menambahkan detail pembelian',
+                    'error' => $e->getMessage()
                 ],
                 'Gagal menambahkan detail pembelian',
                 500
@@ -184,6 +224,28 @@ class PurchaseController extends Controller
     {
         try {
             DB::beginTransaction();
+            // update data barang
+            $product = Product::find($purchaseDetail->product_id);
+            $product->expDate = $purchaseDetail->exp_date_old;
+            $product->hargaPokok = $purchaseDetail->cost_of_good_sold_old;
+            $product->stok -= $purchaseDetail->quantity;
+            if ($product->stok <= 0) {
+                $product->stok = 0;
+            }
+            $product->save();
+
+            // update data pembelian
+            $purchase = Purchase::find($purchaseDetail->purchase_id);
+            $purchase->amount -= $purchaseDetail->sub_amount;
+            $purchase->total -= $purchaseDetail->quantity;
+            $purchase->save();
+
+            // hapus data pada cetak harga
+            $productController = new ProductController();
+            $printPrince = Barcode::where('IdBarang', $purchaseDetail->product_id)->first();
+            $productController->destroyPrintPrice($printPrince->ID);
+
+            // hapus detail pembelian
             $purchaseDetail->delete();
             DB::commit();
             return ResponseFormatter::success(
@@ -193,7 +255,8 @@ class PurchaseController extends Controller
         } catch (\Exception $e) {
             return ResponseFormatter::error(
                 [
-                    'message' => 'Gagal menghapus pembelian'
+                    'message' => 'Gagal menghapus pembelian',
+                    'error' => $e->getMessage()
                 ],
                 'Gagal menghapus pembelian',
                 500

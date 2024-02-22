@@ -161,13 +161,13 @@
     <script>
         $(document).ready(function() {
             // datatable reponsive
-            $("#tableProduct").DataTable({
-                scrollX: true,
+            var configDatatable = {
                 columnDefs: [{
                     targets: [8], // Kolom "Tanggal" ada di indeks 1 (0-indexed)
                     type: "date-eu" // Tentukan tipe pengurutan khusus untuk format "DD/MM/YYYY"
                 }],
-            });
+            };
+            initializeDataTable("tableProduct", configDatatable);
 
             // Do this before you initialize any of your modals
             getProducts();
