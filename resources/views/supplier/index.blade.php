@@ -37,8 +37,10 @@
                                 <thead>
                                     <tr>
                                         <th>ID</th>
-                                        <th>Nama Supplier</th>
+                                        <th>Nama</th>
+                                        <th>Produk</th>
                                         <th>Alamat</th>
+                                        <th>Kota</th>
                                         <th>Telepon</th>
                                         <th>Aksi</th>
                                     </tr>
@@ -46,16 +48,18 @@
                                 <tbody>
                                     @foreach ($suppliers as $supplier)
                                         <tr>
-                                            <td>{{ $supplier->id }}</td>
-                                            <td>{{ $supplier->name }}</td>
-                                            <td>{{ $supplier->address }}</td>
-                                            <td>{{ $supplier->phone }}</td>
+                                            <td>{{ $supplier->IdSupplier }}</td>
+                                            <td>{{ $supplier->Nama }}</td>
+                                            <td>{{ $supplier->Produk }}</td>
+                                            <td>{{ $supplier->alamat }}</td>
+                                            <td>{{ $supplier->kota }}</td>
+                                            <td>{{ $supplier->telp }}</td>
                                             <td>
                                                 <div class="d-flex justify-content-center">
-                                                    <a href="{{ route('supplier.edit', $supplier->id) }}"
+                                                    <a href="{{ route('supplier.edit', $supplier->IdSupplier) }}"
                                                         class="btn btn-link btn-lg float-left px-0"><i
                                                             class="fa fa-edit"></i></a>
-                                                    <form action="{{ route('supplier.destroy', $supplier->id) }}"
+                                                    <form action="{{ route('supplier.destroy', $supplier->IdSupplier) }}"
                                                         method="POST">
                                                         @method('DELETE')
                                                         @csrf

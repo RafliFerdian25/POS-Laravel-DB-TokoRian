@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Helpers\ResponseFormatter;
 use App\Models\Merk;
 use App\Models\Supplier;
+use Facade\FlareClient\Http\Response;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class SupplierController extends Controller
 {
@@ -40,15 +43,45 @@ class SupplierController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            "name" => "required",
-            "address" => "required",
-            "phone" => "required|numeric|unique:suppliers",
-        ]);
+        $rules = [
+            "Nama" => "required|unique:t_supplier,Nama|max:100",
+            "Produk" => "required|max:100",
+            "alamat" => "required",
+            "kota" => "required|max:25",
+            "telp" => "numeric|unique:t_supplier,telp",
+            "email" => "email|unique:t_supplier,email"
+        ];
 
-        Supplier::create($validated);
+        $validated = Validator::make($request->all(), $rules);
 
-        return redirect()->route("supplier.index")->with("success", "Data Supplier Berhasil Ditambahkan");
+        if ($validated->fails()) {
+            return ResponseFormatter::error([
+                "message" => $validated->errors()->first()
+            ], "Data gagal divalidasi", 422);
+        }
+
+        try {
+            DB::beginTransaction();
+            Supplier::create([
+                "Nama" => $request->Nama,
+                "Produk" => $request->Produk,
+                "alamat" => $request->alamat,
+                "kota" => $request->kota,
+                "telp" => $request->telp,
+                "email" => $request->email
+            ]);
+            DB::commit();
+
+            return ResponseFormatter::success([
+                "message" => "Data Supplier Berhasil Ditambahkan",
+                "redirect" => route("supplier.index")
+            ], "Data berhasil ditambahkan");
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return ResponseFormatter::error([
+                "message" => $e->getMessage()
+            ], "Data gagal ditambahkan", 500);
+        }
     }
 
     /**
