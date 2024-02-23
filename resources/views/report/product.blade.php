@@ -34,7 +34,7 @@
                     <div class="content">
                         <div class="widget-content-left row mb-2">
                             <i class="pe-7s-cash col-2" style="font-size: 30px;"></i>
-                            <div class="widget-heading col-10 widget__title">Total Barang</div>
+                            <div class="widget-heading col-10 widget__title">Total Jenis Barang Terjual</div>
                         </div>
                         <div class="widget-content-right">
                             <div class="widget-numbers mb-2" id="countProduct">-</div>
@@ -59,17 +59,10 @@
                         @csrf
                         <div class="modal-body">
                             <div class="row mb-3">
-                                <label for="filterBarcode" class="col-sm-2 col-form-label">Barcode</label>
+                                <label for="filterBarcode" class="col-sm-2 col-form-label">Nama / Barcode</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control rounded__10 " id="filterBarcode"
+                                    <input type="text" class="form-control rounded__10 " id="filterProduct"
                                         name="filterBarcode">
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <label for="filterName" class="col-sm-2 col-form-label">Nama</label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control rounded__10 " id="filterName"
-                                        name="filterName">
                                 </div>
                             </div>
                         </div>
@@ -143,8 +136,7 @@
                 url: `{{ route('monthly.product.report.data') }}`,
                 data: {
                     token: '{{ csrf_token() }}',
-                    filterBarcode: $('#filterBarcode').val(),
-                    filterName: $('#filterName').val(),
+                    filterProduct: $('#filterProduct').val(),
                     filterDate: $('#filterDate').val()
                 },
                 dataType: "json",

@@ -53,7 +53,7 @@
         <!-- Merk Section -->
         <div class="merk__section">
             <!-- Barang -->
-            <div class="container merk__container">
+            <div class="merk__container">
                 <div class="merk__content">
                     <div class="main-card mb-3 card">
                         <div class="card-body">
@@ -118,7 +118,7 @@
                                 .node();
 
                             // $(rowNode).find('td').eq(8).addClass('text-center');
-                            $(rowNode).find('td').eq(3).addClass('text-center');
+                            // $(rowNode).find('td').eq(3).addClass('text-center');
                         });
                     } else {
                         $('#tableMerkBody').html(tableEmpty(4,

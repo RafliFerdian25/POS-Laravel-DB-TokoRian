@@ -421,7 +421,7 @@ class ReportController extends Controller
     {
         $data = [
             'setting' => Toko::first(),
-            'title' => 'POS TOKO | Laporan',
+            'title' => 'POS TOKO | Laporan Barang',
         ];
         return view('report.product', $data);
     }
@@ -433,20 +433,23 @@ class ReportController extends Controller
     {
         $filterDate = $request->filterDate == null ? Carbon::now() : Carbon::parse($request->filterDate);
         $query = Product::select('t_barang.IdBarang', 't_barang.nmBarang', 'expDate', 'stok', DB::raw('COALESCE(SUM(t_kasir.jumlah), 0) as jumlah'))
-            ->join('t_kasir', 't_barang.idBarang', '=', 't_kasir.idBarang')
-            ->when($request->filterName != null, function ($query) use ($request) {
-                return $query->where('t_barang.nmBarang', 'LIKE', '%' . $request->input('filterName') . '%');
+            ->leftJoin('t_kasir', function ($join) use ($filterDate) {
+                $join->on('t_kasir.idBarang', '=', 't_barang.IdBarang')
+                    ->whereMonth('t_kasir.tanggal', $filterDate->month)
+                    ->whereYear('t_kasir.tanggal', $filterDate->year);
             })
-            ->when($request->filterBarcode != null, function ($query) use ($request) {
-                return $query->where('t_barang.idBarang', 'LIKE', '%' . $request->input('filterBarcode') . '%');
-            })
-            ->whereMonth('t_kasir.tanggal', $filterDate->month)
-            ->whereYear('t_kasir.tanggal', $filterDate->year)
-            ->groupBy('t_barang.IdBarang', 't_barang.nmBarang', 'expDate', 'stok')
-            ->orderByDesc('jumlah');
+            ->when($request->filterProduct != null, function ($query) use ($request) {
+                return $query->where('t_barang.nmBarang', 'LIKE', '%' . $request->input('filterProduct') . '%')
+                    ->orWhere('t_barang.idBarang', 'LIKE', '%' . $request->input('filterProduct') . '%');
+            });
 
-        $products = $query->get();
-        $countProduct = $query->toBase()->getCountForPagination();
+        $countProduct = $query->groupBy('t_barang.IdBarang', 't_barang.nmBarang', 'expDate', 'stok')
+            ->havingRaw('SUM(t_kasir.jumlah) > 0')
+            ->count();
+        $products = $query->groupBy('t_barang.IdBarang', 't_barang.nmBarang', 'expDate', 'stok')
+            ->orderByDesc('jumlah')
+            ->limit(100)
+            ->get();
 
         return ResponseFormatter::success(
             [
