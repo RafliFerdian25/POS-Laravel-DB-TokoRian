@@ -110,6 +110,38 @@ class PurchaseController extends Controller
         }
     }
 
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\Purchase  $purchase
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Purchase $purchase)
+    {
+        try {
+            DB::beginTransaction();
+            foreach ($purchase->purchaseDetails as $purchaseDetail) {
+                $this->destroyDetail($purchaseDetail);
+            }
+            $purchase->delete();
+            DB::commit();
+            // dd($purchase->purchaseDetails);
+            return ResponseFormatter::success(
+                null,
+                'Pembelian berhasil dihapus'
+            );
+        } catch (\Exception $e) {
+            return ResponseFormatter::error(
+                [
+                    'message' => 'Gagal menghapus pembelian',
+                    'error' => $e->getMessage()
+                ],
+                'Gagal menghapus pembelian',
+                500
+            );
+        }
+    }
+
     public function createDetail(Purchase $purchase)
     {
         $title = 'POS TOKO | Tambah Detail Pembelian';
@@ -243,7 +275,9 @@ class PurchaseController extends Controller
             // hapus data pada cetak harga
             $productController = new ProductController();
             $printPrince = Barcode::where('IdBarang', $purchaseDetail->product_id)->first();
-            $productController->destroyPrintPrice($printPrince->ID);
+            if ($printPrince != null) {
+                $productController->destroyPrintPrice($printPrince->ID);
+            }
 
             // hapus detail pembelian
             $purchaseDetail->delete();
@@ -262,50 +296,5 @@ class PurchaseController extends Controller
                 500
             );
         }
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Purchase  $purchase
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Purchase $purchase)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Purchase  $purchase
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Purchase $purchase)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Purchase  $purchase
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Purchase $purchase)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Purchase  $purchase
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Purchase $purchase)
-    {
-        //
     }
 }

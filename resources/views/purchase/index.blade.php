@@ -58,7 +58,7 @@
                                 <tr>
                                     <th>No</th>
                                     <th>ID Transaksi</th>
-                                    <th>supplier</th>
+                                    <th>Supplier</th>
                                     <th>Total Barang</th>
                                     <th>Total Pembelian</th>
                                     <th>Tanggal</th>
@@ -119,7 +119,7 @@
                 `{{ asset('assets/svg/Ellipsis-2s-48px.svg') }}`));
 
             $.ajax({
-                url: `{{ url('pembelian/detail/${id}/data') }}`,
+                url: `{{ url('pembelian/data') }}`,
                 type: "GET",
                 dataType: "json",
                 success: function(response) {
@@ -133,7 +133,7 @@
                                 purchase.total,
                                 purchase.amount,
                                 moment(purchase.created_at).format('DD-MM-Y'),
-                                `<button class="btn btn-danger rounded-circle px-2" onclick="deletePurchase('${purchase.id}')"><i class="bi bi-trash"></i></button>
+                                `<button class="btn btn-danger rounded-circle px-2" onclick="deletePurchase('${purchase.id}','${purchase.supplier.Nama}')"><i class="bi bi-trash"></i></button>
                                     <a href="{{ url('pembelian/detail/${purchase.id}/create') }}" class="btn btn-primary rounded-circle px-2"><i class="bi bi-pencil"></i></a>`
                             ]).draw(false).node();
                         });
