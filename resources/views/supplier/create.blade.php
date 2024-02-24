@@ -13,27 +13,31 @@
                     <form id="formAddSupplier">
                         @csrf
                         <div class="row mb-3">
-                            <label for="Nama" class="col-sm-2 col-form-label">Nama</label>
+                            <label for="Nama" class="col-sm-2 col-form-label">Nama <span
+                                    class="text-danger">*</span></label>
                             <div class="col-sm-10">
                                 <input required type="text" maxlength="100" class="form-control rounded__10"
                                     id="Nama" name="Nama">
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <label for="Produk" class="col-sm-2 col-form-label">Produk</label>
+                            <label for="Produk" class="col-sm-2 col-form-label">Produk <span
+                                    class="text-danger">*</span></label>
                             <div class="col-sm-10">
                                 <input required type="text" maxlength="100" class="form-control rounded__10"
                                     id="Produk" name="Produk">
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <label for="alamat" class="col-sm-2 col-form-label">Alamat</label>
+                            <label for="alamat" class="col-sm-2 col-form-label">Alamat <span
+                                    class="text-danger">*</span></label>
                             <div class="col-sm-10">
                                 <textarea required type="text" class="form-control rounded__10" id="alamat" name="alamat"></textarea>
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <label for="kota" class="col-sm-2 col-form-label">Kota</label>
+                            <label for="kota" class="col-sm-2 col-form-label">Kota <span
+                                    class="text-danger">*</span></label>
                             <div class="col-sm-10">
                                 <input required type="text" maxlength="100" class="form-control rounded__10"
                                     id="kota" name="kota">

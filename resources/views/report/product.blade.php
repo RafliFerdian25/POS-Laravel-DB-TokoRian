@@ -152,7 +152,7 @@
                                 product.expDate,
                                 product.jumlah,
                                 `<button class="btn btn-sm btn-warning" onclick="showEdit('${product.IdBarang}', 'expired')">Edit</button>
-                                <button class="btn btn-sm btn-primary" onclick="showEdit('${product.IdBarang}', 'expired')">Detail</button>`
+                                <a href="{{ url('/laporan/barang/${product.IdBarang}') }}" class="btn btn-sm btn-primary">Detail</a>`
                             ];
                             var rowNode = $('#tableProduct').DataTable().row.add(rowData)
                                 .draw(

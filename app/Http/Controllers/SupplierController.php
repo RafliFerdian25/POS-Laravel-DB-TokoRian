@@ -48,15 +48,15 @@ class SupplierController extends Controller
             "Produk" => "required|max:100",
             "alamat" => "required",
             "kota" => "required|max:25",
-            "telp" => "numeric|unique:t_supplier,telp",
-            "email" => "email|unique:t_supplier,email"
+            "telp" => "nullable|numeric|unique:t_supplier,telp",
+            "email" => "nullable|email|unique:t_supplier,email"
         ];
 
         $validated = Validator::make($request->all(), $rules);
 
         if ($validated->fails()) {
             return ResponseFormatter::error([
-                "message" => $validated->errors()->first()
+                "error" => $validated->errors()->first()
             ], "Data gagal divalidasi", 422);
         }
 

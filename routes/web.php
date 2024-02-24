@@ -37,12 +37,15 @@ Route::controller(ReportController::class)->group(function () {
     Route::get('/laporan/kategori/data', 'getCategoriesReport')->name('laporan.kategori.data');
     Route::get('/laporan/kategori/{category:ID}/detail', 'categoryDetail')->name('report.category.detail');
     Route::get('/laporan/kategori/{category:ID}/detail/data', 'getCategoryDetail')->name('report.category.detail.data');
-    Route::get('/laporan/barang', 'monthlyProductReport')->name('monthly.product.report');
-    Route::get('/laporan/barang/data', 'getMonthlyProductReport')->name('monthly.product.report.data');
+
+    // Laporan Barang
+    Route::get('/laporan/barang', 'productReport')->name('monthly.product.report');
+    Route::get('/laporan/barang/data', 'getProductReport')->name('monthly.product.report.data');
+    Route::get('/laporan/barang/{product:idBarang}', 'productDetail')->name('report.product.detail');
+    Route::get('/laporan/barang/{product:idBarang}/data', 'getProductDetail')->name('report.product.detail.data');
 });
 
 Route::get('/laporan/{sale}/show', [SaleController::class, 'showReport'])->name('laporan.show');
-Route::get('/laporan/barang/{product:idBarang}', [SaleController::class, 'laporanBarangBulanan'])->name('laporan.barang.bulanan');
 
 // Route::get('/transaksi/baru', [PenjualanController::class, 'create'])->name('transaksi.baru');
 Route::get('/transaksi/kasir', [SaleDetailController::class, 'index'])->name('penjualan.index');
