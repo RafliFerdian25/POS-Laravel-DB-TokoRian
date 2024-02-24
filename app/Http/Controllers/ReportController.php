@@ -8,6 +8,7 @@ use App\Models\Barang;
 use App\Models\Category;
 use App\Models\Kasir;
 use App\Models\Product;
+use App\Models\PurchaseDetail;
 use App\Models\Toko;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -570,6 +571,8 @@ class ReportController extends Controller
             ->orderBy('tanggal', 'asc')
             ->get();
 
+        $purchaseDetails = PurchaseDetail::with('purchase:id,supplier_id', 'purchase.supplier:IdSupplier,Nama')->where('product_id', $product->IdBarang)->get();
+
         return ResponseFormatter::success(
             [
                 'dateString' => $typeReport == 'Bulanan' ? FormatDate::month($date->month) : $startDate->copy()->format('d M Y') . ' - ' . $endDate->copy()->format('d M Y'),
@@ -581,6 +584,7 @@ class ReportController extends Controller
                 'transactionsByDate' => $transactionsByDate,
                 'transactionsByNoTransaction' => $transactionsByNoTransaction,
                 'transactionsByLastYear' => $transactionsByLastYear,
+                'purchaseDetails' => $purchaseDetails
             ],
             'Data kategori berhasil diambil'
         );

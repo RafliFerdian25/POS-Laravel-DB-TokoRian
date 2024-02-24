@@ -177,15 +177,42 @@
 
         <!-- END CARD DASHBOARD -->
 
+        <!-- Barang Terjual -->
+        <div class="productPurchaseTransactionSection">
+            <div class="main-card mb-3 card">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Riwayat Pembelian (Belanja)</h5>
+                    <table class="display nowrap" style="100%" id="tableProductPurchase">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Tanggal</th>
+                                <th>Supplier</th>
+                                <th>Tanggal Kadaluarsa Lama</th>
+                                <th>Tanggal Kadaluarsa Baru</th>
+                                <th>Harga Pokok Lama</th>
+                                <th>Harga Pokok Baru</th>
+                                <th>Total Barang</th>
+                                <th>Total Pembelian</th>
+                                {{-- <th>Aksi</th> --}}
+                            </tr>
+                        </thead>
+                        <tbody id="tableProductPurchaseBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- end barang terjual -->
+
     </div>
 @endsection
 
 @push('scripts')
     <script>
         $(document).ready(function() {
-            $("#tableProductSaleTransaction").DataTable({
-                // scrollX: true,
-            });
+            initializeDataTable("tableProductSaleTransaction");
+            initializeDataTable("tableProductPurchase");
 
             getReportProduct()
         });
@@ -543,6 +570,38 @@
                     } else {
                         $('#tableProductSaleTransactionBody').html(tableEmpty(6,
                             'barang kadaluarsa'));
+                    }
+
+                    // table data pembelian barang
+                    $('#tableProductPurchase').DataTable().clear().draw();
+                    if (response.data.purchaseDetails.length > 0) {
+                        $.each(response.data.purchaseDetails, function(index, purchaseDetail) {
+                            var rowData = [
+                                index + 1,
+                                purchaseDetail.product_id,
+                                purchaseDetail.purchase.supplier.Nama,
+                                purchaseDetail.exp_date_old != null ? moment(purchaseDetail
+                                    .exp_date_old).format('DD-MM-YYYY') : '-',
+                                purchaseDetail.exp_date != null ? moment(purchaseDetail
+                                    .exp_date).format('DD-MM-YYYY') : '-',
+                                purchaseDetail.cost_of_good_sold_old,
+                                purchaseDetail.cost_of_good_sold,
+                                purchaseDetail.quantity,
+                                purchaseDetail.sub_amount,
+                                // `<button class="btn btn-sm btn-warning" onclick="showEdit('${purchaseDetail.noTransaksi}')">Detail</button>`
+                            ];
+                            var rowNode = $('#tableProductPurchase').DataTable().row.add(
+                                    rowData)
+                                .draw(
+                                    false)
+                                .node();
+
+                            // $(rowNode).find('td').eq(0).addClass('text-center');
+                            // $(rowNode).find('td').eq(4).addClass('text-center text-nowrap');
+                        });
+                    } else {
+                        $('#tableProductPurchaseBody').html(tableEmpty(9,
+                            'Riwayat Pembelian Barang'));
                     }
                 }
             });
