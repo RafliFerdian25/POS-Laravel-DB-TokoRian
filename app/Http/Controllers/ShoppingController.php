@@ -49,10 +49,16 @@ class ShoppingController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'IdBarang' => 'required|exists:t_barang,IdBarang',
+            'IdBarang' => 'required|exists:t_barang,IdBarang|unique:t_belanja,IdBarang',
         ];
 
-        $validated = Validator::make($request->all(), $rules);
+        $messages = [
+            'IdBarang.required' => 'Barang tidak boleh kosong',
+            'IdBarang.exists' => 'Barang tidak ditemukan',
+            'IdBarang.unique' => 'Barang sudah ada di daftar belanja'
+        ];
+
+        $validated = Validator::make($request->all(), $rules, $messages);
 
         if ($validated->fails()) {
             return ResponseFormatter::error([

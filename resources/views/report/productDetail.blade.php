@@ -120,7 +120,7 @@
         {{-- Report --}}
         <div class="row">
             {{-- Chart Laporan Penjualan --}}
-            <div class="col-md-8">
+            <div class="col-md-6">
                 <div class="main-card mb-3 card">
                     <div class="card-header">
                         Laporan Penjualan
@@ -131,55 +131,30 @@
                 </div>
             </div>
             {{-- End hart Laporan Penjualan --}}
-            {{-- Barang terlaris --}}
-            <div class="col-md-4">
+
+            <!-- Barang Terjual -->
+            <div class="productSaleTransactionSection col-md-6">
                 <div class="main-card mb-3 card">
-                    <div class="card-header d-flex justify-content-between">
-                        <div>
-                            Barang Terlaris
-                        </div>
-                        <div>
-                            <a href="{{ route('monthly.product.report') }}" class="btn btn-primary"> </a>
-                        </div>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="align-middle mb-0 table table-borderless table-striped table-hover"
-                            id="tableBestSellingProducts">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">Riwayat Penjualan</h5>
+                        <table class="display nowrap" style="100%" id="tableProductSaleTransaction">
                             <thead>
                                 <tr>
-                                    <th class="text-center">#</th>
-                                    <th>Nama</th>
-                                    <th class="text-center">Jumlah</th>
-                                    <th class="text-center">Aksi</th>
+                                    <th>No. Transaksi</th>
+                                    <th>Tanggal</th>
+                                    <th>Total Item</th>
+                                    <th>Total Harga</th>
+                                    <th>Keuntungan</th>
+                                    <th>Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="text-center text-muted"></td>
-                                    <td>
-                                        <div class="widget-content p-0">
-                                            <div class="widget-content-wrapper">
-                                                <div class="widget-content-left flex2">
-
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-center"></td>
-                                    <td class="text-center">
-                                        <a href="">
-                                            <button type="button" id="PopoverCustomT-1" class="btn btn-primary btn-sm">
-                                                Details
-                                            </button>
-                                        </a>
-                                    </td>
-                                </tr>
+                            <tbody id="tableProductSaleTransactionBody">
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
-            {{-- End Barang terlaris --}}
+            <!-- end barang terjual -->
         </div>
         {{-- END Report --}}
 
@@ -201,30 +176,6 @@
         {{-- END Chart Monthly Report --}}
 
         <!-- END CARD DASHBOARD -->
-
-        <!-- Barang Terjual -->
-        <div class="productSaleTransactionSection">
-            <div class="main-card mb-3 card">
-                <div class="card-body">
-                    <h5 class="card-title text-center">Riwayat Penjualan</h5>
-                    <table class="display nowrap" style="100%" id="tableProductSaleTransaction">
-                        <thead>
-                            <tr>
-                                <th>No. Transaksi</th>
-                                <th>Tanggal</th>
-                                <th>Total Item</th>
-                                <th>Total Harga</th>
-                                <th>Keuntungan</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tableProductSaleTransactionBody">
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <!-- end barang terjual -->
 
     </div>
 @endsection
