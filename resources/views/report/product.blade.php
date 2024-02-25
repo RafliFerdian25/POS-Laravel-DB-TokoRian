@@ -16,8 +16,18 @@
                         </div>
                         <div class="row justify-content-center justify-content-lg-start">
                             <form id="formBulan" class="col-6 col-lg-12">
-                                <input type="month" name="filterDate" id="filterDate" class="form-control mb-3"
-                                    onchange="getProducts()" value="{{ date('Y-m') }}">
+                                @csrf
+                                <div class="row">
+                                    <label for="daterange" class="col">Rentang Tanggal :</label>
+                                    <input type="text" name="daterange" id="daterange" class="form-control mb-3 col">
+                                </div>
+
+                                <div class="row">
+                                    <label for="month" class="col">Bulan :</label>
+                                    <input type="month" name="month" id="month" class="form-control mb-3 col"
+                                        @if ($typeReport == 'Bulanan') value="{{ date('Y-m') }}" @endif
+                                        onchange="getProducts('bulanan')">
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -55,7 +65,7 @@
             <div class="main-card mb-3 card">
                 <div class="card-body">
                     <h5 class="card-title text-center">Filter Barang</h5>
-                    <form id="formFilterProduct" method="GET" onsubmit="event.preventDefault(); getProducts();">
+                    <form id="formFilterProduct" method="GET">
                         @csrf
                         <div class="modal-body">
                             <div class="row mb-3">
@@ -63,6 +73,28 @@
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control rounded__10 " id="filterProduct"
                                         name="filterBarcode">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="filterCategory" class="col-sm-2 col-form-label">Kategori</label>
+                                <div class="col-sm-10">
+                                    <select required class="form-select rounded__10" name="filterCategory"
+                                        id="filterCategory" aria-label="Default select example">
+                                        <option value="">&nbsp;</option>
+                                        @foreach ($categories as $category)
+                                            <option value="{{ $category->ID }}">{{ $category->keterangan }} </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="filterMerk" class="col-sm-2 col-form-label">Merk</label>
+                                <div class="col-sm-10">
+                                    <div class="select2-input select2-info" style="width: 100%">
+                                        <select id="filterMerk" name="filterMerk" class="form-control rounded__10">
+                                            <option value="">&nbsp;</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -79,7 +111,7 @@
         <div class="productSection">
             <div class="main-card mb-3 card">
                 <div class="card-body">
-                    <h5 class="card-title text-center">Barang</h5>
+                    <h5 class="card-title text-center">Barang <span id="filterProductDate"></span></h5>
                     <table class="mb-0 table" id="tableProduct">
                         <thead>
                             <tr>
@@ -122,14 +154,77 @@
             });
 
             getProducts();
+            initSelect2Merk();
         });
 
-        const getProducts = () => {
+
+        $(function() {
+            $('#daterange').daterangepicker({
+                opens: 'right',
+                maxDate: moment(),
+                ranges: {
+                    'Hari Ini': [moment(), moment()],
+                    'Kemarin': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    '7 Hari Terakhir': [moment().subtract(6, 'days'), moment()],
+                    '30 Hari Terakhir': [moment().subtract(29, 'days'), moment()],
+                    'Bulan Ini': [moment().startOf('month'), moment().endOf('month')],
+                    'Bulan Kemarin': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1,
+                        'month').endOf('month')],
+                    'Tahun Ini': [moment().startOf('year'), moment().endOf('year')],
+                    'Tahun Kemarin': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1,
+                        'year').endOf('year')],
+                },
+                locale: {
+                    format: 'DD/MM/YYYY',
+                    separator: ' - ',
+                    applyLabel: 'Pilih',
+                    cancelLabel: 'Batal',
+                    fromLabel: 'Dari',
+                    toLabel: 'Ke',
+                    customRangeLabel: 'Custom',
+                    weekLabel: 'W',
+                    daysOfWeek: ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'],
+                    monthNames: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli',
+                        'Agustus', 'September', 'Oktober', 'November', 'Desember'
+                    ],
+                    firstDay: 1
+                }
+            });
+
+            @if ($typeReport == 'Harian')
+                $('#daterange').data('daterangepicker').setStartDate(moment('{{ $date[0] }}', 'YYYY-MM-DD')
+                    .format('DD/MM/YYYY'));
+                $('#daterange').data('daterangepicker').setEndDate(moment('{{ $date[1] }}', 'YYYY-MM-DD')
+                    .format('DD/MM/YYYY'));
+            @else
+                $('#daterange').val(null);
+            @endif
+
+            $('#daterange').on('apply.daterangepicker', function(ev, picker) {
+                $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format(
+                    'YYYY-MM-DD'));
+                $("#month").val(null);
+                getProducts('harian');
+            });
+            $('#daterange').on('cancel.daterangepicker', function(ev, picker) {
+                $(this).val(null);
+            });
+        });
+
+        const getProducts = (typeReport) => {
             $('#countProduct').html(
                 '<svg class="loader" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="25" height="25"><circle cx="50" cy="50" r="45" fill="none" stroke="#3498db" stroke-width="5" stroke-dasharray="89 89" stroke-linecap="round"><animateTransform attributeName="transform" dur="1s" type="rotate" from="0 50 50" to="360 50 50" repeatCount="indefinite" /></circle></svg>'
             );
             $('#tableProduct').DataTable().clear().draw();
             $('#tableProductBody').html(tableLoader(5, `{{ asset('assets/svg/Ellipsis-2s-48px.svg') }}`));
+
+            if (typeReport == 'harian') {
+                $('#month').val(null);
+            } else if (typeReport == 'bulanan') {
+                $('#daterange').val(null);
+            }
+
+            $('#filterProductDate').html("");
 
             $.ajax({
                 type: "GET",
@@ -137,11 +232,15 @@
                 data: {
                     token: '{{ csrf_token() }}',
                     filterProduct: $('#filterProduct').val(),
-                    filterDate: $('#filterDate').val()
+                    filterCategory: $('#filterCategory').val(),
+                    filterMerk: $('#filterMerk').val(),
+                    daterange: $('#daterange').val(),
+                    month: $('#month').val(),
                 },
                 dataType: "json",
                 success: function(response) {
                     $('#countProduct').html(response.data.countProduct);
+                    $('#filterProductDate').html(response.data.dateString);
                     if (response.data.products.length > 0) {
                         $.each(response.data.products, function(index, product) {
                             var rowData = [
@@ -169,6 +268,17 @@
                 }
             });
         }
+
+        function handleInput(inputId, otherInputIds) {
+            return debounce(function() {
+                $('#' + otherInputIds.join(', #')).val(null).trigger('change');
+                getProducts();
+            }, 750);
+        }
+
+        $('#filterProduct').on('input', handleInput('filterProduct', ['filterCategory', 'filterMerk']));
+        $('#filterCategory').on('input', handleInput('filterCategory', ['filterProduct', 'filterMerk']));
+        $('#filterMerk').on('input', handleInput('filterMerk', ['filterProduct', 'filterCategory']));
 
 
         function showEdit(idBarang, status) {
@@ -449,5 +559,62 @@
                 });
             }
         })
+
+
+        const initSelect2Merk = () => {
+            $('#filterMerk').select2({
+                theme: "bootstrap-5",
+                placeholder: 'Masukkan Merk Barang',
+                width: '100%',
+                allowClear: true,
+                minimumInputLength: 1, // Minimum characters required to start searching
+                language: {
+                    inputTooShort: function(args) {
+                        var remainingChars = args.minimum - args.input.length;
+                        return "Masukkan kata kunci setidaknya " + remainingChars +
+                            " karakter";
+                    },
+                    searching: function() {
+                        return "Sedang mengambil data...";
+                    },
+                    noResults: function() {
+                        return "Merk tidak ditemukan";
+                    },
+                    errorLoading: function() {
+                        return "Terjadi kesalahan saat memuat data";
+                    },
+                },
+                templateSelection: function(data, container) {
+                    if (data.id === '') {
+                        return data.text;
+                    }
+                    var match = data.text.match(/^(.*?) \(/);
+                    var resultName = match[1];
+
+                    return $('<span class="custom-selection">' + resultName + '</span>');
+                },
+                ajax: {
+                    url: "{{ route('merk.search.data') }}", // URL to fetch data from
+                    dataType: 'json', // Data type expected from the server
+                    processResults: function(response) {
+                        var merks = response.data.merks;
+                        var options = [];
+
+                        merks.forEach(function(merk) {
+                            options.push({
+                                id: merk.id, // Use the merk
+                                text: merk.merk + ' (' + merk.keterangan +
+                                    ')'
+                            });
+                        });
+
+                        return {
+                            results: options // Processed results with id and text properties
+                        };
+                    },
+                    cache: true, // Cache the results for better performance
+                }
+            })
+        }
     </script>
 @endpush

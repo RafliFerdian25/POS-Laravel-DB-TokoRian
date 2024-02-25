@@ -423,6 +423,8 @@ class ReportController extends Controller
         $data = [
             'setting' => Toko::first(),
             'title' => 'POS TOKO | Laporan Barang',
+            'typeReport' => 'Bulanan',
+            'categories' => Category::all(),
         ];
         return view('report.product', $data);
     }
@@ -432,16 +434,47 @@ class ReportController extends Controller
      */
     public function getProductReport(Request $request)
     {
-        $filterDate = $request->filterDate == null ? Carbon::now() : Carbon::parse($request->filterDate);
+        $typeReport = null;
+        $date = null;
+        $startDate = null;
+        $endDate = null;
+
+        if ($request->daterange == null && $request->month == null) {
+            $date = Carbon::now();
+            $typeReport = "Bulanan";
+        } elseif ($request->daterange != null) {
+            $daterange = explode(' - ', $request->daterange);
+            $date = Carbon::parse($daterange[1]);
+            $startDate = Carbon::parse($daterange[0]);
+            $endDate = Carbon::parse($daterange[1]);
+            $typeReport = "Harian";
+        } elseif ($request->month != null) {
+            $date = Carbon::parse($request->month);
+            $startDate = Carbon::parse($request->month)->startOfMonth();
+            $endDate = Carbon::now()->format('Y-m') == $request->month ? Carbon::now() : Carbon::parse($request->month)->endOfMonth();
+            $typeReport = "Bulanan";
+        }
+
         $query = Product::select('t_barang.IdBarang', 't_barang.nmBarang', 'expDate', 'stok', DB::raw('COALESCE(SUM(t_kasir.jumlah), 0) as jumlah'))
-            ->leftJoin('t_kasir', function ($join) use ($filterDate) {
+            ->leftJoin('t_kasir', function ($join) use ($typeReport, $date, $startDate, $endDate) {
                 $join->on('t_kasir.idBarang', '=', 't_barang.IdBarang')
-                    ->whereMonth('t_kasir.tanggal', $filterDate->month)
-                    ->whereYear('t_kasir.tanggal', $filterDate->year);
+                    ->when($typeReport == 'Bulanan', function ($query) use ($date) {
+                        return $query->whereMonth('tanggal', $date->month)
+                            ->whereYear('tanggal', $date->year);
+                    })
+                    ->when($typeReport == 'Harian', function ($query) use ($startDate, $endDate) {
+                        return $query->whereBetween('tanggal', [$startDate, $endDate]);
+                    });
             })
             ->when($request->filterProduct != null, function ($query) use ($request) {
                 return $query->where('t_barang.nmBarang', 'LIKE', '%' . $request->input('filterProduct') . '%')
                     ->orWhere('t_barang.idBarang', 'LIKE', '%' . $request->input('filterProduct') . '%');
+            })
+            ->when($request->filterCategory != null, function ($query) use ($request) {
+                return $query->where('t_barang.jenis', $request->input('filterCategory'));
+            })
+            ->when($request->filterMerk != null, function ($query) use ($request) {
+                return $query->where('merk_id', $request->input('filterMerk'));
             });
 
         $countProduct = $query->groupBy('t_barang.IdBarang', 't_barang.nmBarang', 'expDate', 'stok')
@@ -455,7 +488,10 @@ class ReportController extends Controller
         return ResponseFormatter::success(
             [
                 'products' => $products,
-                'countProduct' => $countProduct
+                'countProduct' => $countProduct,
+                'typeReport' => $typeReport,
+                'dateString' => $typeReport == 'Bulanan' ? FormatDate::month($date->month) : $startDate->copy()->format('d M Y') . ' - ' . $endDate->copy()->format('d M Y'),
+                'date' => $typeReport == 'Bulanan' ? $date->format('Y-m') : $daterange,
             ],
             'Data berhasil diambil'
         );
