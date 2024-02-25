@@ -105,7 +105,7 @@
                 </div>
             </div>
         </div>
-        <!-- end barang terjual -->
+        <!-- end Filter Barang -->
 
         <!-- Barang -->
         <div class="productSection">
@@ -154,7 +154,7 @@
             });
 
             getProducts();
-            initSelect2Merk();
+            initializationSelect2Merk('filterMerk', "{{ route('merk.search.data') }}");
         });
 
 
@@ -559,62 +559,5 @@
                 });
             }
         })
-
-
-        const initSelect2Merk = () => {
-            $('#filterMerk').select2({
-                theme: "bootstrap-5",
-                placeholder: 'Masukkan Merk Barang',
-                width: '100%',
-                allowClear: true,
-                minimumInputLength: 1, // Minimum characters required to start searching
-                language: {
-                    inputTooShort: function(args) {
-                        var remainingChars = args.minimum - args.input.length;
-                        return "Masukkan kata kunci setidaknya " + remainingChars +
-                            " karakter";
-                    },
-                    searching: function() {
-                        return "Sedang mengambil data...";
-                    },
-                    noResults: function() {
-                        return "Merk tidak ditemukan";
-                    },
-                    errorLoading: function() {
-                        return "Terjadi kesalahan saat memuat data";
-                    },
-                },
-                templateSelection: function(data, container) {
-                    if (data.id === '') {
-                        return data.text;
-                    }
-                    var match = data.text.match(/^(.*?) \(/);
-                    var resultName = match[1];
-
-                    return $('<span class="custom-selection">' + resultName + '</span>');
-                },
-                ajax: {
-                    url: "{{ route('merk.search.data') }}", // URL to fetch data from
-                    dataType: 'json', // Data type expected from the server
-                    processResults: function(response) {
-                        var merks = response.data.merks;
-                        var options = [];
-
-                        merks.forEach(function(merk) {
-                            options.push({
-                                id: merk.id, // Use the merk
-                                text: merk.merk + ' (' + merk.keterangan +
-                                    ')'
-                            });
-                        });
-
-                        return {
-                            results: options // Processed results with id and text properties
-                        };
-                    },
-                    cache: true, // Cache the results for better performance
-                }
-            })
-        }
     </script>
 @endpush

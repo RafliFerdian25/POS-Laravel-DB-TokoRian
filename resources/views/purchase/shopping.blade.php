@@ -64,6 +64,50 @@
         </div>
         <!-- END CARD DASHBOARD -->
 
+        <!-- FILTER Barang -->
+        <div class="FilterExpiredProductSection">
+            <div class="main-card mb-3 card">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Filter Barang</h5>
+                    <form id="formFilterProduct" method="GET">
+                        @csrf
+                        <div class="modal-body">
+                            <div class="row mb-3">
+                                <label for="filterBarcode" class="col-sm-2 col-form-label">Nama / Barcode</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control rounded__10 " id="filterProduct"
+                                        name="filterBarcode">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="filterCategory" class="col-sm-2 col-form-label">Kategori</label>
+                                <div class="col-sm-10">
+                                    <select required class="form-select rounded__10" name="filterCategory"
+                                        id="filterCategory" aria-label="Default select example">
+                                        <option value="">&nbsp;</option>
+                                        @foreach ($categories as $category)
+                                            <option value="{{ $category->ID }}">{{ $category->keterangan }} </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="filterMerk" class="col-sm-2 col-form-label">Merk</label>
+                                <div class="col-sm-10">
+                                    <div class="select2-input select2-info" style="width: 100%">
+                                        <select id="filterMerk" name="filterMerk" class="form-control rounded__10">
+                                            <option value="">&nbsp;</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- end Filter Barang -->
+
         <div class="belanja__section">
             <!-- Barang -->
             <div class="belanja__content">
@@ -195,6 +239,7 @@
                 // $('#product').val(null).trigger('change');
             });
 
+            initializationSelect2Merk('filterMerk', "{{ route('merk.search.data') }}");
             getShoppingProduct();
         });
 
@@ -206,6 +251,12 @@
             $.ajax({
                 url: "{{ route('wholesale.purchase.index.data') }}",
                 type: "GET",
+                data: {
+                    token: '{{ csrf_token() }}',
+                    filterProduct: $('#filterProduct').val(),
+                    filterCategory: $('#filterCategory').val(),
+                    filterMerk: $('#filterMerk').val(),
+                },
                 dataType: "json",
                 success: function(response) {
                     $('#countProduct').html(response.data.shoppingProducts.length);
@@ -235,6 +286,19 @@
                 }
             });
         }
+
+        function handleInput(inputId, otherInputIds) {
+            return debounce(function() {
+                $('#' + otherInputIds.join(', #')).val(null).trigger('change');
+                getShoppingProduct();
+            }, 750);
+        }
+
+        $('#filterProduct').on('input', handleInput('filterProduct', ['filterCategory', 'filterMerk']));
+        $(
+            '#filterCategory').on('input', handleInput('filterCategory', ['filterProduct', 'filterMerk']));
+        $(
+            '#filterMerk').on('input', handleInput('filterMerk', ['filterProduct', 'filterCategory']));
 
         // Menampilkan modal edit product
         const editShoppingProduct = (id) => {
@@ -417,7 +481,8 @@
                                 },
                                 success: function(response) {
                                     $('#updateButton').html('Update');
-                                    $('#updateButton').prop('disabled', false);
+                                    $('#updateButton').prop('disabled',
+                                        false);
                                     Swal.fire({
                                             title: "Berhasil!",
                                             text: response.meta.message,
@@ -431,12 +496,14 @@
                                         .then(() => {
                                             getShoppingProduct();
                                             // menutup modal
-                                            $('#modalMain').modal('hide');
+                                            $('#modalMain').modal(
+                                                'hide');
                                         });
                                 },
                                 error: function(xhr, status, error) {
                                     $('#updateButton').html('Update');
-                                    $('#updateButton').prop('disabled', false);
+                                    $('#updateButton').prop('disabled',
+                                        false);
                                     if (xhr.responseJSON) {
                                         errorAlert("Gagal!",
                                             `Ubah Mesin Gagal. ${xhr.responseJSON.meta.message} Error: ${xhr.responseJSON.data.error}`

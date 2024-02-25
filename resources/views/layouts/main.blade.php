@@ -187,7 +187,8 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('wholesale.purchase.index') }}" id="navbar__supplier">
+                                <a href="{{ route('wholesale.purchase.index') }}" id="navbar__supplier"
+                                    class="{{ Request::is('belanja*') ? 'mm-active' : '' }}">
                                     <i class="metismenu-icon pe-7s-car">
                                     </i>Belanja
                                 </a>

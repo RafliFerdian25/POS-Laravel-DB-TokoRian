@@ -21,7 +21,14 @@ class ShoppingController extends Controller
     public function index()
     {
         $title = 'POS TOKO | Belanja';
-        return view('purchase.shopping', compact('title'));
+        $categories = Category::all();
+
+        $data = [
+            'title' => $title,
+            'categories' => $categories
+        ];
+
+        return view('purchase.shopping', $data);
     }
 
     /**
@@ -29,9 +36,22 @@ class ShoppingController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function indexData()
+    public function indexData(Request $request)
     {
-        $shoppingProducts = Shopping::with('product:IdBarang,stok')->select('id', 'IdBarang', 'nmBarang', 'satuan', 'hargaPokok', 'jumlah', 'total')
+        $shoppingProducts = Shopping::with('product:IdBarang,stok')
+            ->select('id', 'IdBarang', 'nmBarang', 'satuan', 'hargaPokok', 'jumlah', 'total')
+            ->whereHas('product', function ($query) use ($request) {
+                return $query->when($request->filterProduct != null, function ($query) use ($request) {
+                    return $query->where('nmBarang', 'LIKE', '%' . $request->input('filterProduct') . '%')
+                        ->orWhere('IdBarang', 'LIKE', '%' . $request->input('filterProduct') . '%');
+                })
+                    ->when($request->filterCategory != null, function ($query) use ($request) {
+                        return $query->where('jenis', $request->input('filterCategory'));
+                    })
+                    ->when($request->filterMerk != null, function ($query) use ($request) {
+                        return $query->where('merk_id', $request->input('filterMerk'));
+                    });
+            })
             ->orderBy('nmBarang', 'desc')
             ->get();
 
