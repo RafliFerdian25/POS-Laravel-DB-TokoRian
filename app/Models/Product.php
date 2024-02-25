@@ -36,4 +36,9 @@ class Product extends Model
     {
         return $this->hasMany(Kasir::class, 'idBarang', 'IdBarang');
     }
+
+    public function printPrice()
+    {
+        return $this->hasMany(Barcode::class, 'idBarang', 'IdBarang');
+    }
 }

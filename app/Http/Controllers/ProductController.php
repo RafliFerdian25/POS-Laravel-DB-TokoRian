@@ -252,15 +252,15 @@ class ProductController extends Controller
                     );
                 }
             }
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             if ($request->type == 'empty') {
-                return redirect()->route('barang.habis')->with('error', $e->validator->errors()->first());
+                return redirect()->route('barang.habis')->with('error', $e->getMessage());
             } else {
                 if ($request->ajax()) {
                     return ResponseFormatter::error(
                         [
-                            'error' => $e->validator->errors()->first()
+                            'error' => $e->getMessage()
                         ],
                         'Data gagal diupdate',
                         422
@@ -397,7 +397,8 @@ class ProductController extends Controller
         if ($typeReport == 'Bulanan') {
             $threeMonthAgo = $date->copy()->subMonths(3);
         }
-        $query = Product::select('t_barang.IdBarang', 't_barang.nmBarang', 'stok', DB::raw('COALESCE(SUM(t_kasir.jumlah), 0) as total_product_sold'), DB::raw('COALESCE(MAX(t_kasir.tanggal), 0) as last_product_sold'))
+        $query = Product::with('printPrice')
+            ->select('t_barang.IdBarang', 't_barang.nmBarang', 'stok', DB::raw('COALESCE(SUM(t_kasir.jumlah), 0) as total_product_sold'), DB::raw('COALESCE(MAX(t_kasir.tanggal), 0) as last_product_sold'))
             ->leftJoin('t_kasir', 't_barang.IdBarang', '=', 't_kasir.idBarang')
             ->whereNotIn('t_barang.IdBarang', function ($query) {
                 $query->select('IdBarang')->from('t_belanja');

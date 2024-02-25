@@ -165,11 +165,7 @@
     @endif
     <script>
         $(document).ready(function() {
-            $("#tableEmptyProduct").DataTable({
-                pageLength: 10,
-                responsive: true,
-
-            });
+            initializeDataTable('tableEmptyProduct');
 
             initDateRange('{{ $typeReport }}', getEmptyProduct);
             getEmptyProduct();
@@ -205,7 +201,8 @@
                                 product.last_product_sold,
                                 product.total_product_sold,
                                 `<button class="btn btn-sm btn-warning" onclick="showEdit('${product.IdBarang}')">Edit</button>
-                                <button class="btn btn-sm btn-primary" onclick="addShopping('${product.IdBarang}')">Tambah Belanja</button>`
+                                ${product.print_price.length > 0 ? '':`<button class="btn btn-sm btn-primary" onclick="addShopping('${product.IdBarang}')">Tambah Belanja</button>`}
+                                `
                             ];
                             var rowNode = $('#tableEmptyProduct').DataTable().row.add(rowData)
                                 .draw(
