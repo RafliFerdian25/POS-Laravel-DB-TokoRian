@@ -23,7 +23,7 @@ class MerkController extends Controller
 
     public function indexData()
     {
-        $merks = Merk::withCount('products')->get();
+        $merks = Merk::withCount('products')->orderBy('merk')->get();
         return ResponseFormatter::success([
             'merks' => $merks,
         ], 'Data berhasil diambil.');
