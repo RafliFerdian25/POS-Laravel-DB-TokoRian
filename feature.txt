@@ -1,6 +1,11 @@
 ## BACKLOG ##
 
-
+// TABEL BARANG PERNAH DICARI
+Tabel barang pernah dicari (id, product_id, timestamps)
+index (Card: jumlah barang dicari. Tabel: transaksi barang dicari, daftar barang dicari dengan jumlah) (rentang tanggal)
+create barang dicari
+delete barang dicari
+detail barang (Card: jumlah barang dicari. informasi barang. grafik jumlah dicari: bulanan, harian. Tabel: transaksi penjualan) (rentang tanggal)
 
 // CRUD tabel barang pernah kadaluarsa
 menambahkan tabel barang yang pernah kadaluarsa
