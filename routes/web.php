@@ -111,8 +111,8 @@ Route::controller(PurchaseController::class)->group(function () {
     Route::get('/pembelian/detail/{purchase:id}/create', 'createDetail')->name('purchase.detail.create');
     Route::post('/pembelian/detail/{purchase:id}', 'storeDetail')->name('purchase.detail.store');
     Route::delete('/pembelian/detail/{purchaseDetail:id}', 'destroyDetail')->name('purchase.detail.destroy');
-    Route::get('/pembelian/{purchase:id}/edit', 'edit')->name('purchase.edit');
-    Route::put('/pembelian/{purchase:id}', 'update')->name('purchase.update');
+    Route::get('/pembelian/detail/{purchaseDetail:id}/edit', 'editDetail')->name('purchase.detail.edit');
+    Route::put('/pembelian/detail/{purchaseDetail:id}', 'updateDetail')->name('purchase.detail.update');
     Route::delete('/pembelian/{purchase:id}', 'destroy')->name('purchase.destroy');
 });
 

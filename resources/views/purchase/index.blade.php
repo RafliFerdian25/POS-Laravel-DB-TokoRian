@@ -103,12 +103,7 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            $('#tablePurchase').DataTable({
-                pageLength: 10,
-                info: false,
-                responsive: true,
-
-            })
+            initializeDataTable('tablePurchase');
 
             getPurchase();
         });

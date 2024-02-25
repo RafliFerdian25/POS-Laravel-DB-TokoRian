@@ -250,7 +250,7 @@
                                 purchaseDetail.cost_of_good_sold,
                                 purchaseDetail.quantity,
                                 purchaseDetail.sub_amount,
-                                `<button class="btn btn-sm btn-warning" onclick="showEdit('${purchaseDetail.product_id}')">Edit</button>
+                                `<button class="btn btn-sm btn-warning" onclick="showEdit('${purchaseDetail.id}')">Edit</button>
                                 <button class="btn btn-sm btn-danger" onclick="deleteProduct('${purchaseDetail.id}')"><i class="bi bi-trash"></i></button>`
                             ];
                             var rowNode = $('#tableListProduct').DataTable().row.add(rowData)
@@ -271,7 +271,7 @@
         }
 
         // Menampilkan modal edit product
-        const showEdit = (idBarang) => {
+        const showEdit = (id) => {
             // Mengisi konten modal dengan data yang sesuai
             let modalContent = $('#modalEdit .modal-content');
 
@@ -291,13 +291,13 @@
             // mengirim request ajax
             $.ajax({
                 type: "GET",
-                url: `{{ url('/barang/${idBarang}/edit') }}`,
+                url: `{{ url('pembelian/detail/${id}/edit') }}`,
                 success: function(response) {
-                    let formId = `formEditProduct${idBarang}`;
+                    let formId = `formEditProduct${id}`;
 
                     modalContent.html(`
                         <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Pembelian Barang</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <form id="${formId}">
@@ -305,102 +305,27 @@
                             @csrf
                             <div class="modal-body">
                                 <div class="row mb-3">
-                                    <label for="IdBarang" class="col-sm-2 col-form-label">Kode Barang</label>
+                                    <label for="costOfGoodSold" class="col-sm-2 col-form-label">Harga Pokok Baru</label>
                                     <div class="col-sm-10">
-                                        <input required value="${response.product.IdBarang}" type="text"
+                                        <input required value="${response.data.purchaseDetail.cost_of_good_sold}" type="number"
                                             class="form-control rounded__10 "
-                                            id="IdBarang" name="IdBarang" max="999999999999999" pattern="[0-9]*" inputmode="numeric">
+                                            min="0" id="costOfGoodSold" name="costOfGoodSold">
                                     </div>
                                 </div>
                                 <div class="row mb-3">
-                                    <label for="nmBarang" class="col-sm-2 col-form-label">Nama Barang</label>
+                                    <label for="qty" class="col-sm-2 col-form-label">Jumlah</label>
                                     <div class="col-sm-10">
-                                        <input required value="${response.product.nmBarang}" type="text"
+                                        <input required value="${response.data.purchaseDetail.quantity}" type="number"
                                             class="form-control rounded__10 "
-                                            id="nmBarang" name="nmBarang" style="text-transform:uppercase">
-                                    </div>
-                                </div>
-                            <div class="row mb-3">
-                                <label for="merk_id" class="col-sm-2 col-form-label">Merk</label>
-                                <div class="col-sm-10">
-                                    <div class="select2-input select2-info" style="width: 100%">
-                                        <select id="merk_id" name="merk_id" class="form-control rounded__10">
-                                            <option value="">&nbsp;</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                                <div class="row mb-3">
-                                    <label for="satuan" class="col-sm-2 col-form-label">Satuan</label>
-                                    <div class="col-sm-10">
-                                        <select required
-                                            class="form-select rounded__10"
-                                            name="satuan" id="satuan" aria-label="Default select example">
-                                            ${response.units.map((unit) => {
-                                                return `<option value="${unit.satuan}" ${unit.satuan == response.product.satuan ? "selected" : ""}>${unit.satuan}</option>`
-                                            })}
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="isi" class="col-sm-2 col-form-label">Isi</label>
-                                    <div class="col-sm-10">
-                                        <input required value="${response.product.isi}" type="number"
-                                            class="form-control rounded__10 "
-                                            min="0" id="isi" name="isi">
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="hargaPokok" class="col-sm-2 col-form-label">Harga Pokok</label>
-                                    <div class="col-sm-10">
-                                        <input required value="${response.product.hargaPokok}" type="number"
-                                            class="form-control rounded__10 "
-                                            min="0" id="hargaPokok" name="hargaPokok">
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="hargaJual" class="col-sm-2 col-form-label">Harga Jual</label>
-                                    <div class="col-sm-10">
-                                        <input required value="${response.product.hargaJual}" type="number"
-                                            class="form-control rounded__10 "
-                                            min="0" id="hargaJual" name="hargaJual">
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="hargaGrosir" class="col-sm-2 col-form-label">Harga Grosir</label>
-                                    <div class="col-sm-10">
-                                        <input required value="${response.product.hargaGrosir}" type="number"
-                                            class="form-control rounded__10 "
-                                            min="0" id="hargaGrosir" name="hargaGrosir">
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="stok" class="col-sm-2 col-form-label">Stok</label>
-                                    <div class="col-sm-10">
-                                        <input required value="${response.product.stok}" type="number"
-                                            class="form-control rounded__10 "
-                                            min="0" id="stok" name="stok">
+                                            min="0" id="qty" name="qty">
                                     </div>
                                 </div>
                                 <div class="row mb-3">
                                     <label for="expDate" class="col-sm-2 col-form-label">Tanggal Kadaluarsa</label>
                                     <div class="col-sm-10">
-                                        <input value="${moment(response.product
-                                    .expDate).format('YYYY-MM-DD')}" type="date"
+                                        <input value="${moment(response.data.purchaseDetail.exp_date).format('YYYY-MM-DD')}" type="date"
                                             class="form-control rounded__10 "
                                             id="expDate" name="expDate">
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="jenis" class="col-sm-2 col-form-label">Kategori</label>
-                                    <div class="col-sm-10">
-                                        <select required
-                                            class="form-select rounded__10 "
-                                            name="jenis" id="jenis" aria-label="Default select example">
-                                            ${response.categories.map((category) => {
-                                                return `<option value="${category.ID}" ${category.ID == response.product.jenis ? "selected" : ""}>${category.keterangan}</option>`
-                                            })}
-                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -411,95 +336,37 @@
                         </form>
                     `);
 
-                    initSelect2Merk(response.product.merk);
-
                     // submit form
                     $(`#${formId}`).validate({
                         rules: {
-                            IdBarang: {
-                                required: true,
-                                maxlength: 15,
-                                minlength: 3,
-                                number: true
-                            },
-                            nmBarang: {
-                                required: true,
-                                maxlength: 50,
-                                minlength: 3,
-                            },
-                            merk_id: {
-                                required: true,
-                            },
-                            satuan: {
-                                required: true,
-                            },
-                            isi: {
+                            costOfGoodSold: {
                                 required: true,
                                 number: true,
                                 min: 0
                             },
-                            hargaPokok: {
+                            qty: {
                                 required: true,
                                 number: true,
                                 min: 0
                             },
-                            hargaJual: {
-                                required: true,
-                                number: true,
-                                min: 0
-                            },
-                            hargaGrosir: {
-                                required: true,
-                                number: true,
-                                min: 0
-                            },
-                            stok: {
-                                required: true,
-                                number: true,
-                                min: 0
-                            },
-                            jenis: {
-                                required: true,
+                            expDate: {
+                                date: true,
                             },
                         },
                         messages: {
-                            IdBarang: {
-                                required: "Kode barang tidak boleh kosong",
-                                maxlength: "Kode barang maksimal 15 karakter",
-                                minlength: "Kode barang minimal 3 karakter",
-                                number: "Kode barang harus berupa angka"
-                            },
-                            nmBarang: {
-                                required: "Nama barang tidak boleh kosong",
-                                maxlength: "Nama barang maksimal 50 karakter",
-                                minlength: "Nama barang minimal 3 karakter",
-                            },
-                            merk_id: {
-                                required: "Merk tidak boleh kosong",
-                            },
-                            satuan: {
-                                required: "Satuan tidak boleh kosong",
-                            },
-                            isi: {
-                                required: "Isi tidak boleh kosong",
-                                number: "Isi harus berupa angka",
-                                min: "Isi minimal 0"
-                            },
-                            hargaPokok: {
+                            costOfGoodSold: {
                                 required: "Harga pokok tidak boleh kosong",
                                 number: "Harga pokok harus berupa angka",
                                 min: "Harga pokok minimal 0"
                             },
-                            hargaJual: {
-                                required: "Harga jual tidak boleh kosong",
-                                number: "Harga jual harus berupa angka",
-                                min: "Harga jual minimal 0"
+                            qty: {
+                                required: "Jumlah tidak boleh kosong",
+                                number: "Jumlah harus berupa angka",
+                                min: "Jumlah minimal 0"
                             },
-                            hargaGrosir: {
-                                required: "Harga grosir tidak boleh kosong",
-                                number: "Harga grosir harus berupa angka",
-                                min: "Harga grosir minimal 0"
-                            },
+                            expDate: {
+                                date: "Tanggal kadaluarsa tidak valid",
+                            }
                         },
                         errorClass: "invalid-feedback",
                         highlight: function(element) {
@@ -513,28 +380,21 @@
                             $(element).closest('.form-control').removeClass('is-invalid');
                         },
                         submitHandler: function(form, event) {
+                            console.log($('#costOfGoodSold').val());
                             event.preventDefault();
                             $('#updateButton').html(
                                 '<svg class="spinners-2" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;"><path d="M12 22c5.421 0 10-4.579 10-10h-2c0 4.337-3.663 8-8 8s-8-3.663-8-8c0-4.336 3.663-8 8-8V2C6.579 2 2 6.58 2 12c0 5.421 4.579 10 10 10z"></path></svg>'
                             );
                             $('#updateButton').prop('disabled', true);
                             $.ajax({
-                                url: `{{ url('/barang/cetak-harga/${response.product.IdBarang}') }}`,
+                                url: `{{ url('/pembelian/detail/${id}') }}`,
                                 type: "POST",
                                 data: {
                                     _method: 'PUT',
                                     _token: '{{ csrf_token() }}',
-                                    IdBarang: $('#IdBarang').val(),
-                                    nmBarang: $('#nmBarang').val(),
-                                    merk_id: $('#merk_id').val(),
-                                    satuan: $('#satuan').val(),
-                                    isi: $('#isi').val(),
-                                    hargaPokok: $('#hargaPokok').val(),
-                                    hargaJual: $('#hargaJual').val(),
-                                    hargaGrosir: $('#hargaGrosir').val(),
-                                    stok: $('#stok').val(),
+                                    costOfGoodSold: $('#costOfGoodSold').val(),
+                                    qty: $('#qty').val(),
                                     expDate: $('#expDate').val(),
-                                    jenis: $('#jenis').val(),
                                 },
                                 success: function(response) {
                                     $('#updateButton').html('Update');
@@ -577,73 +437,6 @@
 
             // Menampilkan modal
             $('#modalEdit').modal('show');
-        }
-
-        const initSelect2Merk = (merk) => {
-            // $('#merk_id').html(`<option value="${id}" selected>${id}</option>`);
-            $('#merk_id').select2({
-                dropdownParent: $('#modalEdit'),
-                theme: "bootstrap-5",
-                placeholder: 'Masukkan Merk Barang',
-                width: '100%',
-                // allowClear: true,
-                minimumInputLength: 1, // Minimum characters required to start searching
-                language: {
-                    inputTooShort: function(args) {
-                        var remainingChars = args.minimum - args.input.length;
-                        return "Masukkan kata kunci setidaknya " + remainingChars +
-                            " karakter";
-                    },
-                    searching: function() {
-                        return "Sedang mengambil data...";
-                    },
-                    noResults: function() {
-                        return "Merk tidak ditemukan";
-                    },
-                    errorLoading: function() {
-                        return "Terjadi kesalahan saat memuat data";
-                    },
-                },
-                templateSelection: function(data, container) {
-                    if (data.id === '') {
-                        return data.text;
-                    }
-                    var match = data.text.match(/^(.*?) \(/);
-                    var resultName = match[1];
-
-                    return $('<span class="custom-selection">' + resultName + '</span>');
-                },
-                ajax: {
-                    url: "{{ route('merk.search.data') }}", // URL to fetch data from
-                    dataType: 'json', // Data type expected from the server
-                    processResults: function(response) {
-                        var merks = response.data.merks;
-                        var options = [];
-
-                        merks.forEach(function(merk) {
-                            options.push({
-                                id: merk.id, // Use the merk
-                                text: merk.merk + ' (' + merk.keterangan +
-                                    ')'
-                            });
-                        });
-
-                        return {
-                            results: options // Processed results with id and text properties
-                        };
-                    },
-                    cache: true, // Cache the results for better performance
-                }
-            })
-            // Periksa apakah nilai id sudah ada dalam opsi saat ini
-            if ($('#merk_id').find('option[value="' + merk.id + '"]').length === 0) {
-                // Jika tidak, tambahkan elemen <option> baru
-                var $newOption = new Option(`${merk.merk} (${merk.keterangan})`, merk.id, true, true);
-                $('#merk_id').append($newOption).trigger('change');
-            } else {
-                // Jika sudah ada, langsung atur nilai dan perbarui tampilan
-                $('#merk_id').val(id).trigger('change');
-            }
         }
 
         $('#formAddProductPurchase').validate({

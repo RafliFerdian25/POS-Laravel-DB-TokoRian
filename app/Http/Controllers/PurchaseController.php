@@ -166,6 +166,34 @@ class PurchaseController extends Controller
         );
     }
 
+    private function updateProductForDetailPurchase($product, $purchase, $purchaseDetail, $request)
+    {
+        // Update total pembelian
+        $purchase->amount += $purchaseDetail->sub_amount;
+        $purchase->total += $purchaseDetail->quantity;
+
+        $purchase->save();
+
+        // update tanggal kadaluarsa produk
+        if ($product->expDate == null || $product->expDate > $request->exp_date || $product->stok <= 0) {
+            $product->expDate = $request->exp_date;
+        }
+
+        // update harga pokok
+        if ($product->hargaPokok < $request->cost_of_good_sold || $product->stok <= 0) {
+            $product->hargaPokok = $request->cost_of_good_sold;
+        }
+
+        if ($product->stok < 0) {
+            $product->stok = ($product->stok + ($product->stok * -1)) + $request->quantity;
+        } else {
+            $product->stok += $request->quantity;
+        }
+
+        // update data produk
+        $product->save();
+    }
+
     public function storeDetail(Purchase $purchase, Request $request)
     {
         $rules = [
@@ -201,30 +229,8 @@ class PurchaseController extends Controller
                 'sub_amount' => $request->cost_of_good_sold * $request->quantity,
             ]);
 
-            // Update total pembelian
-            $purchase->amount += $purchaseDetail->sub_amount;
-            $purchase->total += $purchaseDetail->quantity;
-
-            $purchase->save();
-
-            // update tanggal kadaluarsa produk
-            if ($product->expDate == null || $product->expDate > $request->exp_date || $product->stok <= 0) {
-                $product->expDate = $request->exp_date;
-            }
-
-            // update harga pokok
-            if ($product->hargaPokok < $request->cost_of_good_sold || $product->stok <= 0) {
-                $product->hargaPokok = $request->cost_of_good_sold;
-            }
-
-            if ($product->stok < 0) {
-                $product->stok = ($product->stok + ($product->stok * -1)) + $request->quantity;
-            } else {
-                $product->stok += $request->quantity;
-            }
-
-            // update data produk
-            $product->save();
+            // update data barang
+            $this->updateProductForDetailPurchase($product, $purchase, $purchaseDetail, $request);
 
             // cetak harga
             $productController = new ProductController();
@@ -247,6 +253,92 @@ class PurchaseController extends Controller
                     'error' => $e->getMessage()
                 ],
                 'Gagal menambahkan detail pembelian',
+                500
+            );
+        }
+    }
+
+    public function editDetail(PurchaseDetail $purchaseDetail)
+    {
+        return ResponseFormatter::success(
+            ['purchaseDetail' => $purchaseDetail],
+            'Data detail pembelian berhasil diambil'
+        );
+    }
+
+    public function updateDetail(PurchaseDetail $purchaseDetail, Request $request)
+    {
+        $rules = [
+            'costOfGoodSold' => 'required|numeric',
+            'qty' => 'required|numeric',
+        ];
+
+        $validated = Validator::make($request->all(), $rules);
+
+        if ($validated->fails()) {
+            return ResponseFormatter::error(
+                [
+                    'error' => $validated->errors()->first()
+                ],
+                'Validasi gagal',
+                422
+            );
+        }
+
+        try {
+            DB::beginTransaction();
+            $product = Product::find($purchaseDetail->product_id);
+
+            // update data barang
+            $product->expDate = $purchaseDetail->exp_date_old;
+            $product->hargaPokok = $request->costOfGoodSold;
+            $product->stok -= $purchaseDetail->quantity;
+            if ($product->stok <= 0) {
+                $product->stok = 0;
+            }
+            $product->save();
+
+            // update data pembelian
+            $purchase = Purchase::find($purchaseDetail->purchase_id);
+            $purchase->amount -= $purchaseDetail->sub_amount;
+            $purchase->total -= $purchaseDetail->quantity;
+            $purchase->save();
+
+            // update data detail pembelian
+            $purchaseDetail->quantity = $request->qty;
+            $purchaseDetail->exp_date = $request->expDate;
+            $purchaseDetail->cost_of_good_sold = $request->costOfGoodSold;
+            $purchaseDetail->sub_amount = $request->costOfGoodSold * $request->qty;
+            $purchaseDetail->save();
+
+            // update data barang
+            $this->updateProductForDetailPurchase($product, $purchase, $purchaseDetail, $request);
+
+
+            // update data pada cetak harga
+            $productController = new ProductController();
+            $printPrince = Barcode::where('IdBarang', $purchaseDetail->product_id)->first();
+            if ($printPrince == null) {
+                $newRequest = new Request([
+                    'IdBarang' => $product->IdBarang,
+                ]);
+                $productController->storePrintPrice($newRequest);
+            }
+
+            DB::commit();
+            return ResponseFormatter::success(
+                [
+                    'purchaseDetail' => $purchaseDetail,
+                ],
+                'Detail pembelian berhasil diubah'
+            );
+        } catch (\Exception $e) {
+            return ResponseFormatter::error(
+                [
+                    'message' => 'Gagal mengubah detail pembelian',
+                    'error' => $e->getMessage()
+                ],
+                'Gagal mengubah detail pembelian',
                 500
             );
         }
