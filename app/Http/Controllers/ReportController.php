@@ -8,6 +8,7 @@ use App\Models\Barang;
 use App\Models\Category;
 use App\Models\Kasir;
 use App\Models\Product;
+use App\Models\Purchase;
 use App\Models\PurchaseDetail;
 use App\Models\Toko;
 use Carbon\Carbon;
@@ -96,6 +97,16 @@ class ReportController extends Controller
             })
             ->first();
 
+        $reportPurchase = Purchase::selectRaw('sum(total) as total_purchase_product, sum(amount) as outcome')
+            ->when($typeReport == 'Bulanan', function ($query) use ($date) {
+                return $query->whereMonth('created_at', $date->month)
+                    ->whereYear('created_at', $date->year);
+            })
+            ->when($typeReport == 'Harian', function ($query) use ($startDate, $endDate) {
+                return $query->whereBetween('created_at', [$startDate, $endDate]);
+            })
+            ->first();
+
         // Jika report tidak kosong, menghitung total transaksi
         if (!$report->isEmpty) {
             $report->total_transaction = (int)$report->total_transaction;
@@ -137,6 +148,7 @@ class ReportController extends Controller
                 'dateString' => $typeReport == 'Bulanan' ? FormatDate::month($date->month) : $startDate->copy()->format('d M Y') . ' - ' . $endDate->copy()->format('d M Y'),
                 'date' => $typeReport == 'Bulanan' ? $date->format('Y-m') : $daterange,
                 'report' => $report,
+                'reportPurchase' => $reportPurchase,
                 'transactionsByDate' => $transactionsByDate,
                 'transactionsByYear' => $transactionsByYear,
                 'transactionByNoTransactions' => $transactionByNoTransactions,

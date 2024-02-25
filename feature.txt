@@ -1,12 +1,5 @@
 ## BACKLOG ##
 
-// View Laporan Barang
-search barang
-
-// View Laporan Barang Detail
-grafik penjualan barang harian dalam sebulan (grafik batang/garis)
-grafik penjualan barang bulanan dalam setahun (grafik batang/garis)
-tanggal terakhir belanja barang
 
 
 // CRUD tabel barang pernah kadaluarsa
@@ -87,3 +80,11 @@ delete penjualan gas
 ✅ delete pembelian barang 
 ✅ create pembelian detail barang
 ✅ delete pembelian detail barang 
+
+// View Laporan Barang
+✅ search barang
+
+// View Laporan Barang Detail
+✅ grafik penjualan barang harian dalam sebulan (grafik batang/garis)
+✅ grafik penjualan barang bulanan dalam setahun (grafik batang/garis)
+✅ tanggal terakhir belanja barang
