@@ -191,9 +191,9 @@
                                 product.IdBarang,
                                 product.nmBarang,
                                 product.satuan,
-                                product.hargaPokok,
-                                product.hargaJual,
-                                product.hargaGrosir,
+                                formatCurrency(product.hargaPokok),
+                                formatCurrency(product.hargaJual),
+                                formatCurrency(product.hargaGrosir),
                                 product.stok,
                                 product.expDate != null ? moment(product.expDate, 'YYYY-MM-DD')
                                 .format(

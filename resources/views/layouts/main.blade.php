@@ -139,7 +139,8 @@
                             </li>
                             <li class="app-sidebar__heading">Barang</li>
                             <li>
-                                <a href="{{ url('/barang') }}" id="navbar__barang">
+                                <a href="{{ url('/barang') }}" id="navbar__barang"
+                                    class="{{ Request::is('barang*') ? 'mm-active' : '' }}">
                                     <i class="metismenu-icon pe-7s-drawer"></i>
                                     Produk
                                 </a>
@@ -184,7 +185,7 @@
                             <li>
                                 <a href="{{ route('purchase.index') }}" id="navbar__purchase"
                                     class="{{ Request::is('pembelian*') ? 'mm-active' : '' }}">
-                                    <<i class="metismenu-icon bi bi-cart3"></i>Pembelian
+                                    <i class="metismenu-icon bi bi-cart3"></i>Pembelian
                                 </a>
                             </li>
                             <li>

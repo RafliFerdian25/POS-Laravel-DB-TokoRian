@@ -254,7 +254,7 @@
                                 product.nmBarang,
                                 product.product.expDate != null ? moment(product.product
                                     .expDate).format('DD-MM-YYYY') : '-',
-                                product.hargaJual,
+                                formatCurrency(product.hargaJual),
                                 `<button class="btn btn-sm btn-warning" onclick="showEdit('${product.idBarang}')">Edit</button>
                                 <button class="btn btn-sm btn-danger" onclick="deleteProduct('${product.ID}')"><i class="bi bi-trash"></i></button>`
                             ];
