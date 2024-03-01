@@ -312,7 +312,12 @@ class PurchaseController extends Controller
             $purchaseDetail->save();
 
             // update data barang
-            $this->updateProductForDetailPurchase($product, $purchase, $purchaseDetail, $request);
+            $updateRequest = new Request([
+                'exp_date' => $request->expDate,
+                'cost_of_good_sold' => $request->costOfGoodSold,
+                'quantity' => $request->qty,
+            ]);
+            $this->updateProductForDetailPurchase($product, $purchase, $purchaseDetail, $updateRequest);
 
 
             // update data pada cetak harga
