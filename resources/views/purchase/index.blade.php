@@ -52,7 +52,7 @@
             <div class="pembelian__content">
                 <div class="main-card mb-3 card">
                     <div class="card-body">
-                        <h5 class="card-title text-center font-size-xlg">Belanja</h5>
+                        <h5 class="card-title text-center font-size-xlg">Pembelian</h5>
                         <table class="mb-0 table" id="tablePurchase">
                             <thead>
                                 <tr>
@@ -126,7 +126,7 @@
                                 purchase.id,
                                 purchase.supplier.Nama,
                                 purchase.total,
-                                purchase.amount,
+                                formatCurrency(purchase.amount),
                                 moment(purchase.created_at).format('DD-MM-Y'),
                                 `<button class="btn btn-danger rounded-circle px-2" onclick="deletePurchase('${purchase.id}','${purchase.supplier.Nama}')"><i class="bi bi-trash"></i></button>
                                     <a href="{{ url('pembelian/detail/${purchase.id}/create') }}" class="btn btn-primary rounded-circle px-2"><i class="bi bi-pencil"></i></a>`

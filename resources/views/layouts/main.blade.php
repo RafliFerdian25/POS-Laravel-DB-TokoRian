@@ -23,7 +23,9 @@
     <!-- ICONS -->
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.min.css">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     {{-- Chart JS --}}
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.min.js"></script>
 
@@ -117,14 +119,14 @@
                             <li class="">
                                 <a href="{{ route('laporan.penjualan') }}" id="navbar_laporan"
                                     class="{{ Request::is('laporan/penjualan*') ? 'mm-active' : '' }}">
-                                    <i class="metismenu-icon pe-7s-note2"></i>
+                                    <i class="metismenu-icon pe-7s-cash"></i>
                                     Penjualan
                                 </a>
                             </li>
                             <li class="">
                                 <a href="{{ url('/laporan/kategori') }}" id="navbar_laporan"
                                     class="{{ Request::is('laporan/kategori*') ? 'mm-active' : '' }}">
-                                    <i class="metismenu-icon pe-7s-note2"></i>
+                                    <i class="fa-solid fa-chart-simple"></i>
                                     Kategori
                                 </a>
                             </li>
@@ -152,28 +154,28 @@
                             <li>
                                 <a href="{{ url('/merk') }}" id="navbar__merk"
                                     class="{{ Request::is('merk*') ? 'mm-active' : '' }}">
-                                    <i class="metismenu-icon pe-7s-folder"></i>
+                                    <i class="fa-solid fa-briefcase"></i>
                                     Merk
                                 </a>
                             </li>
                             <li class="">
                                 <a href="{{ url('/barang/kadaluarsa') }}" id="navbar_laporan"
                                     class="{{ Request::is('barang/kadaluarsa*') ? 'mm-active' : '' }}">
-                                    <i class="metismenu-icon pe-7s-note2"></i>
+                                    <i class="fa-regular fa-calendar"></i>
                                     Kadaluarsa
                                 </a>
                             </li>
                             <li class="">
                                 <a href="{{ route('barang.habis') }}" id="navbar_laporan"
                                     class="{{ Request::is('barang/habis*') ? 'mm-active' : '' }}">
-                                    <i class="metismenu-icon pe-7s-note2"></i>
+                                    <i class="fa-solid fa-battery-empty"></i>
                                     Habis
                                 </a>
                             </li>
                             <li class="">
                                 <a href="{{ url('/barang/cetak-harga') }}" id="navbarCetakHarga"
                                     class="{{ Request::is('barang/cetak-harga*') ? 'mm-active' : '' }}">
-                                    <i class="metismenu-icon pe-7s-note2"></i>
+                                    <i class="fa-solid fa-print"></i>
                                     Cetak Harga
                                 </a>
                             </li>
@@ -182,21 +184,18 @@
                             <li>
                                 <a href="{{ route('purchase.index') }}" id="navbar__purchase"
                                     class="{{ Request::is('pembelian*') ? 'mm-active' : '' }}">
-                                    <i class="metismenu-icon pe-7s-car">
-                                    </i>Pembelian
+                                    <<i class="fa-solid fa-cart-shopping"></i>Pembelian
                                 </a>
                             </li>
                             <li>
                                 <a href="{{ route('wholesale.purchase.index') }}" id="navbar__supplier"
                                     class="{{ Request::is('belanja*') ? 'mm-active' : '' }}">
-                                    <i class="metismenu-icon pe-7s-car">
-                                    </i>Belanja
+                                    <i class="fa-regular fa-rectangle-list"></i>Belanja
                                 </a>
                             </li>
                             <li>
                                 <a href="{{ url('/supplier') }}" id="navbar__supplier">
-                                    <i class="metismenu-icon pe-7s-car">
-                                    </i>Supplier
+                                    <i class="fa-solid fa-truck-field"></i>Supplier
                                 </a>
                             </li>
                         </ul>
