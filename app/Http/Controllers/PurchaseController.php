@@ -33,7 +33,7 @@ class PurchaseController extends Controller
 
     public function indexData()
     {
-        $purchases = Purchase::with('supplier')->orderBy('created_at', 'desc')->get();
+        $purchases = Purchase::with('supplier')->orderBy('id', 'desc')->get();
         return ResponseFormatter::success(
             [
                 'purchases' => $purchases,
