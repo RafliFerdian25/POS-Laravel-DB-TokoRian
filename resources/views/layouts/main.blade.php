@@ -126,7 +126,7 @@
                             <li class="">
                                 <a href="{{ url('/laporan/kategori') }}" id="navbar_laporan"
                                     class="{{ Request::is('laporan/kategori*') ? 'mm-active' : '' }}">
-                                    <i class="metismenu-icon fa-thin fa-chart-simple"></i>
+                                    <i class="metismenu-icon bi bi-bar-chart"></i>
                                     Kategori
                                 </a>
                             </li>
@@ -154,28 +154,28 @@
                             <li>
                                 <a href="{{ url('/merk') }}" id="navbar__merk"
                                     class="{{ Request::is('merk*') ? 'mm-active' : '' }}">
-                                    <i class="metismenu-icon fa-thin fa-briefcase"></i>
+                                    <i class="metismenu-icon bi bi-briefcase"></i>
                                     Merk
                                 </a>
                             </li>
                             <li class="">
                                 <a href="{{ url('/barang/kadaluarsa') }}" id="navbar_laporan"
                                     class="{{ Request::is('barang/kadaluarsa*') ? 'mm-active' : '' }}">
-                                    <i class="metismenu-icon fa-thin fa-calendar"></i>
+                                    <i class="metismenu-icon bi bi-calendar4-week"></i>
                                     Kadaluarsa
                                 </a>
                             </li>
                             <li class="">
                                 <a href="{{ route('barang.habis') }}" id="navbar_laporan"
                                     class="{{ Request::is('barang/habis*') ? 'mm-active' : '' }}">
-                                    <i class="metismenu-icon fa-thin fa-battery-empty"></i>
+                                    <i class="metismenu-icon bi bi-battery"></i>
                                     Habis
                                 </a>
                             </li>
                             <li class="">
                                 <a href="{{ url('/barang/cetak-harga') }}" id="navbarCetakHarga"
                                     class="{{ Request::is('barang/cetak-harga*') ? 'mm-active' : '' }}">
-                                    <i class="metismenu-icon fa-thin fa-print"></i>
+                                    <i class="metismenu-icon bi bi-printer"></i>
                                     Cetak Harga
                                 </a>
                             </li>
@@ -184,18 +184,18 @@
                             <li>
                                 <a href="{{ route('purchase.index') }}" id="navbar__purchase"
                                     class="{{ Request::is('pembelian*') ? 'mm-active' : '' }}">
-                                    <<i class="metismenu-icon fa-thin fa-cart-shopping"></i>Pembelian
+                                    <<i class="metismenu-icon bi bi-cart3"></i>Pembelian
                                 </a>
                             </li>
                             <li>
                                 <a href="{{ route('wholesale.purchase.index') }}" id="navbar__supplier"
                                     class="{{ Request::is('belanja*') ? 'mm-active' : '' }}">
-                                    <i class="metismenu-icon fa-thin fa-rectangle-list"></i>Belanja
+                                    <i class="metismenu-icon bi bi-card-list"></i>Belanja
                                 </a>
                             </li>
                             <li>
                                 <a href="{{ url('/supplier') }}" id="navbar__supplier">
-                                    <i class="metismenu-icon fa-thin fa-truck-field"></i>Supplier
+                                    <i class="metismenu-icon bi bi-truck"></i>Supplier
                                 </a>
                             </li>
                         </ul>
