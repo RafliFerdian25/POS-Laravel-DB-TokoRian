@@ -156,16 +156,14 @@
     <script>
         $(document).ready(function() {
             $("#tableExpiredProduct").DataTable({
-                pageLength: 10,
-                info: false,
                 responsive: true,
+                columnDefs: [{
+                    targets: [3], // Kolom "Tanggal" ada di indeks 1 (0-indexed)
+                    type: "date-eu" // Tentukan tipe pengurutan khusus untuk format "DD/MM/YYYY",
+                   }],
                 order: [
                     [3, 'asc']
                 ],
-                columnDefs: [{
-                    targets: [3], // Kolom "Tanggal" ada di indeks 1 (0-indexed)
-                    type: "date-eu" // Tentukan tipe pengurutan khusus untuk format "DD/MM/YYYY"
-                }],
             });
 
             getExpiredProduct();

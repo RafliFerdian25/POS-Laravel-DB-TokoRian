@@ -33,7 +33,7 @@ class PurchaseController extends Controller
 
     public function indexData()
     {
-        $purchases = Purchase::with('supplier')->orderBy('created_at', 'desc')->get();
+        $purchases = Purchase::with('supplier')->orderBy('id', 'desc')->get();
         return ResponseFormatter::success(
             [
                 'purchases' => $purchases,
@@ -312,7 +312,12 @@ class PurchaseController extends Controller
             $purchaseDetail->save();
 
             // update data barang
-            $this->updateProductForDetailPurchase($product, $purchase, $purchaseDetail, $request);
+            $updateRequest = new Request([
+                'exp_date' => $request->expDate,
+                'cost_of_good_sold' => $request->costOfGoodSold,
+                'quantity' => $request->qty,
+            ]);
+            $this->updateProductForDetailPurchase($product, $purchase, $purchaseDetail, $updateRequest);
 
 
             // update data pada cetak harga
