@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ResponseFormatter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -21,5 +22,7 @@ class UploadDataController extends Controller
                 ['merk' => $data->merk, 'keterangan' => $data->keterangan],
             );
         }
+
+        return ResponseFormatter::success(null, "Berhasil");
     }
 }
