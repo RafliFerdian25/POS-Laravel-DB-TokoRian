@@ -14,8 +14,6 @@ class UploadDataController extends Controller
      */
     public function upload(Request $request)
     {
-        $this->info($request);
-
         $merks = $request->merks;
         foreach ($merks as $data) {
             DB::connection('hosting')->table('p_merk')->updateOrInsert(

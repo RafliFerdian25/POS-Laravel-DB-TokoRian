@@ -44,7 +44,7 @@ class UploadDataCommand extends Command
         $merks = DB::table('p_merk')->get();
 
         $client = new Client();
-        $response = $client->post('http://localhost:8000/api/upload-data', [
+        $response = $client->post('http://192.168.1.50/api/upload-data', [
             'json' => ['merks' => $merks->all()]
         ]);
 
