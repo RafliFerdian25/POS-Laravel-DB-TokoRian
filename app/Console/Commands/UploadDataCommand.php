@@ -39,6 +39,7 @@ class UploadDataCommand extends Command
     public function handle()
     {
         // Jenis
+        $this->info('Data Jenis Mulai Di Upload');
         $categories = DB::table('p_jenis')->get();
 
         foreach ($categories as $data) {
@@ -50,6 +51,7 @@ class UploadDataCommand extends Command
         $this->info('Data Jenis Berhasil Di Upload');
 
         // Merk
+        $this->info('Data Merk Mulai Di Upload');
         $merks = DB::table('p_merk')->get();
 
         foreach ($merks as $data) {
@@ -61,6 +63,7 @@ class UploadDataCommand extends Command
         $this->info('Data Merk Berhasil Di Upload');
 
         // Satuan
+        $this->info('Data Satuan Mulai Di Upload');
         $units = DB::table('p_satuan')->get();
 
         foreach ($units as $data) {
@@ -72,6 +75,7 @@ class UploadDataCommand extends Command
         $this->info('Data Satuan Berhasil Di Upload');
 
         // Barang
+        $this->info('Data Barang Mulai Di Upload');
         $products = DB::table('t_barang')->get();
 
         foreach ($products as $data) {
@@ -95,6 +99,7 @@ class UploadDataCommand extends Command
         $this->info('Data Barang Berhasil Di Upload');
 
         // Barang Dicari
+        $this->info('Data Barang Dicari Mulai Di Upload');
         $searchProducts = DB::table('t_barang_dicari')->get();
 
         foreach ($searchProducts as $data) {
@@ -110,6 +115,7 @@ class UploadDataCommand extends Command
         $this->info('Data Barang Dicari Berhasil Di Upload');
 
         // Belanja
+        $this->info('Data Belanja Mulai Di Upload');
         $shopping = DB::table('t_belanja')->get();
 
         foreach ($shopping as $data) {
@@ -128,6 +134,7 @@ class UploadDataCommand extends Command
         $this->info('Data Belanja Berhasil Di Upload');
 
         // Kasir
+        $this->info('Data Kasir Mulai Di Upload');
         $sale = DB::table('t_kasir')->get();
 
         foreach ($sale as $data) {
@@ -151,6 +158,7 @@ class UploadDataCommand extends Command
         $this->info('Data Kasir Berhasil Di Upload');
 
         // pembelian
+        $this->info('Data Pembelian Mulai Di Upload');
         $purchase = DB::table('t_pembelian')->get();
 
         foreach ($purchase as $data) {
@@ -168,6 +176,7 @@ class UploadDataCommand extends Command
         $this->info('Data Pembelian Berhasil Di Upload');
 
         // pembelian detail
+        $this->info('Data Detail Pembelian Mulai Di Upload');
         $purchaseDetail = DB::table('t_pembelian_detail')->get();
 
         foreach ($purchaseDetail as $data) {
@@ -188,6 +197,7 @@ class UploadDataCommand extends Command
         $this->info('Data Detail Pembelian Berhasil Di Upload');
 
         // Piutang
+        $this->info('Data Piutang Mulai Di Upload');
         $receivables = DB::table('t_piutang')->get();
 
         foreach ($receivables as $data) {
@@ -204,6 +214,7 @@ class UploadDataCommand extends Command
         $this->info('Data Piutang Berhasil Di Upload');
 
         // Supplier
+        $this->info('Data Supplier Mulai Di Upload');
         $suppliers = DB::table('t_supplier')->get();
 
         foreach ($suppliers as $data) {
