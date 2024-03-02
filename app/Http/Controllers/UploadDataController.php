@@ -14,7 +14,7 @@ class UploadDataController extends Controller
      */
     public function upload(Request $request)
     {
-        dd($request);
+        $this->info($request);
 
         $merks = $request->merks;
         foreach ($merks as $data) {
