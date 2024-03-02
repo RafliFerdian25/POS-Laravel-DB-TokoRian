@@ -47,6 +47,7 @@ class UploadDataCommand extends Command
                 ['jenis' => $data->jenis, 'keterangan' => $data->keterangan],
             );
         }
+        $this->info('Data Jenis Berhasil Di Upload');
 
         // Merk
         $merks = DB::table('p_merk')->get();
@@ -57,6 +58,7 @@ class UploadDataCommand extends Command
                 ['merk' => $data->merk, 'keterangan' => $data->keterangan],
             );
         }
+        $this->info('Data Merk Berhasil Di Upload');
 
         // Satuan
         $units = DB::table('p_satuan')->get();
@@ -67,6 +69,7 @@ class UploadDataCommand extends Command
                 ['satuan' => $data->satuan, 'keterangan' => $data->keterangan],
             );
         }
+        $this->info('Data Satuan Berhasil Di Upload');
 
         // Barang
         $products = DB::table('t_barang')->get();
@@ -89,6 +92,7 @@ class UploadDataCommand extends Command
                 ],
             );
         }
+        $this->info('Data Barang Berhasil Di Upload');
 
         // Barang Dicari
         $searchProducts = DB::table('t_barang_dicari')->get();
@@ -103,6 +107,7 @@ class UploadDataCommand extends Command
                 ],
             );
         }
+        $this->info('Data Barang Dicari Berhasil Di Upload');
 
         // Belanja
         $shopping = DB::table('t_belanja')->get();
@@ -120,6 +125,7 @@ class UploadDataCommand extends Command
                 ],
             );
         }
+        $this->info('Data Belanja Berhasil Di Upload');
 
         // Kasir
         $sale = DB::table('t_kasir')->get();
@@ -142,6 +148,7 @@ class UploadDataCommand extends Command
                 ],
             );
         }
+        $this->info('Data Kasir Berhasil Di Upload');
 
         // pembelian
         $purchase = DB::table('t_pembelian')->get();
@@ -158,6 +165,7 @@ class UploadDataCommand extends Command
                 ],
             );
         }
+        $this->info('Data Pembelian Berhasil Di Upload');
 
         // pembelian detail
         $purchaseDetail = DB::table('t_pembelian_detail')->get();
@@ -177,6 +185,7 @@ class UploadDataCommand extends Command
                 ],
             );
         }
+        $this->info('Data Detail Pembelian Berhasil Di Upload');
 
         // Piutang
         $receivables = DB::table('t_piutang')->get();
@@ -192,6 +201,7 @@ class UploadDataCommand extends Command
                 ],
             );
         }
+        $this->info('Data Piutang Berhasil Di Upload');
 
         // Supplier
         $suppliers = DB::table('t_supplier')->get();
@@ -209,6 +219,7 @@ class UploadDataCommand extends Command
                 ],
             );
         }
+        $this->info('Data Supplier Berhasil Di Upload');
 
         $this->info('Data Berhasil Di Upload');
         return 0;
