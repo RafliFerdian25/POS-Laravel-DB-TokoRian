@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Http;
 
 class UploadDataCommand extends Command
 {
@@ -41,14 +42,12 @@ class UploadDataCommand extends Command
     {
         // // Merk
         $this->info('Data Merk Mulai Di Upload');
-        $merks = DB::table('p_merk')->get();
 
-        $client = new Client();
-        $response = $client->post('http://192.168.1.50:8000/api/upload-data', [
-            'json' => ['merks' => $merks->all()]
+        $response = Http::post('http://localhost:8000/api/upload-data', [
+            'merks' => DB::table('p_merk')->get()->toArray()
         ]);
 
-        $data = json_decode($response->getBody()->getContents(), true);
+        $data = $response->json();
 
         $this->info('Data Merk Berhasil Di Upload', $data['status']);
 
