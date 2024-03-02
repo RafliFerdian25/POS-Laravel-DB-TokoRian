@@ -43,13 +43,18 @@ class UploadDataCommand extends Command
         // // Merk
         $this->info('Data Merk Mulai Di Upload');
 
+        $merks = DB::table('p_merk')->get()->toArray();
         $response = Http::post('http://localhost:8000/api/upload-data', [
-            'merks' => DB::table('p_merk')->get()->toArray()
+            'merks' => $merks
         ]);
 
-        $data = $response->json();
-
-        $this->info('Data Merk Berhasil Di Upload', $data['status']);
+        if ($response->successful()) {
+            $data = $response->json();
+            $this->info('API Response:');
+            $this->line(json_encode($data, JSON_PRETTY_PRINT));
+        } else {
+            $this->error('Failed to call API: ' . $response->status());
+        }
 
         // foreach ($merks as $data) {
         //     DB::connection('hosting')->table('p_merk')->updateOrInsert(
