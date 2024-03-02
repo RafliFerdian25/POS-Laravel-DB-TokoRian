@@ -18,8 +18,8 @@ class UploadDataController extends Controller
         $merks = $request->merks;
         foreach ($merks as $data) {
             DB::connection('hosting')->table('p_merk')->updateOrInsert(
-                ['id' => $data->id],
-                ['merk' => $data->merk, 'keterangan' => $data->keterangan],
+                ['id' => $data['id']],
+                ['merk' => $data['merk'], 'keterangan' => $data['keterangan']],
             );
         }
 
