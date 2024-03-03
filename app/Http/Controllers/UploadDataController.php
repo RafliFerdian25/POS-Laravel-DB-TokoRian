@@ -19,7 +19,7 @@ class UploadDataController extends Controller
             $merks = $request->merks;
             DB::table('p_merk')->truncate();
             foreach ($merks as $data) {
-                DB::table('p_merk')->create([
+                DB::table('p_merk')->insert([
                     'id' => $data['id'],
                     'merk' => $data['merk'],
                     'keterangan' => $data['keterangan']
