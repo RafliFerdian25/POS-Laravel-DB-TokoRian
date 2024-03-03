@@ -20,7 +20,10 @@ class UploadDataController extends Controller
             foreach ($merks as $data) {
                 DB::table('p_merk')->updateOrInsert(
                     ['id' => $data['id']],
-                    ['merk' => $data['merk'], 'keterangan' => $data['keterangan']],
+                    [
+                        'merk' => $data['merk'],
+                        'keterangan' => $data['keterangan'] == '' ? NULL : $data['keterangan']
+                    ],
                 );
             }
 
@@ -38,8 +41,11 @@ class UploadDataController extends Controller
             $categories = $request->categories;
             foreach ($categories as $data) {
                 DB::table('p_jenis')->updateOrInsert(
-                    ['ID' => $data->ID],
-                    ['jenis' => $data->jenis, 'keterangan' => $data->keterangan],
+                    ['ID' => $data['ID']],
+                    [
+                        'jenis' => $data['jenis'],
+                        'keterangan' => $data['keterangan'] == '' ? NULL : $data['keterangan']
+                    ],
                 );
             }
 
@@ -58,7 +64,10 @@ class UploadDataController extends Controller
             foreach ($units as $data) {
                 DB::table('p_satuan')->updateOrInsert(
                     ['ID' => $data['ID']],
-                    ['satuan' => $data['satuan'], 'keterangan' => $data['keterangan']],
+                    [
+                        'satuan' => $data['satuan'],
+                        'keterangan' => $data['keterangan'] == '' ? NULL : $data['keterangan']
+                    ],
                 );
             }
 
@@ -86,7 +95,7 @@ class UploadDataController extends Controller
                         'hargaPokok' => $data['hargaPokok'],
                         'hargaJual' => $data['hargaJual'],
                         'hargaGrosir' => $data['hargaGrosir'],
-                        'expDate' => $data['expDate'],
+                        'expDate' => $data['expDate'] == '0000-00-00' ? NULL : $data['expDate'],
                         'Rak' => $data['Rak'],
                         'stok' => $data['stok'],
                         'merk_id' => $data['merk_id'],
@@ -280,10 +289,10 @@ class UploadDataController extends Controller
                     [
                         'Nama' => $data['Nama'],
                         'Produk' => $data['Produk'],
-                        'alamat' => $data['alamat'],
-                        'kota' => $data['kota'],
-                        'telp' => $data['telp'],
-                        'email' => $data['email'],
+                        'alamat' => $data['alamat'] == '' ? NULL : $data['alamat'],
+                        'kota' => $data['kota'] == '' ? NULL : $data['kota'],
+                        'telp' => $data['telp'] == '' ? NULL : $data['telp'],
+                        'email' => $data['email'] == '' ? NULL : $data['email'],
                     ],
                 );
             }
