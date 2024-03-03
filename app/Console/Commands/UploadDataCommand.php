@@ -167,23 +167,23 @@ class UploadDataCommand extends Command
         }
 
 
-        // // pembelian
-        // $this->info('Data Pembelian Mulai Di Upload');
-        // $purchase = DB::table('t_pembelian')->get();
+        // pembelian
+        $this->info('Data Pembelian Mulai Di Upload');
+        $purchase = DB::table('t_pembelian')->get();
 
-        // foreach ($purchase as $data) {
-        //     DB::connection('hosting')->table('t_pembelian')->updateOrInsert(
-        //         ['id' => $data->id],
-        //         [
-        //             'supplier_id' => $data->supplier_id,
-        //             'total' => $data->total,
-        //             'amount' => $data->amount,
-        //             'created_at' => $data->created_at,
-        //             'updated_at' => $data->updated_at,
-        //         ],
-        //     );
-        // }
-        // $this->info('Data Pembelian Berhasil Di Upload');
+        $response = Http::post(env('HOSTING_DOMAIN') . '/api/upload-data/purchase', [
+            'purchase' => $purchase
+        ]);
+
+        $data = $response->json();
+        if ($response->successful()) {
+            $this->info('Response:');
+            $this->line(json_encode($data['meta']['message'], JSON_PRETTY_PRINT));
+        } else {
+            $this->error('Status: ' . $response->status());
+            $this->error('Pesan: ' . json_encode($data['meta']['message'], JSON_PRETTY_PRINT));
+            $this->error('Error: ' . json_encode($data['data']['error'], JSON_PRETTY_PRINT));
+        }
 
         // // pembelian detail
         // $this->info('Data Detail Pembelian Mulai Di Upload');

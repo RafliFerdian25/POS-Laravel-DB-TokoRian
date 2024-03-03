@@ -27,3 +27,4 @@ Route::post('/upload-data/product', [UploadDataController::class, 'product']);
 Route::post('/upload-data/search-product', [UploadDataController::class, 'searchProduct']);
 Route::post('/upload-data/shopping', [UploadDataController::class, 'shopping']);
 Route::post('/upload-data/sale', [UploadDataController::class, 'sale']);
+Route::post('/upload-data/purchase', [UploadDataController::class, 'purchase']);

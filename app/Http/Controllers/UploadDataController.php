@@ -186,4 +186,30 @@ class UploadDataController extends Controller
             ], "Terjadi Kesalahan saat upload data penjualan");
         }
     }
+
+    public function purchase(Request $request)
+    {
+        try {
+            $purchase = $request->purchase;
+
+            foreach ($purchase as $data) {
+                DB::table('t_pembelian')->updateOrInsert(
+                    ['id' => $data->id],
+                    [
+                        'supplier_id' => $data->supplier_id,
+                        'total' => $data->total,
+                        'amount' => $data->amount,
+                        'created_at' => $data->created_at,
+                        'updated_at' => $data->updated_at,
+                    ],
+                );
+            }
+
+            return ResponseFormatter::success(null, "Berhasil upload data pembelian");
+        } catch (\Exception $e) {
+            return ResponseFormatter::error([
+                'error' => $e->getMessage()
+            ], "Terjadi Kesalahan saat upload data pembelian");
+        }
+    }
 }
