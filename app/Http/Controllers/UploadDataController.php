@@ -263,7 +263,7 @@ class UploadDataController extends Controller
                     [
                         'noTransaksi' => $data['noTransaksi'],
                         'tanggal' => $data['tanggal'],
-                        'nama_utang' => $data['nama_utang'],
+                        'nama_utang' => $data['nama_utang'] == '' ? '' : $data['nama_utang'],
                         'JUMLAH' => $data['JUMLAH'],
                         'sts_bayar' => $data['sts_bayar'],
                     ],

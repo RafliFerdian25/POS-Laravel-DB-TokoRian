@@ -155,9 +155,9 @@ class UploadDataCommand extends Command
 
         // // Kasir
         $this->info('Data Kasir Mulai Di Upload');
-        $lastYear = Carbon::now()->subYear();
+        $lastThreeMonth = Carbon::now()->subMonths(3);
         $sale = DB::table('t_kasir')
-            ->where('tanggal', '>', $lastYear)
+            ->where('tanggal', '>', $lastThreeMonth)
             ->get();
 
         $response = Http::post(env('HOSTING_DOMAIN') . '/api/upload-data/sale', [
