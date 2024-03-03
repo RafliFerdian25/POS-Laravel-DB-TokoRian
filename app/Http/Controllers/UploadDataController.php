@@ -17,11 +17,19 @@ class UploadDataController extends Controller
     {
         try {
             $merks = $request->merks;
+            DB::table('p_merk')->truncate();
             foreach ($merks as $data) {
-                DB::table('p_merk')->updateOrInsert(
-                    ['id' => $data['id']],
-                    ['merk' => $data['merk'], 'keterangan' => $data['keterangan']],
+                DB::table('p_merk')->create(
+                    [
+                        'id' => $data['id'],
+                        'merk' => $data['merk'],
+                        'keterangan' => $data['keterangan']
+                    ],
                 );
+                // DB::table('p_merk')->updateOrInsert(
+                //     ['id' => $data['id']],
+                //     ['merk' => $data['merk'], 'keterangan' => $data['keterangan']],
+                // );
             }
 
             return ResponseFormatter::success(null, "Berhasil");

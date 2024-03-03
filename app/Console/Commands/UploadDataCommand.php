@@ -51,7 +51,7 @@ class UploadDataCommand extends Command
         $data = $response->json();
         if ($response->successful()) {
             $this->info('API Response:');
-            $this->line(json_encode($data, JSON_PRETTY_PRINT));
+            $this->line(json_encode($data['meta']['message'], JSON_PRETTY_PRINT));
         } else {
             $this->error('Failed to call API: ' . $response->status());
             $this->error('Failed to call API: ' . json_encode($data['data']['error'], JSON_PRETTY_PRINT));
