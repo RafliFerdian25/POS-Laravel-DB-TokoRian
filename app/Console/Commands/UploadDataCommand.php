@@ -185,64 +185,62 @@ class UploadDataCommand extends Command
             $this->error('Error: ' . json_encode($data['data']['error'], JSON_PRETTY_PRINT));
         }
 
-        // // pembelian detail
-        // $this->info('Data Detail Pembelian Mulai Di Upload');
-        // $purchaseDetail = DB::table('t_pembelian_detail')->get();
+        // pembelian detail
+        $this->info('Data Detail Pembelian Mulai Di Upload');
+        $purchaseDetail = DB::table('t_pembelian_detail')->get();
 
-        // foreach ($purchaseDetail as $data) {
-        //     DB::connection('hosting')->table('t_pembelian_detail')->updateOrInsert(
-        //         ['id' => $data->id],
-        //         [
-        //             'product_id' => $data->product_id,
-        //             'quantity' => $data->quantity,
-        //             'exp_date' => $data->exp_date,
-        //             'exp_date_old' => $data->exp_date_old,
-        //             'cost_of_good_sold' => $data->cost_of_good_sold,
-        //             'cost_of_good_sold_old' => $data->cost_of_good_sold_old,
-        //             'purchase_id' => $data->purchase_id,
-        //             'sub_amount' => $data->sub_amount,
-        //         ],
-        //     );
-        // }
-        // $this->info('Data Detail Pembelian Berhasil Di Upload');
+        $response = Http::post(env('HOSTING_DOMAIN') . '/api/upload-data/purchase-detail', [
+            'purchaseDetail' => $purchaseDetail
+        ]);
+
+        $data = $response->json();
+        if ($response->successful()) {
+            $this->info('Response:');
+            $this->line(json_encode($data['meta']['message'], JSON_PRETTY_PRINT));
+        } else {
+            $this->error('Status: ' . $response->status());
+            $this->error('Pesan: ' . json_encode($data['meta']['message'], JSON_PRETTY_PRINT));
+            $this->error('Error: ' . json_encode($data['data']['error'], JSON_PRETTY_PRINT));
+        }
 
         // // Piutang
-        // $this->info('Data Piutang Mulai Di Upload');
-        // $receivables = DB::table('t_piutang')->get();
+        $this->info('Data Piutang Mulai Di Upload');
+        $receivables = DB::table('t_piutang')->get();
 
-        // foreach ($receivables as $data) {
-        //     DB::connection('hosting')->table('t_piutang')->updateOrInsert(
-        //         ['noTransaksi' => $data->noTransaksi],
-        //         [
-        //             'tanggal' => $data->tanggal,
-        //             'nama_utang' => $data->nama_utang,
-        //             'JUMLAH' => $data->JUMLAH,
-        //             'sts_bayar' => $data->sts_bayar,
-        //         ],
-        //     );
-        // }
-        // $this->info('Data Piutang Berhasil Di Upload');
+        $response = Http::post(env('HOSTING_DOMAIN') . '/api/upload-data/receivable', [
+            'receivables' => $receivables
+        ]);
 
-        // // Supplier
-        // $this->info('Data Supplier Mulai Di Upload');
-        // $suppliers = DB::table('t_supplier')->get();
+        $data = $response->json();
+        if ($response->successful()) {
+            $this->info('Response:');
+            $this->line(json_encode($data['meta']['message'], JSON_PRETTY_PRINT));
+        } else {
+            $this->error('Status: ' . $response->status());
+            $this->error('Pesan: ' . json_encode($data['meta']['message'], JSON_PRETTY_PRINT));
+            $this->error('Error: ' . json_encode($data['data']['error'], JSON_PRETTY_PRINT));
+        }
 
-        // foreach ($suppliers as $data) {
-        //     DB::connection('hosting')->table('t_supplier')->updateOrInsert(
-        //         ['IdSupplier' => $data->IdSupplier],
-        //         [
-        //             'Nama' => $data->Nama,
-        //             'Produk' => $data->Produk,
-        //             'alamat' => $data->alamat,
-        //             'kota' => $data->kota,
-        //             'telp' => $data->telp,
-        //             'email' => $data->email,
-        //         ],
-        //     );
-        // }
-        // $this->info('Data Supplier Berhasil Di Upload');
 
-        // $this->info('Data Berhasil Di Upload');
+        // Supplier
+        $this->info('Data Supplier Mulai Di Upload');
+        $suppliers = DB::table('t_supplier')->get();
+
+        $response = Http::post(env('HOSTING_DOMAIN') . '/api/upload-data/supplier', [
+            'suppliers' => $suppliers
+        ]);
+
+        $data = $response->json();
+        if ($response->successful()) {
+            $this->info('Response:');
+            $this->line(json_encode($data['meta']['message'], JSON_PRETTY_PRINT));
+        } else {
+            $this->error('Status: ' . $response->status());
+            $this->error('Pesan: ' . json_encode($data['meta']['message'], JSON_PRETTY_PRINT));
+            $this->error('Error: ' . json_encode($data['data']['error'], JSON_PRETTY_PRINT));
+        }
+
+        $this->info('Semua Data Berhasil Di Upload');
 
         return 0;
     }

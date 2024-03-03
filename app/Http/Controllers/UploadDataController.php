@@ -212,4 +212,87 @@ class UploadDataController extends Controller
             ], "Terjadi Kesalahan saat upload data pembelian");
         }
     }
+
+    public function purchaseDetail(Request $request)
+    {
+        try {
+            $purchaseDetail = $request->purchaseDetail;
+            DB::table('t_pembelian_detail')->truncate();
+
+            foreach ($purchaseDetail as $data) {
+                DB::table('t_pembelian_detail')->insert(
+                    [
+                        'id' => $data->id,
+                        'product_id' => $data->product_id,
+                        'quantity' => $data->quantity,
+                        'exp_date' => $data->exp_date,
+                        'exp_date_old' => $data->exp_date_old,
+                        'cost_of_good_sold' => $data->cost_of_good_sold,
+                        'cost_of_good_sold_old' => $data->cost_of_good_sold_old,
+                        'purchase_id' => $data->purchase_id,
+                        'sub_amount' => $data->sub_amount,
+                    ],
+                );
+            }
+
+            return ResponseFormatter::success(null, "Berhasil upload data detail pembelian");
+        } catch (\Exception $e) {
+            return ResponseFormatter::error([
+                'error' => $e->getMessage()
+            ], "Terjadi Kesalahan saat upload data detail pembelian");
+        }
+    }
+
+    public function receivable(Request $request)
+    {
+        try {
+            $receivables = $request->receivables;
+            DB::table('t_pembelian_detail')->truncate();
+
+            foreach ($receivables as $data) {
+                DB::table('t_piutang')->insert(
+                    [
+                        'noTransaksi' => $data->noTransaksi,
+                        'tanggal' => $data->tanggal,
+                        'nama_utang' => $data->nama_utang,
+                        'JUMLAH' => $data->JUMLAH,
+                        'sts_bayar' => $data->sts_bayar,
+                    ],
+                );
+            }
+
+            return ResponseFormatter::success(null, "Berhasil upload data piutang");
+        } catch (\Exception $e) {
+            return ResponseFormatter::error([
+                'error' => $e->getMessage()
+            ], "Terjadi Kesalahan saat upload data piutang");
+        }
+    }
+
+    public function supplier(Request $request)
+    {
+        try {
+            $suppliers = $request->suppliers;
+
+            foreach ($suppliers as $data) {
+                DB::table('t_supplier')->updateOrInsert(
+                    ['IdSupplier' => $data->IdSupplier],
+                    [
+                        'Nama' => $data->Nama,
+                        'Produk' => $data->Produk,
+                        'alamat' => $data->alamat,
+                        'kota' => $data->kota,
+                        'telp' => $data->telp,
+                        'email' => $data->email,
+                    ],
+                );
+            }
+
+            return ResponseFormatter::success(null, "Berhasil upload data supplier");
+        } catch (\Exception $e) {
+            return ResponseFormatter::error([
+                'error' => $e->getMessage()
+            ], "Terjadi Kesalahan saat upload data supplier");
+        }
+    }
 }
