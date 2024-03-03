@@ -23,3 +23,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/upload-data/merk', [UploadDataController::class, 'merk']);
 Route::post('/upload-data/category', [UploadDataController::class, 'category']);
 Route::post('/upload-data/unit', [UploadDataController::class, 'unit']);
+Route::post('/upload-data/product', [UploadDataController::class, 'product']);

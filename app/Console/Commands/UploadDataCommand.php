@@ -93,29 +93,23 @@ class UploadDataCommand extends Command
             $this->error('Error: ' . json_encode($data['data']['error'], JSON_PRETTY_PRINT));
         }
 
-        // // Barang
-        // $this->info('Data Barang Mulai Di Upload');
-        // $products = DB::table('t_barang')->get();
+        // Barang
+        $this->info('Data Barang Mulai Di Upload');
+        $products = DB::table('t_barang')->get();
 
-        // foreach ($products as $data) {
-        //     DB::connection('hosting')->table('t_barang')->updateOrInsert(
-        //         ['IdBarang' => $data->IdBarang],
-        //         [
-        //             'nmBarang' => $data->nmBarang,
-        //             'jenis' => $data->jenis,
-        //             'satuan' => $data->satuan,
-        //             'isi' => $data->isi,
-        //             'hargaPokok' => $data->hargaPokok,
-        //             'hargaJual' => $data->hargaJual,
-        //             'hargaGrosir' => $data->hargaGrosir,
-        //             'expDate' => $data->expDate,
-        //             'Rak' => $data->Rak,
-        //             'stok' => $data->stok,
-        //             'merk_id' => $data->merk_id,
-        //         ],
-        //     );
-        // }
-        // $this->info('Data Barang Berhasil Di Upload');
+        $response = Http::post(env('HOSTING_DOMAIN') . '/api/upload-data/product', [
+            'products' => $products
+        ]);
+
+        $data = $response->json();
+        if ($response->successful()) {
+            $this->info('Response:');
+            $this->line(json_encode($data['meta']['message'], JSON_PRETTY_PRINT));
+        } else {
+            $this->error('Status: ' . $response->status());
+            $this->error('Pesan: ' . json_encode($data['meta']['message'], JSON_PRETTY_PRINT));
+            $this->error('Error: ' . json_encode($data['data']['error'], JSON_PRETTY_PRINT));
+        }
 
         // // Barang Dicari
         // $this->info('Data Barang Dicari Mulai Di Upload');

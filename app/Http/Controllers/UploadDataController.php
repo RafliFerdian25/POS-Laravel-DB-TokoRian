@@ -51,7 +51,7 @@ class UploadDataController extends Controller
         }
     }
 
-    public function units(Request $request)
+    public function unit(Request $request)
     {
         try {
             $units = $request->units;
@@ -67,6 +67,38 @@ class UploadDataController extends Controller
             return ResponseFormatter::error([
                 'error' => $e->getMessage()
             ], "Terjadi Kesalahan saat upload satuan");
+        }
+    }
+
+    public function product(Request $request)
+    {
+        try {
+            $products = $request->products;
+
+            foreach ($products as $data) {
+                DB::connection('hosting')->table('t_barang')->updateOrInsert(
+                    ['IdBarang' => $data->IdBarang],
+                    [
+                        'nmBarang' => $data->nmBarang,
+                        'jenis' => $data->jenis,
+                        'satuan' => $data->satuan,
+                        'isi' => $data->isi,
+                        'hargaPokok' => $data->hargaPokok,
+                        'hargaJual' => $data->hargaJual,
+                        'hargaGrosir' => $data->hargaGrosir,
+                        'expDate' => $data->expDate,
+                        'Rak' => $data->Rak,
+                        'stok' => $data->stok,
+                        'merk_id' => $data->merk_id,
+                    ],
+                );
+            }
+
+            return ResponseFormatter::success(null, "Berhasil upload data barang");
+        } catch (\Exception $e) {
+            return ResponseFormatter::error([
+                'error' => $e->getMessage()
+            ], "Terjadi Kesalahan saat upload barang");
         }
     }
 }
