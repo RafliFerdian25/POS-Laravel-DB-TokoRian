@@ -256,7 +256,7 @@ class UploadDataController extends Controller
     {
         try {
             $receivables = $request->receivables;
-            DB::table('t_pembelian_detail')->truncate();
+            DB::table('t_piutang')->truncate();
 
             foreach ($receivables as $data) {
                 DB::table('t_piutang')->insert(
@@ -289,8 +289,8 @@ class UploadDataController extends Controller
                     [
                         'Nama' => $data['Nama'],
                         'Produk' => $data['Produk'],
-                        'alamat' => $data['alamat'] == '' ? NULL : $data['alamat'],
-                        'kota' => $data['kota'] == '' ? NULL : $data['kota'],
+                        'alamat' => $data['alamat'] == '' ? '' : $data['alamat'],
+                        'kota' => $data['kota'] == '' ? '' : $data['kota'],
                         'telp' => $data['telp'] == '' ? NULL : $data['telp'],
                         'email' => $data['email'] == '' ? NULL : $data['email'],
                     ],

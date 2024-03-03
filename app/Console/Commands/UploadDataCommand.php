@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use GuzzleHttp\Client;
@@ -154,7 +155,10 @@ class UploadDataCommand extends Command
 
         // // Kasir
         $this->info('Data Kasir Mulai Di Upload');
-        $sale = DB::table('t_kasir')->get();
+        $lastYear = Carbon::now()->subYear();
+        $sale = DB::table('t_kasir')
+            ->where('tanggal', '>', $lastYear)
+            ->get();
 
         $response = Http::post(env('HOSTING_DOMAIN') . '/api/upload-data/sale', [
             'sale' => $sale
