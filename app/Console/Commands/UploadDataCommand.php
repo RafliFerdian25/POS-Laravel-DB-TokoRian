@@ -48,12 +48,13 @@ class UploadDataCommand extends Command
             'merks' => $merks
         ]);
 
+        $data = $response->json();
         if ($response->successful()) {
-            $data = $response->json();
             $this->info('API Response:');
             $this->line(json_encode($data, JSON_PRETTY_PRINT));
         } else {
             $this->error('Failed to call API: ' . $response->status());
+            $this->error('Failed to call API: ' . json_encode($data['data']['error'], JSON_PRETTY_PRINT));
         }
 
         // foreach ($merks as $data) {

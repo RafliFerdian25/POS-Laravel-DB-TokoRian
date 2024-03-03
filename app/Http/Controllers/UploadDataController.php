@@ -15,14 +15,20 @@ class UploadDataController extends Controller
      */
     public function upload(Request $request)
     {
-        $merks = $request->merks;
-        foreach ($merks as $data) {
-            DB::table('p_merk')->updateOrInsert(
-                ['id' => $data->id],
-                ['merk' => $data->merk, 'keterangan' => $data->keterangan],
-            );
-        }
+        try {
+            $merks = $request->merks;
+            foreach ($merks as $data) {
+                DB::table('p_merk')->updateOrInsert(
+                    ['id' => $data['id']],
+                    ['merk' => $data['merk'], 'keterangan' => $data['keterangan']],
+                );
+            }
 
-        return ResponseFormatter::success(null, "Berhasil");
+            return ResponseFormatter::success(null, "Berhasil");
+        } catch (\Exception $e) {
+            return ResponseFormatter::error([
+                'error' => $e->getMessage()
+            ], "Terjadi Kesalahan");
+        }
     }
 }
