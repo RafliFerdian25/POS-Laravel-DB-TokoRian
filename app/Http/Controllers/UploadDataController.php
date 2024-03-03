@@ -287,7 +287,7 @@ class UploadDataController extends Controller
                 DB::table('t_supplier')->updateOrInsert(
                     ['IdSupplier' => $data['IdSupplier']],
                     [
-                        'Nama' => $data['Nama'] == '' ? '' : $data['alamat'],
+                        'Nama' => $data['Nama'] == '' ? '' : $data['Nama'],
                         'Produk' => $data['Produk'],
                         'alamat' => $data['alamat'] == '' ? '' : $data['alamat'],
                         'kota' => $data['kota'] == '' ? '' : $data['kota'],
