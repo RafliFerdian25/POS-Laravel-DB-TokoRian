@@ -44,39 +44,36 @@ class UploadDataCommand extends Command
         $this->info('Data Merk Mulai Di Upload');
 
         $merks = DB::table('p_merk')->get();
-        $response = Http::post(env('HOSTING_DOMAIN') . '/api/upload-data', [
+        $response = Http::post(env('HOSTING_DOMAIN') . '/api/upload-data/merk', [
             'merks' => $merks
         ]);
 
         $data = $response->json();
         if ($response->successful()) {
-            $this->info('API Response:');
+            $this->info('Response:');
             $this->line(json_encode($data['meta']['message'], JSON_PRETTY_PRINT));
         } else {
-            $this->error('Failed to call API: ' . $response->status());
-            $this->error('Failed to call API: ' . json_encode($data['data']['error'], JSON_PRETTY_PRINT));
+            $this->error('Status: ' . $response->status());
+            $this->error('Pesan: ' . json_encode($data['meta']['message'], JSON_PRETTY_PRINT));
+            $this->error('Error: ' . json_encode($data['data']['error'], JSON_PRETTY_PRINT));
         }
 
-        // foreach ($merks as $data) {
-        //     DB::connection('hosting')->table('p_merk')->updateOrInsert(
-        //         ['id' => $data->id],
-        //         ['merk' => $data->merk, 'keterangan' => $data->keterangan],
-        //     );
-        // }
-
-
-
         // // Jenis
-        // $this->info('Data Jenis Mulai Di Upload');
-        // $categories = DB::table('p_jenis')->get();
+        $this->info('Data Jenis Mulai Di Upload');
+        $categories = DB::table('p_jenis')->get();
+        $response = Http::post(env('HOSTING_DOMAIN') . '/api/upload-data/category', [
+            'categories' => $categories
+        ]);
 
-        // foreach ($categories as $data) {
-        //     DB::connection('hosting')->table('p_jenis')->updateOrInsert(
-        //         ['ID' => $data->ID],
-        //         ['jenis' => $data->jenis, 'keterangan' => $data->keterangan],
-        //     );
-        // }
-        // $this->info('Data Jenis Berhasil Di Upload');
+        $data = $response->json();
+        if ($response->successful()) {
+            $this->info('Response:');
+            $this->line(json_encode($data['meta']['message'], JSON_PRETTY_PRINT));
+        } else {
+            $this->error('Status: ' . $response->status());
+            $this->error('Pesan: ' . json_encode($data['meta']['message'], JSON_PRETTY_PRINT));
+            $this->error('Error: ' . json_encode($data['data']['error'], JSON_PRETTY_PRINT));
+        }
 
 
         // // Satuan

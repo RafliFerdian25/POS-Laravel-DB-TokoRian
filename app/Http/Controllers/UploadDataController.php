@@ -13,28 +13,41 @@ class UploadDataController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function upload(Request $request)
+    public function merk(Request $request)
     {
         try {
             $merks = $request->merks;
-            DB::table('p_merk')->truncate();
             foreach ($merks as $data) {
-                DB::table('p_merk')->insert([
-                    'id' => $data['id'],
-                    'merk' => $data['merk'],
-                    'keterangan' => $data['keterangan']
-                ]);
-                // DB::table('p_merk')->updateOrInsert(
-                //     ['id' => $data['id']],
-                //     ['merk' => $data['merk'], 'keterangan' => $data['keterangan']],
-                // );
+                DB::table('p_merk')->updateOrInsert(
+                    ['id' => $data['id']],
+                    ['merk' => $data['merk'], 'keterangan' => $data['keterangan']],
+                );
             }
 
-            return ResponseFormatter::success(null, "Berhasil");
+            return ResponseFormatter::success(null, "Berhasil upload data merk");
         } catch (\Exception $e) {
             return ResponseFormatter::error([
                 'error' => $e->getMessage()
-            ], "Terjadi Kesalahan");
+            ], "Terjadi Kesalahan saat upload merk");
+        }
+    }
+
+    public function category(Request $request)
+    {
+        try {
+            $categories = $request->category;
+            foreach ($categories as $data) {
+                DB::table('p_jenis')->updateOrInsert(
+                    ['ID' => $data->ID],
+                    ['jenis' => $data->jenis, 'keterangan' => $data->keterangan],
+                );
+            }
+
+            return ResponseFormatter::success(null, "Berhasil upload data kategori");
+        } catch (\Exception $e) {
+            return ResponseFormatter::error([
+                'error' => $e->getMessage()
+            ], "Terjadi Kesalahan saat upload kategori");
         }
     }
 }
