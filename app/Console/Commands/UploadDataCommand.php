@@ -58,6 +58,7 @@ class UploadDataCommand extends Command
             $this->error('Error: ' . json_encode($data['data']['error'], JSON_PRETTY_PRINT));
         }
 
+
         // // Jenis
         $this->info('Data Jenis Mulai Di Upload');
         $categories = DB::table('p_jenis')->get();
@@ -74,6 +75,7 @@ class UploadDataCommand extends Command
             $this->error('Pesan: ' . json_encode($data['meta']['message'], JSON_PRETTY_PRINT));
             $this->error('Error: ' . json_encode($data['data']['error'], JSON_PRETTY_PRINT));
         }
+
 
         // Satuan
         $this->info('Data Satuan Mulai Di Upload');
@@ -93,6 +95,7 @@ class UploadDataCommand extends Command
             $this->error('Error: ' . json_encode($data['data']['error'], JSON_PRETTY_PRINT));
         }
 
+
         // Barang
         $this->info('Data Barang Mulai Di Upload');
         $products = DB::table('t_barang')->get();
@@ -110,6 +113,7 @@ class UploadDataCommand extends Command
             $this->error('Pesan: ' . json_encode($data['meta']['message'], JSON_PRETTY_PRINT));
             $this->error('Error: ' . json_encode($data['data']['error'], JSON_PRETTY_PRINT));
         }
+
 
         // Barang Dicari
         $this->info('Data Barang Dicari Mulai Di Upload');
