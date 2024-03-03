@@ -50,4 +50,23 @@ class UploadDataController extends Controller
             ], "Terjadi Kesalahan saat upload kategori");
         }
     }
+
+    public function units(Request $request)
+    {
+        try {
+            $units = $request->units;
+            foreach ($units as $data) {
+                DB::connection('hosting')->table('p_satuan')->updateOrInsert(
+                    ['ID' => $data->ID],
+                    ['satuan' => $data->satuan, 'keterangan' => $data->keterangan],
+                );
+            }
+
+            return ResponseFormatter::success(null, "Berhasil upload data satuan");
+        } catch (\Exception $e) {
+            return ResponseFormatter::error([
+                'error' => $e->getMessage()
+            ], "Terjadi Kesalahan saat upload satuan");
+        }
+    }
 }

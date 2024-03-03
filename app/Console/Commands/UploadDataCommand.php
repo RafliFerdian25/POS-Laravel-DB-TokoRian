@@ -75,18 +75,23 @@ class UploadDataCommand extends Command
             $this->error('Error: ' . json_encode($data['data']['error'], JSON_PRETTY_PRINT));
         }
 
+        // Satuan
+        $this->info('Data Satuan Mulai Di Upload');
+        $units = DB::table('p_satuan')->get();
 
-        // // Satuan
-        // $this->info('Data Satuan Mulai Di Upload');
-        // $units = DB::table('p_satuan')->get();
+        $response = Http::post(env('HOSTING_DOMAIN') . '/api/upload-data/unit', [
+            'units' => $units
+        ]);
 
-        // foreach ($units as $data) {
-        //     DB::connection('hosting')->table('p_satuan')->updateOrInsert(
-        //         ['ID' => $data->ID],
-        //         ['satuan' => $data->satuan, 'keterangan' => $data->keterangan],
-        //     );
-        // }
-        // $this->info('Data Satuan Berhasil Di Upload');
+        $data = $response->json();
+        if ($response->successful()) {
+            $this->info('Response:');
+            $this->line(json_encode($data['meta']['message'], JSON_PRETTY_PRINT));
+        } else {
+            $this->error('Status: ' . $response->status());
+            $this->error('Pesan: ' . json_encode($data['meta']['message'], JSON_PRETTY_PRINT));
+            $this->error('Error: ' . json_encode($data['data']['error'], JSON_PRETTY_PRINT));
+        }
 
         // // Barang
         // $this->info('Data Barang Mulai Di Upload');
