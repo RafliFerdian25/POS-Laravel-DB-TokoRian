@@ -43,8 +43,8 @@ class UploadDataCommand extends Command
         // // Merk
         $this->info('Data Merk Mulai Di Upload');
 
-        $merks = DB::table('p_merk')->get()->toArray();
-        $response = Http::post('http://localhost:8000/api/upload-data', [
+        $merks = DB::table('p_merk')->get();
+        $response = Http::post(env('HOSTING_DOMAIN') . '/api/upload-data', [
             'merks' => $merks
         ]);
 
