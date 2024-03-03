@@ -126,4 +126,64 @@ class UploadDataController extends Controller
             ], "Terjadi Kesalahan saat upload barang dicari");
         }
     }
+
+    public function shopping(Request $request)
+    {
+        try {
+            $shopping = $request->shopping;
+            DB::table('t_belanja')->truncate();
+
+            foreach ($shopping as $data) {
+                DB::table('t_belanja')->insert(
+                    [
+                        'id' => $data->id,
+                        'IdBarang' => $data->IdBarang,
+                        'nmBarang' => $data->nmBarang,
+                        'satuan' => $data->satuan,
+                        'jumlah' => $data->jumlah,
+                        'hargaPokok' => $data->hargaPokok,
+                        'TOTAL' => $data->TOTAL,
+                    ],
+                );
+            }
+
+            return ResponseFormatter::success(null, "Berhasil upload data belanja");
+        } catch (\Exception $e) {
+            return ResponseFormatter::error([
+                'error' => $e->getMessage()
+            ], "Terjadi Kesalahan saat upload data belanja");
+        }
+    }
+
+    public function sale(Request $request)
+    {
+        try {
+            $sale = $request->sale;
+
+            foreach ($sale as $data) {
+                DB::table('t_kasir')->updateOrInsert(
+                    ['ID' => $data->ID],
+                    [
+                        'noUrut' => $data->noUrut,
+                        'noTransaksi' => $data->noTransaksi,
+                        'tanggal' => $data->tanggal,
+                        'idBarang' => $data->idBarang,
+                        'nmBarang' => $data->nmBarang,
+                        'jumlah' => $data->jumlah,
+                        'satuan' => $data->satuan,
+                        'harga' => $data->harga,
+                        'total' => $data->total,
+                        'Laba' => $data->Laba,
+                        'Bayar' => $data->Bayar,
+                    ],
+                );
+            }
+
+            return ResponseFormatter::success(null, "Berhasil upload data penjualan");
+        } catch (\Exception $e) {
+            return ResponseFormatter::error([
+                'error' => $e->getMessage()
+            ], "Terjadi Kesalahan saat upload data penjualan");
+        }
+    }
 }

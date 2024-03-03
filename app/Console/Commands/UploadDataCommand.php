@@ -130,47 +130,42 @@ class UploadDataCommand extends Command
         }
 
         // // Belanja
-        // $this->info('Data Belanja Mulai Di Upload');
-        // $shopping = DB::table('t_belanja')->get();
+        $this->info('Data Belanja Mulai Di Upload');
+        $shopping = DB::table('t_belanja')->get();
 
-        // foreach ($shopping as $data) {
-        //     DB::connection('hosting')->table('t_belanja')->updateOrInsert(
-        //         ['id' => $data->id],
-        //         [
-        //             'IdBarang' => $data->IdBarang,
-        //             'nmBarang' => $data->nmBarang,
-        //             'satuan' => $data->satuan,
-        //             'jumlah' => $data->jumlah,
-        //             'hargaPokok' => $data->hargaPokok,
-        //             'TOTAL' => $data->TOTAL,
-        //         ],
-        //     );
-        // }
-        // $this->info('Data Belanja Berhasil Di Upload');
+        $response = Http::post(env('HOSTING_DOMAIN') . '/api/upload-data/shopping', [
+            'shopping' => $shopping
+        ]);
+
+        $data = $response->json();
+        if ($response->successful()) {
+            $this->info('Response:');
+            $this->line(json_encode($data['meta']['message'], JSON_PRETTY_PRINT));
+        } else {
+            $this->error('Status: ' . $response->status());
+            $this->error('Pesan: ' . json_encode($data['meta']['message'], JSON_PRETTY_PRINT));
+            $this->error('Error: ' . json_encode($data['data']['error'], JSON_PRETTY_PRINT));
+        }
+
 
         // // Kasir
-        // $this->info('Data Kasir Mulai Di Upload');
-        // $sale = DB::table('t_kasir')->get();
+        $this->info('Data Kasir Mulai Di Upload');
+        $sale = DB::table('t_kasir')->get();
 
-        // foreach ($sale as $data) {
-        //     DB::connection('hosting')->table('t_kasir')->updateOrInsert(
-        //         ['ID' => $data->ID],
-        //         [
-        //             'noUrut' => $data->noUrut,
-        //             'noTransaksi' => $data->noTransaksi,
-        //             'tanggal' => $data->tanggal,
-        //             'idBarang' => $data->idBarang,
-        //             'nmBarang' => $data->nmBarang,
-        //             'jumlah' => $data->jumlah,
-        //             'satuan' => $data->satuan,
-        //             'harga' => $data->harga,
-        //             'total' => $data->total,
-        //             'Laba' => $data->Laba,
-        //             'Bayar' => $data->Bayar,
-        //         ],
-        //     );
-        // }
-        // $this->info('Data Kasir Berhasil Di Upload');
+        $response = Http::post(env('HOSTING_DOMAIN') . '/api/upload-data/sale', [
+            'sale' => $sale
+        ]);
+
+        $data = $response->json();
+        if ($response->successful()) {
+            $this->info('Response:');
+            $this->line(json_encode($data['meta']['message'], JSON_PRETTY_PRINT));
+        } else {
+            $this->error('Status: ' . $response->status());
+            $this->error('Pesan: ' . json_encode($data['meta']['message'], JSON_PRETTY_PRINT));
+            $this->error('Error: ' . json_encode($data['data']['error'], JSON_PRETTY_PRINT));
+        }
+
 
         // // pembelian
         // $this->info('Data Pembelian Mulai Di Upload');
