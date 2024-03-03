@@ -1,5 +1,6 @@
 serve:
 	@git pull 
+	@php artisan upload:data
 	@php artisan serve --host=0.0.0.0
 
 ip: 
