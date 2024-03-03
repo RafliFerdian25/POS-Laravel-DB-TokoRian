@@ -30,3 +30,4 @@ Route::post('/upload-data/sale', [UploadDataController::class, 'sale']);
 Route::post('/upload-data/purchase', [UploadDataController::class, 'purchase']);
 Route::post('/upload-data/purchase-detail', [UploadDataController::class, 'purchase-detail']);
 Route::post('/upload-data/receivable', [UploadDataController::class, 'receivable']);
+Route::post('/upload-data/supplier', [UploadDataController::class, 'supplier']);
