@@ -111,21 +111,23 @@ class UploadDataCommand extends Command
             $this->error('Error: ' . json_encode($data['data']['error'], JSON_PRETTY_PRINT));
         }
 
-        // // Barang Dicari
-        // $this->info('Data Barang Dicari Mulai Di Upload');
-        // $searchProducts = DB::table('t_barang_dicari')->get();
+        // Barang Dicari
+        $this->info('Data Barang Dicari Mulai Di Upload');
+        $searchProducts = DB::table('t_barang_dicari')->get();
 
-        // foreach ($searchProducts as $data) {
-        //     DB::connection('hosting')->table('t_barang_dicari')->updateOrInsert(
-        //         ['id' => $data->id],
-        //         [
-        //             'product_id' => $data->product_id,
-        //             'created_at' => $data->created_at,
-        //             'updated_at' => $data->updated_at,
-        //         ],
-        //     );
-        // }
-        // $this->info('Data Barang Dicari Berhasil Di Upload');
+        $response = Http::post(env('HOSTING_DOMAIN') . '/api/upload-data/search-product', [
+            'searchProducts' => $searchProducts
+        ]);
+
+        $data = $response->json();
+        if ($response->successful()) {
+            $this->info('Response:');
+            $this->line(json_encode($data['meta']['message'], JSON_PRETTY_PRINT));
+        } else {
+            $this->error('Status: ' . $response->status());
+            $this->error('Pesan: ' . json_encode($data['meta']['message'], JSON_PRETTY_PRINT));
+            $this->error('Error: ' . json_encode($data['data']['error'], JSON_PRETTY_PRINT));
+        }
 
         // // Belanja
         // $this->info('Data Belanja Mulai Di Upload');

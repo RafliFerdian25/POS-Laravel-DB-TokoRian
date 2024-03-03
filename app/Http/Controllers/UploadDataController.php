@@ -56,7 +56,7 @@ class UploadDataController extends Controller
         try {
             $units = $request->units;
             foreach ($units as $data) {
-                DB::connection('hosting')->table('p_satuan')->updateOrInsert(
+                DB::table('p_satuan')->updateOrInsert(
                     ['ID' => $data->ID],
                     ['satuan' => $data->satuan, 'keterangan' => $data->keterangan],
                 );
@@ -76,7 +76,7 @@ class UploadDataController extends Controller
             $products = $request->products;
 
             foreach ($products as $data) {
-                DB::connection('hosting')->table('t_barang')->updateOrInsert(
+                DB::table('t_barang')->updateOrInsert(
                     ['IdBarang' => $data->IdBarang],
                     [
                         'nmBarang' => $data->nmBarang,
@@ -99,6 +99,31 @@ class UploadDataController extends Controller
             return ResponseFormatter::error([
                 'error' => $e->getMessage()
             ], "Terjadi Kesalahan saat upload barang");
+        }
+    }
+
+    public function searchProduct(Request $request)
+    {
+        try {
+            $searchProducts = $request->searchProducts;
+            DB::table('t_barang_dicari')->truncate();
+
+            foreach ($searchProducts as $data) {
+                DB::table('t_barang_dicari')->insert(
+                    [
+                        'id' => $data->id,
+                        'product_id' => $data->product_id,
+                        'created_at' => $data->created_at,
+                        'updated_at' => $data->updated_at,
+                    ],
+                );
+            }
+
+            return ResponseFormatter::success(null, "Berhasil upload data barang dicari");
+        } catch (\Exception $e) {
+            return ResponseFormatter::error([
+                'error' => $e->getMessage()
+            ], "Terjadi Kesalahan saat upload barang dicari");
         }
     }
 }
