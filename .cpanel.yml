@@ -1,5 +1,6 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/hard2444/public_html/pos-toko.harcom.my.id/
+    - DEPLOYPATH=$(pwd)
+    - /bin/cp .env.example $DEPLOYPATH/.env
     - /usr/local/bin/php /opt/cpanel/composer/bin/composer install --working-dir=$DEPLOYPATH
