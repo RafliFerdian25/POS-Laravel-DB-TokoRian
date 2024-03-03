@@ -22,7 +22,7 @@ class UploadDataController extends Controller
                     ['id' => $data['id']],
                     [
                         'merk' => $data['merk'],
-                        'keterangan' => $data['keterangan'] == '' ? NULL : $data['keterangan']
+                        'keterangan' => $data['keterangan'] == '' ? '' : $data['keterangan']
                     ],
                 );
             }
@@ -287,7 +287,7 @@ class UploadDataController extends Controller
                 DB::table('t_supplier')->updateOrInsert(
                     ['IdSupplier' => $data['IdSupplier']],
                     [
-                        'Nama' => $data['Nama'],
+                        'Nama' => $data['Nama'] == '' ? '' : $data['alamat'],
                         'Produk' => $data['Produk'],
                         'alamat' => $data['alamat'] == '' ? '' : $data['alamat'],
                         'kota' => $data['kota'] == '' ? '' : $data['kota'],
