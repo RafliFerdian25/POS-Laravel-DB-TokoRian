@@ -7,6 +7,51 @@ create barang dicari
 delete barang dicari
 detail barang (Card: jumlah barang dicari. informasi barang. grafik jumlah dicari: bulanan, harian. Tabel: transaksi penjualan) (rentang tanggal)
 
+// Pembelian
+jika sudah membeli hapus dari daftar belanja
+tambah button tambah supplier pada tambah pembelian 
+tambahkan kolom harga jual baru pada form (pembelian detail)
+perbaiki card jumlah pembelian barang (pembelian detail)
+tambahkan card total pembelian barang (Rp) (pembelian detail)
+ketika berhasil menambahkan barang, form tanggal kadaluarsa, harga pokok, dan jumlah di input data sesuai data barang yang ada 
+
+// Laporan Penjualan
+pisahkan pengambilan data (berdasarkan card)
+detail barang pada barang terlaris
+
+// View Laporan Penjualan Kategori
+Total Transaksi
+Filter Tanggal 
+Tabel kategori terlaris
+grafik batang penjualan harian (custom tanggal)
+grafik pie bulanan (custom tanggal)
+
+// Laporan Penjualan Barang
+Edit barang
+grafik penjualan 
+
+// Kategori
+Edit Kategori
+Delete Kategori
+
+// Barang
+Total barang aktif (stok > 0)
+Jumlah Stok barang 
+
+// Barang habis
+filter barang (nama, kategori, stok) langsung berubah ketika di input
+
+// navbar
+perbaiki active pada barang habis, kadaluarsa
+
+// Laporan Barang Kadaluarsa
+filter nama, kategori langsung berubah ketika di input
+
+// Pembukaan kardus barang
+read Pembukaan kardus barang
+form buka kardus (nama barang retail, stok sebelum - disable, isi kardus, harga pokok retail, harga jual retail)
+
+
 // CRUD tabel barang pernah kadaluarsa
 menambahkan tabel barang yang pernah kadaluarsa
 read barang pernah kadaluarsa
@@ -14,18 +59,22 @@ create barang pernah kadaluarsa
 update barang pernah kadaluarsa
 delete barang pernah kadaluarsa
 
-menambahkan tabel penerimaan gas
+// menambahkan tabel penerimaan gas
 read penerimaan gas
 create penerimaan gas
 update penerimaan gas
 delete penerimaan gas
 
-menambahkan tabel penjualan gas
+// menambahkan tabel penjualan gas
 read penjualan gas
 create penjualan gas
 update penjualan gas
 delete penjualan gas
 
+// Supplier
+buatkan data table pada data 
+edit data
+delete data
 
 ## DONE ##
 ✅ perubahan NULL pada tanggal kadaluarsa product
