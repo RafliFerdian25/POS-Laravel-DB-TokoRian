@@ -27,7 +27,18 @@
                     <div class="content">
                         <div class="widget-content-left mb-2">
                             <i class="pe-7s-cash col-2" style="font-size: 30px;"></i>
-                            <div class="widget-heading col-10 widget__title">Total Barang Pembelian</div>
+                            <div class="widget-heading col-10 widget__title">Total Pembelian</div>
+                        </div>
+                        <div class="widget-content-right">
+                            <div class="widget-numbers mb-2"><span id="sumAmountPurchase">-</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mb-3 widget-content">
+                    <div class="content">
+                        <div class="widget-content-left mb-2">
+                            <i class="pe-7s-cash col-2" style="font-size: 30px;"></i>
+                            <div class="widget-heading col-10 widget__title">Jumlah Barang Pembelian</div>
                         </div>
                         <div class="widget-content-right">
                             <div class="widget-numbers mb-2"><span id="countProduct">-</span></div>
@@ -232,6 +243,7 @@
                 data: $('#formFilterProduct').serialize(),
                 dataType: "json",
                 success: function(response) {
+                    $('#sumAmountPurchase').html(response.data.sumAmountPurchase);
                     $('#countProduct').html(response.data.countProduct);
                     if (response.data.purchaseDetails.length > 0) {
                         printPriceProduct = response.data.purchaseDetails.map((purchase) => {

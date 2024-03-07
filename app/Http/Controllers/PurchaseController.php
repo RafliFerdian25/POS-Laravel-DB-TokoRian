@@ -159,9 +159,14 @@ class PurchaseController extends Controller
     public function detailData(Purchase $purchase)
     {
         $purchaseDetails = PurchaseDetail::with('product')->where('purchase_id', $purchase->id)->get();
+        $countProduct = PurchaseDetail::where('purchase_id', $purchase->id)->count('quantity');
+        $sumAmountPurchase = PurchaseDetail::where('purchase_id', $purchase->id)->sum('sub_amount');
+
         return ResponseFormatter::success(
             [
-                'purchaseDetails' => $purchaseDetails
+                'purchaseDetails' => $purchaseDetails,
+                'countProduct' => $countProduct,
+                'sumAmountPurchase' => $sumAmountPurchase,
             ],
             'Data detail pembelian berhasil diambil'
         );
