@@ -63,13 +63,13 @@ class ProductController extends Controller
      */
     public function searchData(Request $request)
     {
-        $query = Product::select('IdBarang', 'nmBarang', 'hargaJual', 'hargaPokok')
+        $query = Product::select('IdBarang', 'nmBarang', 'hargaJual', 'hargaPokok', 'expDate')
             ->when($request->has('q'), function ($query) use ($request) {
                 return $query->where('nmBarang', 'LIKE', '%' . $request->q . '%')
                     ->orWhere('IdBarang', 'LIKE', '%' . $request->q . '%');
             })
             ->orderBy('nmBarang', 'asc')
-            ->limit(100);
+            ->limit(20);
 
         $products = $query->get();
         $countProduct = $query->count();
