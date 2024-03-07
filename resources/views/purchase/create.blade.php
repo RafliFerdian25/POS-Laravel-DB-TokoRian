@@ -7,26 +7,35 @@
         <div class="tambah__section">
             <div class="tambah__body">
                 <div class="tambah__content card">
-                    <div class="title__card text-center">
-                        Tambah Pembelian Barang
-                    </div>
-                    <form method="POST" id="formAddPurchase">
-                        @csrf
-                        <div class="row mb-3">
-                            <label for="supplier_id" class="col-sm-2 col-form-label">Supplier</label>
-                            <div class="col-sm-10">
-                                <div class="select2-input select2-info" style="width: 100%">
-                                    <select id="supplier_id" name="supplier_id" class="form-control rounded__10">
-                                        <option value="">&nbsp;</option>
-                                    </select>
+                    <div class="card-body">
+                        <div class="title__card text-center">
+                            Tambah Pembelian Barang
+                        </div>
+                        <form method="POST" id="formAddPurchase">
+                            @csrf
+                            <div class="row mb-3">
+                                <label for="supplier_id" class="col-sm-2 col-form-label">Supplier</label>
+                                <div class="col-sm-10">
+                                    <div class="select2-input select2-info" style="width: 100%">
+                                        <select id="supplier_id" name="supplier_id" class="form-control rounded__10">
+                                            <option value="">&nbsp;</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
+                            <div class="submit text-end">
+                                <a href="{{ route('purchase.index') }}" class="btn btn-danger">Batal</a>
+                                <button type="submit" id="submitButton" class="btn btn-primary">Lanjut</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-footer">
+                        <div class="footer__card">
+                            <a href="{{ route('supplier.create') }}" class="btn btn-primary">
+                                Tambah Supplier
+                            </a>
                         </div>
-                        <div class="submit text-end">
-                            <a href="{{ route('purchase.index') }}" class="btn btn-danger">Batal</a>
-                            <button type="submit" id="submitButton" class="btn btn-primary">Lanjut</button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
