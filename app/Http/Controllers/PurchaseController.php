@@ -7,6 +7,7 @@ use App\Models\Barcode;
 use App\Models\Product;
 use App\Models\Purchase;
 use App\Models\PurchaseDetail;
+use App\Models\Shopping;
 use App\Models\Toko;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -231,6 +232,12 @@ class PurchaseController extends Controller
 
             // update data barang
             $this->updateProductForDetailPurchase($product, $purchase, $purchaseDetail, $request);
+
+            // menghapus data pada data belanja
+            $shopping = Shopping::where('IdBarang', $request->product_id)->first();
+            if ($shopping) {
+                $shopping->delete();
+            }
 
             // cetak harga
             $productController = new ProductController();
