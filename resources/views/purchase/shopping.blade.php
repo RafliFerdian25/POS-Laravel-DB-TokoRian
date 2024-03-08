@@ -41,24 +41,37 @@
             </div>
             <div class="col-sm-12 col-md-8 col-xl-9 p-3">
                 <div class="main-card mb-3 card">
-                    <div class="card-body">
-                        <h5 class="card-title text-center">Tambah Barang</h5>
-                        @csrf
-                        <div class="form-group form-show-validation row select2-form-input">
-                            <label for="addProduct" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-sm-right">Nama
-                                / Barcode Barang
-                                <span class="required-label">*</span></label>
-                            <div class="col-lg-9 col-md-9 col-sm-8">
-                                <div class="select2-input select2-info" style="width: 100%">
-                                    <select id="addProduct" name="addProduct" class="form-control rounded__10">
-                                        <option value="">&nbsp;</option>
-                                    </select>
+                    <form method="POST" id="formAddShoppingProduct">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Tambah Barang</h5>
+                            @csrf
+                            <div class="form-group form-show-validation row select2-form-input">
+                                <label for="addProduct" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-sm-right">Nama
+                                    / Barcode Barang
+                                    <span class="required-label">*</span></label>
+                                <div class="col-lg-9 col-md-9 col-sm-8">
+                                    <div class="select2-input select2-info" style="width: 100%">
+                                        <select id="addProduct" name="addProduct" class="form-control rounded__10">
+                                            <option value="">&nbsp;</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
+                            <div class="form-group form-show-validation row select2-form-input">
+                                <label for="qty" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-sm-right">Jumlah
+                                    Belanja
+                                    <span class="required-label">*</span></label>
+                                <div class="col-lg-9 col-md-9 col-sm-8">
+                                    <input type="number" class="form-control rounded__10" id="qty" name="qty"
+                                        min="2" value="2" required>
+                                </div>
+                            </div>
+
                         </div>
-                        <div id="qr-reader" style="min-width:300px"></div>
-                        <div id="qr-reader-results"></div>
-                    </div>
+                        <div class="card-footer justify-content-end">
+                            <button type="submit" id="submitAddProduct" class="btn btn-primary rounded__10">Tambah</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -201,60 +214,153 @@
                     },
                     cache: true, // Cache the results for better performance
                 }
-            }).on('change', function(e) {
-                // Mendapatkan nilai yang dipilih
-                var IdBarang = $(this).val();
+            });
 
-                function showSuccessMessage() {
+            initializationSelect2Merk('filterMerk', "{{ route('merk.search.data') }}");
+            getShoppingProduct();
+        });
+
+        $('#formAddShoppingProduct').validate({
+            rules: {
+                addProduct: {
+                    required: true,
+                },
+                qty: {
+                    required: true,
+                    number: true,
+                    min: 2
+                },
+            },
+            messages: {
+                addProduct: {
+                    required: "Nama / Barcode tidak boleh kosong",
+                },
+                qty: {
+                    required: "Jumlah tidak boleh kosong",
+                    number: "Jumlah harus berupa angka",
+                    min: "Jumlah minimal 2"
+                },
+            },
+            highlight: function(element) {
+                $(element).closest('.form-group').removeClass('has-success')
+                    .addClass('has-error');
+            },
+            success: function(element) {
+                $(element).closest('.form-group').removeClass('has-error');
+            },
+            submitHandler: function(form, event) {
+                event.preventDefault();
+                $('#submitAddProduct').html(
+                    '<svg class="spinners-2" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;"><path d="M12 22c5.421 0 10-4.579 10-10h-2c0 4.337-3.663 8-8 8s-8-3.663-8-8c0-4.336 3.663-8 8-8V2C6.579 2 2 6.58 2 12c0 5.421 4.579 10 10 10z"></path></svg>'
+                );
+                $('#submitAddProduct').prop('disabled', true);
+
+                // Mendapatkan nilai yang dipilih
+                var IdBarang = $('#addProduct').val();
+                var qty = $('#qty').val();
+
+                function showSuccessMessage(message) {
                     Swal.fire({
                         icon: 'success',
                         title: 'Berhasil',
-                        text: 'Menambah Produk Berhasil',
+                        text: message,
                         showConfirmButton: false,
                         timer: 1500
                     });
+
+                    getShoppingProduct();
+                    $('#submitAddProduct').html(
+                        'Tambah');
+                    $('#submitAddProduct').prop('disabled', false);
+                }
+
+                function showErrorMessages(error, message) {
+                    if (error.responseJSON) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: `${message}. ${error.responseJSON.meta.message} Error: ${error.responseJSON.data.error}`,
+                            showConfirmButton: true,
+                        });
+                    }
+
+                    $('#submitAddProduct').html(
+                        'Tambah');
+                    $('#submitAddProduct').prop('disabled', false);
                 }
 
                 // Wrap each AJAX request in a Promise
-                var request1 = $.ajax({
+                var requestLocal = $.ajax({
                     type: "POST",
                     url: "{{ route('wholesale.purchase.store') }}",
                     data: {
                         _token: '{{ csrf_token() }}',
                         IdBarang: IdBarang,
+                        qty: qty,
                     },
                 });
 
                 @if (env('HOSTING_DOMAIN') !== 'hosting')
-                    var request2 = $.ajax({
+                    var requestHosting = $.ajax({
                         type: "POST",
-                        url: "{{ env('HOSTING_DOMAIN') . '/api/belanja' }}",
+                        url: "{{ 'https://' . env('HOSTING_DOMAIN') . '/api/belanja' }}",
                         data: {
                             IdBarang: IdBarang,
+                            qty: qty,
                         },
                     });
 
                     // Use Promise.all to wait for both requests to complete
-                    Promise.all([request1, request2])
-                        .then(function(responses) {
-                            // Handle success here
-                            showSuccessMessage();
-                        })
-                        .catch(function(errors) {
-                            // Handle errors here
-                            if (errors[0]?.responseJSON || errors[1]?.responseJSON) {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Gagal',
-                                    text: `Tambah Produk Gagal. ${errors[0]?.responseJSON?.meta.message || errors[1]?.responseJSON?.meta.message} Error: ${errors[0]?.responseJSON?.data.error || errors[1]?.responseJSON?.data.error}`,
-                                    showConfirmButton: false,
-                                    timer: 1500
-                                });
-                            }
+                    requestLocal.then(function(response) {
+                        Swal.fire({
+                            text: "Tambah Produk Local Berhasil",
+                            icon: 'success',
+                            confirmButtonColor: "#3085d6",
+                            confirmButtonText: "Yaa!"
+                        }).then(() => {
+                            getShoppingProduct();
+
+                            // Upload data ke online
+                            requestHosting.then(function(response) {
+                                showSuccessMessage('Menambah Produk Online Berhasil');
+                            }).catch(function(error) {
+                                showErrorMessages(error,
+                                    'Tambah Produk Online Gagal');
+                            });
+
                         });
+                    }).catch(function(error) {
+                        if (error.responseJSON) {
+                            if (error.responseJSON.data.error ==
+                                'Barang sudah ada di daftar belanja') {
+                                Swal.fire({
+                                    title: "Apakah tetap akan melanjukan upload data?",
+                                    text: `Tambah Produk Gagal. ${error.responseJSON.meta.message} Error: ${error.responseJSON.data.error}`,
+                                    icon: 'error',
+                                    showCancelButton: true,
+                                    confirmButtonColor: "#3085d6",
+                                    cancelButtonColor: "#d33",
+                                    confirmButtonText: "Yaa, upload data!"
+                                }).then((result) => {
+                                    /* Read more about isConfirmed, isDenied below */
+                                    if (result.isConfirmed) {
+                                        requestHosting.then(function(response) {
+                                            showSuccessMessage(
+                                                'Menambah Produk Online Berhasil');
+                                        }).catch(function(error) {
+                                            showErrorMessages(error,
+                                                'Tambah Produk Online Gagal');
+                                        });
+                                    }
+                                });
+                            } else {
+                                showErrorMessages(error, 'Tambah Produk Gagal');
+                            }
+                        }
+                    });
                 @else
-                    request1.then(function(response) {
-                        showSuccessMessage();
+                    requestLocal.then(function(response) {
+                        showSuccessMessage('Menambah Produk Berhasil');
                     }).catch(function(error) {
                         if (error.responseJSON) {
                             Swal.fire({
@@ -267,13 +373,7 @@
                         }
                     });
                 @endif
-
-
-                // $('#product').val(null).trigger('change');
-            });
-
-            initializationSelect2Merk('filterMerk', "{{ route('merk.search.data') }}");
-            getShoppingProduct();
+            }
         });
 
         const getShoppingProduct = () => {

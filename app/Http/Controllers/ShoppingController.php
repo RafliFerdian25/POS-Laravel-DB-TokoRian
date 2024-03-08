@@ -70,6 +70,7 @@ class ShoppingController extends Controller
     {
         $rules = [
             'IdBarang' => 'required|exists:t_barang,IdBarang|unique:t_belanja,IdBarang',
+            'qty' => 'required|numeric|min:2'
         ];
 
         $messages = [
