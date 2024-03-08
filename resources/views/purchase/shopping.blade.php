@@ -205,36 +205,69 @@
                 // Mendapatkan nilai yang dipilih
                 var IdBarang = $(this).val();
 
-                $.ajax({
+                function showSuccessMessage() {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil',
+                        text: 'Menambah Produk Berhasil',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+
+                // Wrap each AJAX request in a Promise
+                var request1 = $.ajax({
                     type: "POST",
                     url: "{{ route('wholesale.purchase.store') }}",
                     data: {
                         _token: '{{ csrf_token() }}',
                         IdBarang: IdBarang,
                     },
-                    success: function(response) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil',
-                            text: 'Menambah Produk Berhasil',
-                            showConfirmButton: false,
-                            timer: 1500
+                });
+
+                @if (env('HOSTING_DOMAIN') !== 'hosting')
+                    var request2 = $.ajax({
+                        type: "POST",
+                        url: "{{ env('HOSTING_DOMAIN') . '/api/belanja' }}",
+                        data: {
+                            IdBarang: IdBarang,
+                        },
+                    });
+
+                    // Use Promise.all to wait for both requests to complete
+                    Promise.all([request1, request2])
+                        .then(function(responses) {
+                            // Handle success here
+                            showSuccessMessage();
                         })
-                        getShoppingProduct();
-                    },
-                    error: function(xhr, ajaxOptions, thrownError) {
-                        if (xhr.responseJSON) {
+                        .catch(function(errors) {
+                            // Handle errors here
+                            if (errors[0]?.responseJSON || errors[1]?.responseJSON) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal',
+                                    text: `Tambah Produk Gagal. ${errors[0]?.responseJSON?.meta.message || errors[1]?.responseJSON?.meta.message} Error: ${errors[0]?.responseJSON?.data.error || errors[1]?.responseJSON?.data.error}`,
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                            }
+                        });
+                @else
+                    request1.then(function(response) {
+                        showSuccessMessage();
+                    }).catch(function(error) {
+                        if (error.responseJSON) {
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Gagal',
-                                text: `Tambah Produk Gagal. ${xhr.responseJSON.meta.message} Error: ${xhr.responseJSON.data.error}`,
+                                text: `Tambah Produk Gagal. ${error.responseJSON.meta.message} Error: ${error.responseJSON.data.error}`,
                                 showConfirmButton: false,
                                 timer: 1500
-                            })
+                            });
                         }
-                        return false;
-                    },
-                });
+                    });
+                @endif
+
 
                 // $('#product').val(null).trigger('change');
             });
