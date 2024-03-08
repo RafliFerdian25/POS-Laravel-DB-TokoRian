@@ -1,5 +1,18 @@
 ## BACKLOG ##
 
+// Pembelian
+setelah menambahkan barang pembelian, hapus data barang pada belanja baik local / hosting
+tambahkan kolom harga jual baru pada form (pembelian detail)
+
+// Belanja
+✅ menambahkan route api untuk tambah belanja (hosting)
+ketika menambah belanja local, lakukan tambah belanja hosting dengan api (dilakukan pada ajax shopping)
+tambahkan tombol "upload" untuk melakukan upload data belanja local ke hosting dengan updateOrInsert
+tambahkan command artisan download data belanja (downloadDataCommand) - dengan melakukan truncate data belanja local kemudian insert data hosting ke local
+menghapus perintah pada command untuk upload data belanja
+menambahkan command artisan download data belanja dari hosting ke local
+
+
 // TABEL BARANG PERNAH DICARI
 Tabel barang pernah dicari (id, product_id, timestamps)
 index (Card: jumlah barang dicari. Tabel: transaksi barang dicari, daftar barang dicari dengan jumlah) (rentang tanggal)
@@ -7,11 +20,6 @@ create barang dicari
 delete barang dicari
 detail barang (Card: jumlah barang dicari. informasi barang. grafik jumlah dicari: bulanan, harian. Tabel: transaksi penjualan) (rentang tanggal)
 
-// Pembelian
-tambahkan kolom harga jual baru pada form (pembelian detail)
-perbaiki card jumlah pembelian barang (pembelian detail)
-tambahkan card total pembelian barang (Rp) (pembelian detail)
-ketika berhasil menambahkan barang, form tanggal kadaluarsa, harga pokok, dan jumlah di input data sesuai data barang yang ada 
 
 // Laporan Penjualan
 pisahkan pengambilan data (berdasarkan card)
@@ -134,6 +142,9 @@ delete data
 ✅ delete pembelian detail barang 
 ✅ jika sudah membeli hapus dari daftar belanja
 ✅ tambah button tambah supplier pada tambah pembelian 
+✅ perbaiki card jumlah pembelian barang (pembelian detail)
+✅ tambahkan card total pembelian barang (Rp) (pembelian detail)
+✅ ketika berhasil menambahkan barang, form tanggal kadaluarsa, dan harga pokok di input data sesuai data barang yang ada 
 
 // View Laporan Barang
 ✅ search barang
