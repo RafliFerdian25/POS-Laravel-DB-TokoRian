@@ -140,7 +140,7 @@
                             <li class="app-sidebar__heading">Barang</li>
                             <li>
                                 <a href="{{ url('/barang') }}" id="navbar__barang"
-                                    class="{{ Request::is('barang*') ? 'mm-active' : '' }}">
+                                    class="{{ Request::is('barang') ? 'mm-active' : '' }}">
                                     <i class="metismenu-icon pe-7s-drawer"></i>
                                     Produk
                                 </a>
@@ -178,6 +178,13 @@
                                     class="{{ Request::is('barang/cetak-harga*') ? 'mm-active' : '' }}">
                                     <i class="metismenu-icon bi bi-printer"></i>
                                     Cetak Harga
+                                </a>
+                            </li>
+                            <li class="">
+                                <a href="{{ route('product.search.index') }}" id="navbarProductSearch"
+                                    class="@if ($currentNav == 'productSearch') mm-active @endif">
+                                    <i class="metismenu-icon bi bi-search"></i>
+                                    Barang Dicari
                                 </a>
                             </li>
 

@@ -25,6 +25,7 @@ class ProductSearchController extends Controller
         $data = [
             'setting' => $setting,
             'title' => $title,
+            'currentNav' => 'productSearch',
         ];
 
         return view('product.productSearch', $data);
