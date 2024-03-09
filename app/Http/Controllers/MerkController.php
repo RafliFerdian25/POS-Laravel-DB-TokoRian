@@ -18,7 +18,12 @@ class MerkController extends Controller
     public function index()
     {
         $title = 'POS TOKO | Merk';
-        return view('merk.index', compact('title'));
+        $data = [
+            'title' => $title,
+            'currentNav' => 'merk',
+        ];
+
+        return view('merk.index', $data);
     }
 
     public function indexData()
@@ -37,7 +42,11 @@ class MerkController extends Controller
     public function create()
     {
         $title = 'POS TOKO | Kategori';
-        return view('merk.create', compact('title'));
+        $data = [
+            'title' => $title,
+            'currentNav' => 'category',
+        ];
+        return view('merk.create', $data);
     }
 
     /**

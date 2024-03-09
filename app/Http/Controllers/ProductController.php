@@ -30,7 +30,8 @@ class ProductController extends Controller
             'setting' => Toko::first(),
             'title' => 'POS TOKO | Barang',
             'categories' => Category::get(),
-            'merk' => Merk::get()
+            'merk' => Merk::get(),
+            'currentNav' => 'product',
         ];
 
         return view('product.index', $data);
@@ -96,6 +97,7 @@ class ProductController extends Controller
             'categories' => Category::get(),
             'merks' => Merk::orderBy('merk')->get(),
             'units' => Unit::orderBy('satuan')->get(),
+            'currentNav' => 'product',
         ];
 
         return view('product.create', $data);
@@ -185,6 +187,7 @@ class ProductController extends Controller
             'categories' => $categories,
             'units' => $units,
             'title' => $title,
+            'currentNav' => 'product',
         ];
         if ($request->ajax()) {
             return response()->json($data);
@@ -307,6 +310,7 @@ class ProductController extends Controller
             'setting' => Toko::first(),
             'title' => 'POS TOKO | Laporan',
             'categories' => Category::get(),
+            'currentNav' => 'productExpired',
         ];
 
         return view('product.expired', $data);
@@ -364,7 +368,8 @@ class ProductController extends Controller
             'setting' => Toko::first(),
             'title' => 'POS TOKO | Barang Habis',
             'categories' => Category::get(),
-            'typeReport' => 'Bulanan'
+            'typeReport' => 'Bulanan',
+            'currentNav' => 'productEmpty',
         ];
         return view('product.empty', $data);
     }
@@ -446,6 +451,7 @@ class ProductController extends Controller
         $data = [
             'setting' => Toko::first(),
             'title' => 'POS TOKO | Laporan',
+            'currentNav' => 'productPrintPrice',
         ];
         return view('product.printPrice', $data);
     }

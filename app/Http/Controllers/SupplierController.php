@@ -21,7 +21,13 @@ class SupplierController extends Controller
     {
         $suppliers = Supplier::all();
         $title = "POS TOKO | Supplier";
-        return view("supplier.index", compact("title", "suppliers"));
+        $data = [
+            "title" => $title,
+            "suppliers" => $suppliers,
+            "currentNav" => "supplier"
+        ];
+
+        return view("supplier.index", $data);
     }
 
     /**
@@ -32,7 +38,11 @@ class SupplierController extends Controller
     public function create()
     {
         $title = "POS TOKO | Supplier";
-        return view("supplier.create", compact("title"));
+        $data = [
+            "title" => $title,
+            "currentNav" => "supplier"
+        ];
+        return view("supplier.create", $data);
     }
 
     /**
@@ -94,7 +104,13 @@ class SupplierController extends Controller
     {
         $title = "POS TOKO | Supplier";
         $supplier = Supplier::findOrFail($id);
-        return view("supplier.update", compact("supplier", "title"));
+        $data = [
+            "title" => $title,
+            "supplier" => $supplier,
+            "currentNav" => "supplier"
+        ];
+
+        return view("supplier.update", $data);
     }
 
     /**

@@ -28,6 +28,7 @@ class PurchaseController extends Controller
         $data = [
             'setting' => $setting,
             'title' => $title,
+            'currentNav' => 'purchase',
         ];
         return view('purchase.index', $data);
     }
@@ -56,6 +57,7 @@ class PurchaseController extends Controller
         $data = [
             'setting' => $setting,
             'title' => $title,
+            'currentNav' => 'purchase',
         ];
         return view('purchase.create', $data);
     }
@@ -151,7 +153,8 @@ class PurchaseController extends Controller
         $data = [
             'setting' => $setting,
             'title' => $title,
-            'purchase' => $purchase
+            'purchase' => $purchase,
+            'currentNav' => 'purchase',
         ];
         return view('purchase.create-purchase-detail', $data);
     }

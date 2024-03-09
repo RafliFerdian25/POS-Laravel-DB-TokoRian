@@ -29,6 +29,7 @@ class ReportController extends Controller
             'setting' => $setting,
             'title' => $title,
             'typeReport' => 'Bulanan',
+            'currentNav' => 'reportSale',
         ];
         return view('report.financial', $data);
     }
@@ -267,7 +268,8 @@ class ReportController extends Controller
     {
         $data = [
             'title' => 'Laporan Kategori',
-            'kategori' => Category::all()
+            'kategori' => Category::all(),
+            'currentNav' => 'reportCategory',
         ];
 
         return view('report.category', $data);
@@ -303,7 +305,8 @@ class ReportController extends Controller
         $data = [
             'title' => 'Laporan Kategori',
             'category' => $category,
-            'typeReport' => 'Bulanan'
+            'typeReport' => 'Bulanan',
+            'currentNav' => 'reportCategory',
         ];
 
         return view('report.categoryDetail', $data);
@@ -437,6 +440,7 @@ class ReportController extends Controller
             'title' => 'POS TOKO | Laporan Barang',
             'typeReport' => 'Bulanan',
             'categories' => Category::all(),
+            'currentNav' => 'reportProduct',
         ];
         return view('report.product', $data);
     }
@@ -516,6 +520,7 @@ class ReportController extends Controller
             'title' => 'POS TOKO | Laporan Barang',
             'product' => $product,
             'typeReport' => 'Bulanan',
+            'currentNav' => 'reportProduct',
         ];
         return view('report.productDetail', $data);
     }

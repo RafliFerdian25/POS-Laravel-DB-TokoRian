@@ -18,7 +18,13 @@ class CategoryController extends Controller
     {
         $title = 'POS TOKO | Kategori';
         $categories = Category::withCount('products')->get();
-        return view('category.index', compact('categories', 'title'));
+        $data = [
+            'categories' => $categories,
+            'title' => $title,
+            'currentNav' => 'category',
+        ];
+
+        return view('category.index', $data);
     }
 
     /**
@@ -29,7 +35,12 @@ class CategoryController extends Controller
     public function create()
     {
         $title = 'POS TOKO | Kategori';
-        return view('category.create', compact('title'));
+        $data = [
+            'title' => $title,
+            'currentNav' => 'category',
+        ];
+
+        return view('category.create', $data);
     }
 
     /**
@@ -67,9 +78,14 @@ class CategoryController extends Controller
     {
         // menyeleksi data product berdasarkan id yang dipilih
         $category = DB::table('categories')->find($id);
-        // dd($category);
         $title = 'POS TOKO | Kategori';
-        return view('category.update', compact('category', 'title'));
+        $data = [
+            'category' => $category,
+            'title' => $title,
+            'currentNav' => 'category',
+        ];
+
+        return view('category.update', $data);
     }
 
     /**

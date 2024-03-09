@@ -26,7 +26,8 @@ class ShoppingController extends Controller
 
         $data = [
             'title' => $title,
-            'categories' => $categories
+            'categories' => $categories,
+            'currentNav' => 'shopping',
         ];
 
         return view('purchase.shopping', $data);
