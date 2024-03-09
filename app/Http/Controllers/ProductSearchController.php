@@ -135,4 +135,35 @@ class ProductSearchController extends Controller
             ], 'Data gagal dihapus', 500);
         }
     }
+
+    public function downloadData()
+    {
+        try {
+            $response = Http::get(env('HOSTING_DOMAIN') . '/api/download-data/barang-dicari');
+
+            $data = $response->json();
+            if ($response->successful()) {
+                $productSearches = $data['data']['productSearches'];
+
+                // menghapus data lama
+                ProductSearch::truncate();
+
+                // menyimpan data baru
+                foreach ($productSearches as $productSearch) {
+                    ProductSearch::create([
+                        'product_id' => $productSearch['product_id'],
+                        'name' => $productSearch['name'],
+                    ]);
+                }
+
+                return ResponseFormatter::success(null, 'Data berhasil diambil');
+            } else {
+                throw new \Exception($data['data']['error'], $response->status());
+            }
+        } catch (\Exception $e) {
+            return ResponseFormatter::error([
+                'error' => $e->getMessage()
+            ], 'Data gagal diambil', $e->getCode() != 0 ? $e->getCode() : 500);
+        }
+    }
 }

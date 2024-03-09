@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Http\Controllers\ProductSearchController;
 use App\Http\Controllers\ShoppingController;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -45,6 +46,20 @@ class DownloadDataCommand extends Command
 
         $shoppingController = new ShoppingController();
         $response = $shoppingController->downloadData();
+
+        if ($response->original['meta']['status'] == 'success') {
+            $this->info('Response:');
+            $this->line($response->original['meta']['message']);
+        } else {
+            $this->error('Status: ' . $response->status());
+            $this->error('Pesan: ' . $response->original['meta']['message']);
+            $this->error('Error: ' . $response->original['data']['error']);
+        }
+
+        $this->info('Data Barang Dicari Mulai Di Download');
+
+        $productSearchController = new ProductSearchController();
+        $response = $productSearchController->downloadData();
 
         if ($response->original['meta']['status'] == 'success') {
             $this->info('Response:');

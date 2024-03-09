@@ -22,4 +22,19 @@ class DownloadDataController extends Controller
             ], "Terjadi Kesalahan saat upload data belanja");
         }
     }
+
+    public function productSearch()
+    {
+        try {
+            $productSearches = DB::table('t_barang_dicari')->get();
+
+            return ResponseFormatter::success([
+                'productSearches' => $productSearches
+            ], "Berhasil upload data barang dicari");
+        } catch (\Exception $e) {
+            return ResponseFormatter::error([
+                'error' => $e->getMessage()
+            ], "Terjadi Kesalahan saat upload data barang dicari");
+        }
+    }
 }

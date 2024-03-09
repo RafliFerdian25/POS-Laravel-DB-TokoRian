@@ -48,6 +48,7 @@ Route::controller(DownloadDataController::class)->group(function () {
     // Route::get('/download-data/purchase-detail', 'purchaseDetail');
     // Route::get('/download-data/receivable', 'receivable');
     // Route::get('/download-data/supplier', 'supplier');
+    Route::get('/download-data/barang-dicari', 'productSearch');
 });
 
 
