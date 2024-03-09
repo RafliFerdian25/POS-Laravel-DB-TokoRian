@@ -29,7 +29,6 @@ Route::controller(UploadDataController::class)->group(function () {
     Route::post('/upload-data/product', 'product');
     Route::post('/upload-data/search-product', 'searchProduct');
     Route::post('/upload-data/shopping', 'shopping');
-    Route::post('/upload-data/shopping/store', 'storeShopping');
     Route::post('/upload-data/sale', 'sale');
     Route::post('/upload-data/purchase', 'purchase');
     Route::post('/upload-data/purchase-detail', 'purchaseDetail');
@@ -54,6 +53,7 @@ Route::controller(DownloadDataController::class)->group(function () {
 // Belanja Barang
 Route::controller(ShoppingController::class)->group(function () {
     Route::post('/belanja', 'store')->name('wholesale.purchase.store');
+    Route::post('/belanja/upload-data', 'uploadData')->name('wholesale.purchase.upload-data');
     Route::put('/belanja/{shopping:id}', 'update')->name('wholesale.purchase.update');
     Route::delete('/belanja/{shopping:id}', 'destroy')->name('wholesale.purchase.destroy');
 });

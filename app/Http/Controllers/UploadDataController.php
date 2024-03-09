@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\ResponseFormatter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class UploadDataController extends Controller
 {
@@ -140,13 +141,11 @@ class UploadDataController extends Controller
     {
         try {
             $shopping = $request->shopping;
-            DB::table('t_belanja')->truncate();
 
             foreach ($shopping as $data) {
-                DB::table('t_belanja')->insert(
+                DB::table('t_belanja')->updateOrInsert(
+                    ['IdBarang' => $data['IdBarang'],],
                     [
-                        'id' => $data['id'],
-                        'IdBarang' => $data['IdBarang'],
                         'nmBarang' => $data['nmBarang'],
                         'satuan' => $data['satuan'],
                         'jumlah' => $data['jumlah'],

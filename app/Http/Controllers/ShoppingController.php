@@ -9,6 +9,7 @@ use App\Models\Shopping;
 use App\Models\Unit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 
 class ShoppingController extends Controller
@@ -190,6 +191,24 @@ class ShoppingController extends Controller
             return ResponseFormatter::error([
                 'error' => $e->getMessage()
             ], 'Data gagal dihapus', 500);
+        }
+    }
+
+    public function uploadData()
+    {
+        $shopping = DB::table('t_belanja')->get();
+
+        $response = Http::post(env('HOSTING_DOMAIN') . '/api/upload-data/shopping', [
+            'shopping' => $shopping
+        ]);
+
+        $data = $response->json();
+        if ($response->successful()) {
+            return ResponseFormatter::success(null, 'Data berhasil diupload');
+        } else {
+            return ResponseFormatter::error([
+                'error' => $data['data']['error']
+            ], 'Data gagal diupload', $response->status());
         }
     }
 }
