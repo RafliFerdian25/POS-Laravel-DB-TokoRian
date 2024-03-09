@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\ProductSearch;
 use App\Models\Toko;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 
@@ -75,6 +76,8 @@ class ProductSearchController extends Controller
                 $productName = $request->name;
             }
 
+            DB::beginTransaction();
+
             ProductSearch::create([
                 'product_id' => $productId,
                 'name' => $productName,
@@ -88,17 +91,19 @@ class ProductSearchController extends Controller
                 $data = $response->json();
 
                 if (!$response->successful()) {
-                    throw new \Exception(json_encode($data['data']['error']), $response->status());
+                    throw new \Exception(json_encode($data['data']['error'], JSON_PRETTY_PRINT), $response->status());
                 }
             }
 
+            DB::commit();
             return ResponseFormatter::success([
                 'product_id' => $productId,
                 'name' => $productName,
             ], 'Data berhasil ditambahkan');
         } catch (\Exception $e) {
+            DB::rollBack();
             return ResponseFormatter::error([
-                'message' => $e->getMessage(),
+                'error' => $e->getMessage(),
             ], 'Data gagal ditambahkan', 500);
         }
     }
