@@ -188,7 +188,6 @@ class ShoppingController extends Controller
             if (env('HOSTING_DOMAIN') != 'hosting') {
                 $response = Http::delete(env('HOSTING_DOMAIN') . '/api/belanja/' . $product->IdBarang);
                 $data = $response->json();
-                dd(json_encode($data));
 
                 if (!$response->successful()) {
                     throw new \Exception(json_encode($data['data']['error']), $response->status());
