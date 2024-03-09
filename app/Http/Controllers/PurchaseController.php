@@ -241,7 +241,8 @@ class PurchaseController extends Controller
             // menghapus data pada data belanja
             $shopping = Shopping::where('IdBarang', $request->product_id)->first();
             if ($shopping) {
-                $shopping->delete();
+                $shoppingController = new ShoppingController();
+                $shoppingController->destroy($product);
             }
 
             // cetak harga
