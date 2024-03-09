@@ -11,7 +11,7 @@ tambahkan kolom harga jual baru pada form (pembelian detail)
 ✅ tambahkan tombol "upload" untuk melakukan upload data belanja local ke hosting dengan updateOrInsert
 ✅ tambahkan tombol "download" untuk melakukan download data belanja hosting ke local dengan truncate insert
 ✅ tambahkan command artisan download data belanja (downloadDataCommand) - dengan melakukan truncate data belanja local kemudian insert data hosting ke local
-menghapus perintah pada command untuk upload data belanja
+✅ menghapus perintah pada command untuk upload data belanja
 menambahkan command artisan download data belanja dari hosting ke local
 
 

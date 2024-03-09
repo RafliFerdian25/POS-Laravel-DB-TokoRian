@@ -134,6 +134,24 @@ class UploadDataCommand extends Command
             $this->error('Error: ' . json_encode($data['data']['error'], JSON_PRETTY_PRINT));
         }
 
+        // // Belanja
+        $this->info('Data Belanja Mulai Di Upload');
+        $shopping = DB::table('t_belanja')->get();
+
+        $response = Http::post(env('HOSTING_DOMAIN') . '/api/upload-data/shopping', [
+            'shopping' => $shopping
+        ]);
+
+        $data = $response->json();
+        if ($response->successful()) {
+            $this->info('Response:');
+            $this->line(json_encode($data['meta']['message'], JSON_PRETTY_PRINT));
+        } else {
+            $this->error('Status: ' . $response->status());
+            $this->error('Pesan: ' . json_encode($data['meta']['message'], JSON_PRETTY_PRINT));
+            $this->error('Error: ' . json_encode($data['data']['error'], JSON_PRETTY_PRINT));
+        }
+
 
         // // Kasir
         $this->info('Data Kasir Mulai Di Upload');
