@@ -4,19 +4,8 @@
 setelah menambahkan barang pembelian, hapus data barang pada belanja baik local / hosting
 tambahkan kolom harga jual baru pada form (pembelian detail)
 
-// Belanja
-✅ menambahkan route api untuk tambah belanja (hosting)
-✅ ketika menambah belanja local, lakukan tambah belanja hosting dengan api (dilakukan pada ajax shopping)
-✅ ketika menambah belanja local pada barang habis, lakukan tambah belanja hosting dengan api (dilakukan pada ajax shopping)
-✅ tambahkan tombol "upload" untuk melakukan upload data belanja local ke hosting dengan updateOrInsert
-✅ tambahkan tombol "download" untuk melakukan download data belanja hosting ke local dengan truncate insert
-✅ tambahkan command artisan download data belanja (downloadDataCommand) - dengan melakukan truncate data belanja local kemudian insert data hosting ke local
-✅ menghapus perintah pada command untuk upload data belanja
-✅ delete belanja
-✅ update Belanja
-
 // TABEL BARANG PERNAH DICARI
-Tabel barang pernah dicari (id, product_id, timestamps)
+Tabel barang pernah dicari (id, product_id, name, timestamps)
 index (Card: jumlah barang dicari. Tabel: transaksi barang dicari, daftar barang dicari dengan jumlah) (rentang tanggal)
 create barang dicari
 delete barang dicari
@@ -43,8 +32,8 @@ Edit Kategori
 Delete Kategori
 
 // Barang
-Total barang aktif (stok > 0)
-Jumlah Stok barang 
+Card Total barang aktif (stok > 0)
+Card Jumlah Stok barang 
 
 // Barang habis
 filter barang (nama, kategori, stok) langsung berubah ketika di input
@@ -94,6 +83,15 @@ delete data
 ✅ store belanja barang
 ✅ update belanja barang
 ✅ delete belanja barang
+✅ menambahkan route api untuk tambah belanja (hosting)
+✅ ketika menambah belanja local, lakukan tambah belanja hosting dengan api (dilakukan pada ajax shopping)
+✅ ketika menambah belanja local pada barang habis, lakukan tambah belanja hosting dengan api (dilakukan pada ajax shopping)
+✅ tambahkan tombol "upload" untuk melakukan upload data belanja local ke hosting dengan updateOrInsert
+✅ tambahkan tombol "download" untuk melakukan download data belanja hosting ke local dengan truncate insert
+✅ tambahkan command artisan download data belanja (downloadDataCommand) - dengan melakukan truncate data belanja local kemudian insert data hosting ke local
+✅ menghapus perintah pada command untuk upload data belanja
+✅ delete belanja
+✅ update Belanja
 
 // CRUD tabel barang habis
 ✅ read barang habis

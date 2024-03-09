@@ -5,11 +5,14 @@ use App\Http\Controllers\MerkController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProductSearchController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\ShoppingController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\SaleDetailController;
+use App\Models\Product;
+use App\Models\ProductSearch;
 
 /*
 |--------------------------------------------------------------------------
@@ -140,4 +143,12 @@ Route::controller(SupplierController::class)->group(function () {
     Route::get('/supplier/{supplier:id}/edit', 'edit')->name('supplier.edit');
     Route::put('/supplier/{supplier:id}', 'update')->name('supplier.update');
     Route::delete('/supplier/{supplier:id}', 'destroy')->name('supplier.destroy');
+});
+
+// Barang Dicari
+Route::controller(ProductSearchController::class)->group(function () {
+    Route::get('/barang-dicari', 'index')->name('product.search.index');
+    Route::get('/barang-dicari/data', 'indexData')->name('product.search.index.data');
+    Route::post('/barang-dicari', 'store')->name('product.search.store');
+    Route::delete('/barang-dicari/{product:idBarang}', 'destroy')->name('product.search.destroy');
 });
