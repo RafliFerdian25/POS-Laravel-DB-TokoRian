@@ -230,8 +230,9 @@
                 }
             }).on('select2:select', function(e) {
                 var data = e.params.data.data;
+                console.log(data);
 
-                $('#exp_date').val(moment(data.expDate, 'YYYY-MM-DD').format('DD-MM-YYYY'));
+                $('#exp_date').val(moment(data.expDate, 'YYYY-MM-DD').format('YYYY-MM-DD'));
                 $('#cost_of_good_sold').val(data.hargaPokok);
             })
 

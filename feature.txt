@@ -6,7 +6,8 @@ tambahkan kolom harga jual baru pada form (pembelian detail)
 
 // Belanja
 ✅ menambahkan route api untuk tambah belanja (hosting)
-ketika menambah belanja local, lakukan tambah belanja hosting dengan api (dilakukan pada ajax shopping)
+✅ ketika menambah belanja local, lakukan tambah belanja hosting dengan api (dilakukan pada ajax shopping)
+ketika menambah belanja local pada barang habis, lakukan tambah belanja hosting dengan api (dilakukan pada ajax shopping)
 tambahkan tombol "upload" untuk melakukan upload data belanja local ke hosting dengan updateOrInsert
 tambahkan command artisan download data belanja (downloadDataCommand) - dengan melakukan truncate data belanja local kemudian insert data hosting ke local
 menghapus perintah pada command untuk upload data belanja
