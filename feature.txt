@@ -13,7 +13,7 @@ tambahkan kolom harga jual baru pada form (pembelian detail)
 ✅ tambahkan command artisan download data belanja (downloadDataCommand) - dengan melakukan truncate data belanja local kemudian insert data hosting ke local
 ✅ menghapus perintah pada command untuk upload data belanja
 ✅ delete belanja
-update Belanja
+✅ update Belanja
 
 // TABEL BARANG PERNAH DICARI
 Tabel barang pernah dicari (id, product_id, timestamps)

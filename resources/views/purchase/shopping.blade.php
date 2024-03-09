@@ -124,7 +124,7 @@
                             <button id="buttonUploadData" onclick="uploadData()" class="btn btn-primary rounded__10">Upload
                                 Data</button>
                             <button id="buttonDownloadData" onclick="downloadData()"
-                                class="btn btn-warning rounded__10">Download Data</button>
+                                class="btn btn-warning rounded__10">Sinkron Data</button>
                         </div>
                     </div>
                 @endif
