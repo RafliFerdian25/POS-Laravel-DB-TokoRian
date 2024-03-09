@@ -118,12 +118,13 @@ class ShoppingController extends Controller
      * @param  \App\Models\Shopping  $shopping
      * @return \Illuminate\Http\Response
      */
-    public function edit(Shopping $shopping)
+    public function edit(Product $product)
     {
         $units = Unit::orderBy('satuan')->get();
+        $shopping = Shopping::with('product:IdBarang,stok')->where('IdBarang', $product->IdBarang)->first();
 
         return ResponseFormatter::success([
-            'shoppingProduct' => $shopping->load('product:IdBarang,stok'),
+            'shoppingProduct' => $shopping,
             'units' => $units
         ], 'Data berhasil diambil');
     }

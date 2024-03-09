@@ -96,7 +96,7 @@ Route::controller(ShoppingController::class)->group(function () {
     Route::get('/belanja', 'index')->name('wholesale.purchase.index');
     Route::get('/belanja/data', 'indexData')->name('wholesale.purchase.index.data');
     Route::post('/belanja', 'store')->name('wholesale.purchase.store');
-    Route::get('/belanja/{shopping:id}/edit', 'edit')->name('wholesale.purchase.edit');
+    Route::get('/belanja/{product:idBarang}/edit', 'edit')->name('wholesale.purchase.edit');
     Route::put('/belanja/{product:idBarang}', 'update')->name('wholesale.purchase.update');
     Route::delete('/belanja/{product:idBarang}', 'destroy')->name('wholesale.purchase.destroy');
     Route::post('/belanja/upload-data', 'uploadData')->name('wholesale.purchase.upload-data');

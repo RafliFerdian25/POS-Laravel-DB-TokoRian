@@ -611,7 +611,7 @@
                             );
                             $('#updateButton').prop('disabled', true);
                             $.ajax({
-                                url: `{{ url('/belanja/${response.data.shoppingProduct.id}') }}`,
+                                url: `{{ url('/belanja/${response.data.shoppingProduct.IdBarang}') }}`,
                                 type: "POST",
                                 data: {
                                     _method: 'PUT',
