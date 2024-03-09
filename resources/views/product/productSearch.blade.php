@@ -84,7 +84,8 @@
                                 <th>No</th>
                                 <th>Barcode</th>
                                 <th>Nama Barang</th>
-                                <th>Tanggal Dicari</th>
+                                <th>Jumlah Dicari</th>
+                                <th>Tanggal Terakhir Dicari</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -216,8 +217,8 @@
                             var rowData = [
                                 index + 1,
                                 product.product_id,
-                                product.product_id,
-                                // product.name,
+                                product.name,
+                                product.total,
                                 moment(product.created_at).format('DD-MM-YYYY'),
                                 `<button class="btn btn-sm btn-danger" onclick="deleteProduct('${product.product_id}')"><i class="bi bi-trash"></i></button>`
                             ];

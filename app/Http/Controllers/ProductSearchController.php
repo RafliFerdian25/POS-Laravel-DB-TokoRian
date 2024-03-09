@@ -34,10 +34,9 @@ class ProductSearchController extends Controller
 
     public function indexData(Request $request)
     {
-        $search = $request->search;
-        // $products = ProductSearch::where('name', 'like', '%' . $search . '%')
-        //     ->get();
-        $products = ProductSearch::get();
+        $products = ProductSearch::select('product_id', 'name', DB::raw('COUNT(product_id) as total'))
+            ->groupBy('product_id', 'name')
+            ->get();
 
         return ResponseFormatter::success([
             'products' => $products,
@@ -53,15 +52,15 @@ class ProductSearchController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'product_id' => 'requiredIf:name,null|exists:t_barang,IdBarang',
-            'name' => 'requiredIf:product_id,null',
+            'product_id' => 'nullable|requiredIf:name,null|exists:t_barang,IdBarang',
+            'name' => 'nullable|requiredIf:product_id,null',
         ];
 
         $validate = Validator::make($request->all(), $rules);
 
         if ($validate->fails()) {
             return ResponseFormatter::error([
-                'message' => $validate->errors()->first(),
+                'error' => $validate->errors()->first(),
             ], 'Data gagal divalidasi', 422);
         }
 
