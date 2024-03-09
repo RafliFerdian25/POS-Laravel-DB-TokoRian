@@ -52,7 +52,7 @@ Route::controller(DownloadDataController::class)->group(function () {
 
 // Belanja Barang
 Route::controller(ShoppingController::class)->group(function () {
-    Route::post('/belanja', 'store')->name('wholesale.purchase.store');
-    Route::put('/belanja/{shopping:id}', 'update')->name('wholesale.purchase.update');
-    Route::delete('/belanja/{shopping:id}', 'destroy')->name('wholesale.purchase.destroy');
+    Route::post('/belanja', 'store')->name('api.wholesale.purchase.store');
+    Route::put('/belanja/{shopping:id}', 'update')->name('api.wholesale.purchase.update');
+    Route::delete('/belanja/{shopping:id}', 'destroy')->name('api.wholesale.purchase.destroy');
 });

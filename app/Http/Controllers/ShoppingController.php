@@ -184,6 +184,15 @@ class ShoppingController extends Controller
         try {
             DB::beginTransaction();
             $shopping->delete();
+
+            if (env('HOSTING_DOMAIN') != 'hosting') {
+                $response = Http::delete(env('HOSTING_DOMAIN') . '/api/belanja/' . $shopping->IdBarang);
+                $data = $response->json();
+
+                if (!$response->successful()) {
+                    throw new \Exception($data['data']['error'], $response->status());
+                }
+            }
             DB::commit();
             return ResponseFormatter::success(null, 'Data berhasil dihapus');
         } catch (\Exception $e) {
