@@ -136,7 +136,7 @@ class ShoppingController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Shopping $shopping)
+    public function update(Request $request, Product $product)
     {
         $rules = [
             'jumlah' => 'required|numeric|min:1',
@@ -154,13 +154,27 @@ class ShoppingController extends Controller
 
         try {
             DB::beginTransaction();
+            $shopping = Shopping::where('IdBarang', $product->IdBarang)->first();
             $shopping->update([
                 'jumlah' => $request->jumlah,
                 'hargaPokok' => $request->hargaPokok,
                 'TOTAL' => $request->jumlah * $request->hargaPokok
             ]);
 
-            Product::where('IdBarang', $shopping->IdBarang)->update([
+            if (env('HOSTING_DOMAIN') != 'hosting') {
+                $response = Http::put(env('HOSTING_DOMAIN') . '/api/belanja/' . $product->IdBarang, [
+                    'jumlah' => $request->jumlah,
+                    'hargaPokok' => $request->hargaPokok,
+                    'stok' => $request->stok
+                ]);
+                $data = $response->json();
+
+                if (!$response->successful()) {
+                    throw new \Exception(json_encode($data['data']['error']), $response->status());
+                }
+            }
+
+            $product->update([
                 'stok' => $request->stok
             ]);
             DB::commit();
