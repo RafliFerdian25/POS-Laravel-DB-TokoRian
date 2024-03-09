@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\ProductSearch;
 use App\Models\Toko;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 
 class ProductSearchController extends Controller
@@ -69,15 +70,26 @@ class ProductSearchController extends Controller
                 $productId = $product->IdBarang;
                 $productName = $product->nmBarang;
             } else if ($request->name) {
-                $productId = Product::inRandomOrder()->first()->IdBarang;
-                // $productId = null;
+                $productId = null;
                 $productName = $request->name;
             }
 
             ProductSearch::create([
                 'product_id' => $productId,
-                // 'name' => $productName,
+                'name' => $productName,
             ]);
+
+            if (env('HOSTING_DOMAIN') != 'hosting') {
+                $response = Http::post(env('HOSTING_DOMAIN') . '/api/barang-dicari', [
+                    'product_id' => $productId,
+                    'name' => $productName,
+                ]);
+                $data = $response->json();
+
+                if (!$response->successful()) {
+                    throw new \Exception(json_encode($data['data']['error']), $response->status());
+                }
+            }
 
             return ResponseFormatter::success([
                 'product_id' => $productId,
@@ -103,6 +115,15 @@ class ProductSearchController extends Controller
                 ->first();
 
             $productSearch->delete();
+
+            if (env('HOSTING_DOMAIN') != 'hosting') {
+                $response = Http::delete(env('HOSTING_DOMAIN') . '/api/barang-dicari/' . $product->IdBarang);
+                $data = $response->json();
+
+                if (!$response->successful()) {
+                    throw new \Exception(json_encode($data['data']['error']), $response->status());
+                }
+            }
 
             return ResponseFormatter::success(null, 'Data berhasil dihapus');
         } catch (\Exception $e) {

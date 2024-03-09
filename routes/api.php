@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DownloadDataController;
+use App\Http\Controllers\ProductSearchController;
 use App\Http\Controllers\ShoppingController;
 use App\Http\Controllers\UploadData;
 use App\Http\Controllers\UploadDataController;
@@ -55,4 +56,10 @@ Route::controller(ShoppingController::class)->group(function () {
     Route::post('/belanja', 'store')->name('api.wholesale.purchase.store');
     Route::put('/belanja/{product:idBarang}', 'update')->name('api.wholesale.purchase.update');
     Route::delete('/belanja/{product:idBarang}', 'destroy')->name('api.wholesale.purchase.destroy');
+});
+
+// Barang Dicari
+Route::controller(ProductSearchController::class)->group(function () {
+    Route::post('/barang-dicari', 'store')->name('api.product.search.store');
+    Route::delete('/barang-dicari/{product:idBarang}', 'destroy')->name('api.product.search.destroy');
 });
