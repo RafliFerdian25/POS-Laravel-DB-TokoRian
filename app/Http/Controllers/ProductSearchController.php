@@ -163,7 +163,7 @@ class ProductSearchController extends Controller
         } catch (\Exception $e) {
             return ResponseFormatter::error([
                 'error' => $e->getMessage()
-            ], 'Data gagal diambil', $e->getCode() != 0 ? $e->getCode() : 500);
+            ], 'Data gagal diambil', 500);
         }
     }
 }
