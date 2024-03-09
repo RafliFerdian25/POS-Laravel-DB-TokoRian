@@ -99,6 +99,8 @@ Route::controller(ShoppingController::class)->group(function () {
     Route::get('/belanja/{shopping:id}/edit', 'edit')->name('wholesale.purchase.edit');
     Route::put('/belanja/{shopping:id}', 'update')->name('wholesale.purchase.update');
     Route::delete('/belanja/{shopping:id}', 'destroy')->name('wholesale.purchase.destroy');
+    Route::post('/belanja/upload-data', 'uploadData')->name('wholesale.purchase.upload-data');
+    Route::post('/belanja/download-data', 'downloadData')->name('wholesale.purchase.download-data');
 });
 
 // Pembelian

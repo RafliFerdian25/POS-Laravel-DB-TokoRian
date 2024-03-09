@@ -211,4 +211,39 @@ class ShoppingController extends Controller
             ], 'Data gagal diupload', $response->status());
         }
     }
+
+    public function downloadData()
+    {
+        try {
+            $response = Http::get(env('HOSTING_DOMAIN') . '/api/download-data/shopping');
+
+            $data = $response->json();
+            if ($response->successful()) {
+                $shoppings = $data['data']['shoppings'];
+
+                // menghapus data lama
+                Shopping::truncate();
+
+                // menyimpan data baru
+                foreach ($shoppings as $shopping) {
+                    Shopping::create([
+                        'IdBarang' => $shopping['IdBarang'],
+                        'nmBarang' => $shopping['nmBarang'],
+                        'satuan' => $shopping['satuan'],
+                        'hargaPokok' => $shopping['hargaPokok'],
+                        'jumlah' => $shopping['jumlah'],
+                        'TOTAL' => $shopping['TOTAL']
+                    ]);
+                }
+
+                return ResponseFormatter::success(null, 'Data berhasil diambil');
+            } else {
+                throw new \Exception($data['data']['error'], $response->status());
+            }
+        } catch (\Exception $e) {
+            return ResponseFormatter::error([
+                'error' => $e->getMessage()
+            ], 'Data gagal diambil', $e->getCode() != 0 ? $e->getCode() : 500);
+        }
+    }
 }
