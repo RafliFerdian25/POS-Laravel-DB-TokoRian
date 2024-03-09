@@ -582,6 +582,17 @@
             }
         }
 
+        function showErrorMessages(error, message) {
+            if (error.responseJSON) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: `${message}. ${error.responseJSON.meta.message} Error: ${error.responseJSON.data.error}`,
+                    showConfirmButton: true,
+                });
+            }
+        }
+
         const addShopping = (IdBarang) => {
             Swal.fire({
                 title: "Tambah Pembelian Grosir",
@@ -602,6 +613,9 @@
                 customClass: {
                     confirmButton: "btn btn-primary",
                     cancelButton: "btn btn-danger"
+                },
+                customId: {
+                    confirmButton: "submitAddShopping"
                 },
                 preConfirm: () => {
                     const qty = Swal.getPopup().querySelector('#qty').value;
@@ -625,6 +639,22 @@
                             qty: result.value.qty,
                         },
                         success: function(response) {
+                            @if (env('HOSTING_DOMAIN') !== 'hosting')
+                                var requestHosting = $.ajax({
+                                    type: "POST",
+                                    url: "{{ 'https://' . env('HOSTING_DOMAIN') . '/api/belanja' }}",
+                                    data: {
+                                        IdBarang: IdBarang,
+                                        qty: result.value.qty,
+                                    },
+                                });
+
+                                requestHosting.catch(function(error) {
+                                    showErrorMessages(error,
+                                        'Tambah Produk Online Gagal');
+                                });
+                            @endif
+
                             Swal.fire({
                                     title: "Berhasil!",
                                     text: response.meta.message,

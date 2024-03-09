@@ -31,7 +31,7 @@
                     <div class="content">
                         <div class="widget-content-left mb-2">
                             <i class="pe-7s-cash col-2" style="font-size: 30px;"></i>
-                            <div class="widget-heading col-10 widget__title">Total Barang Cetak Harga</div>
+                            <div class="widget-heading col-10 widget__title">Total Barang Belanja</div>
                         </div>
                         <div class="widget-content-right">
                             <div class="widget-numbers mb-2" id="countProduct">-</div>
