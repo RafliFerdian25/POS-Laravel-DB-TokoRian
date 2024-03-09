@@ -415,7 +415,7 @@
                                 formatCurrency(product.hargaPokok),
                                 product.jumlah,
                                 formatCurrency(product.total),
-                                `<button class="btn btn-danger rounded-circle px-2" onclick="deleteShoppingProduct('${product.id}','${product.nmBarang}')"><i class="bi bi-trash"></i></button>
+                                `<button class="btn btn-danger rounded-circle px-2" onclick="deleteShoppingProduct('${product.IdBarang}','${product.nmBarang}')"><i class="bi bi-trash"></i></button>
                                     <button class="btn btn-primary rounded-circle px-2" onclick="editShoppingProduct('${product.id}')"><i class="bi bi-pencil"></i></button>`
                             ]).draw(false).node();
                         });

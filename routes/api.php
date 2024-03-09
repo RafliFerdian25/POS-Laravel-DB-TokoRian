@@ -54,5 +54,5 @@ Route::controller(DownloadDataController::class)->group(function () {
 Route::controller(ShoppingController::class)->group(function () {
     Route::post('/belanja', 'store')->name('api.wholesale.purchase.store');
     Route::put('/belanja/{shopping:id}', 'update')->name('api.wholesale.purchase.update');
-    Route::delete('/belanja/{shopping:id}', 'destroy')->name('api.wholesale.purchase.destroy');
+    Route::delete('/belanja/{product:idBarang}', 'destroy')->name('api.wholesale.purchase.destroy');
 });
