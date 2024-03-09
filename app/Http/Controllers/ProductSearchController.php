@@ -34,7 +34,7 @@ class ProductSearchController extends Controller
 
     public function indexData(Request $request)
     {
-        $products = ProductSearch::select('product_id', 'name', DB::raw('COUNT(product_id) as total'))
+        $products = ProductSearch::select('product_id', 'name', DB::raw('COUNT(name) as total'))
             ->groupBy('product_id', 'name')
             ->get();
 
@@ -113,16 +113,14 @@ class ProductSearchController extends Controller
      * @param  \App\Models\ProductSearch  $productSearch
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Product $product)
+    public function destroy($name)
     {
         try {
-            $productSearch = ProductSearch::where('product_id', $product->IdBarang)
-                ->first();
-
-            $productSearch->delete();
+            $productSearch = ProductSearch::where('name', $name)
+                ->delete();
 
             if (env('HOSTING_DOMAIN') != 'hosting') {
-                $response = Http::delete(env('HOSTING_DOMAIN') . '/api/barang-dicari/' . $product->IdBarang);
+                $response = Http::delete(env('HOSTING_DOMAIN') . '/api/barang-dicari/' . $name);
                 $data = $response->json();
 
                 if (!$response->successful()) {

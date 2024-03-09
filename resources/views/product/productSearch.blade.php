@@ -196,11 +196,16 @@
                     },
                     cache: true, // Cache the results for better performance
                 }
-            })
+            }).on('select2:select', function(e) {
+                $('#nameProduct').val('');
+            });
 
             getProduct();
         });
-        var printPriceProduct = [];
+
+        $('#nameProduct').on('input', function() {
+            $('#product_id').val(null).trigger('change');
+        });
 
         const getProduct = () => {
             $('#tableListProduct').DataTable().clear().draw();
@@ -220,7 +225,7 @@
                                 product.name,
                                 product.total,
                                 moment(product.created_at).format('DD-MM-YYYY'),
-                                `<button class="btn btn-sm btn-danger" onclick="deleteProduct('${product.product_id}')"><i class="bi bi-trash"></i></button>`
+                                `<button class="btn btn-sm btn-danger" onclick="deleteProduct('${product.name}')"><i class="bi bi-trash"></i></button>`
                             ];
                             var rowNode = $('#tableListProduct').DataTable().row.add(rowData)
                                 .draw(
@@ -320,7 +325,7 @@
             }
         })
 
-        const deleteProduct = (id) => {
+        const deleteProduct = (name) => {
             Swal.fire({
                 title: 'Hapus Produk',
                 text: `Apakah Anda yakin ingin menghapus produk?`,
@@ -344,7 +349,7 @@
 
                     $.ajax({
                         type: "DELETE",
-                        url: `{{ url('barang-dicari/${id}') }}`,
+                        url: `{{ url('barang-dicari/${name}') }}`,
                         data: {
                             _token: '{{ csrf_token() }}',
                         },

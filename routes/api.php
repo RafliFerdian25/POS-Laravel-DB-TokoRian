@@ -61,5 +61,5 @@ Route::controller(ShoppingController::class)->group(function () {
 // Barang Dicari
 Route::controller(ProductSearchController::class)->group(function () {
     Route::post('/barang-dicari', 'store')->name('api.product.search.store');
-    Route::delete('/barang-dicari/{product:idBarang}', 'destroy')->name('api.product.search.destroy');
+    Route::delete('/barang-dicari/{name}', 'destroy')->name('api.product.search.destroy');
 });

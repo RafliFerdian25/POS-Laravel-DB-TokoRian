@@ -150,5 +150,5 @@ Route::controller(ProductSearchController::class)->group(function () {
     Route::get('/barang-dicari', 'index')->name('product.search.index');
     Route::get('/barang-dicari/data', 'indexData')->name('product.search.index.data');
     Route::post('/barang-dicari', 'store')->name('product.search.store');
-    Route::delete('/barang-dicari/{product:idBarang}', 'destroy')->name('product.search.destroy');
+    Route::delete('/barang-dicari/{name}', 'destroy')->name('product.search.destroy');
 });
