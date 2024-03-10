@@ -130,7 +130,7 @@
             <div class="main-card mb-3 card">
                 <div class="card-body">
                     <h5 class="card-title text-center">Riwayat Penjualan</h5>
-                    <table class="mb-0 table" id="barang_terjual">
+                    <table class="display nowrap" style="width:100%" id="barang_terjual">
                         <thead>
                             <tr>
                                 <th>Tanggal</th>
