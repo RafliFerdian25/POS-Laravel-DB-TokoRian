@@ -29,7 +29,7 @@
                                     </div>
                                 </div>
                             </form>
-                            <table class="mb-0 table  table-stiped table-bordered  table-penjualan">
+                            <table class="display nowrap table-stiped table-bordered  table-penjualan" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th width="5%">No</th>

@@ -163,7 +163,7 @@
                         Jenis Terlaris
                     </div>
                     <div class="table-responsive">
-                        <table class="align-middle mb-0 table table-borderless table-striped table-hover"
+                        <table class="align-middle display nowraptable-borderless table-striped table-hover"
                             id="tableBestSellingCategories">
                             <thead>
                                 <tr>
@@ -192,7 +192,7 @@
                         </div>
                     </div>
                     <div class="table-responsive">
-                        <table class="align-middle mb-0 table table-borderless table-striped table-hover"
+                        <table class="align-middle display nowraptable-borderless table-striped table-hover"
                             id="tableBestSellingProducts">
                             <thead>
                                 <tr>
@@ -278,7 +278,7 @@
             <div class="main-card mb-3 card">
                 <div class="card-body">
                     <h5 class="card-title text-center">Riwayat Penjualan</h5>
-                    <table class="mb-0 table" id="transactionByNoTransactions">
+                    <table class="display nowrap" style="width:100%" id="transactionByNoTransactions">
                         <thead>
                             <tr>
                                 <th>No. Transaksi</th>

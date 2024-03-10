@@ -156,7 +156,7 @@ const initializeDataTable = (tableId, config = {}) => {
         $(`#${tableId}`).DataTable(configScroll);
     } else {
         // Initialize DataTable with scrollX
-        $("#" + tableId).DataTable(config);
+        $(`#${tableId}`).DataTable(config);
     }
 }
 

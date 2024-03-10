@@ -28,7 +28,7 @@
                     <div class="main-card mb-3 card">
                         <div class="card-body">
                             <h5 class="card-title text-center font-size-xlg">Laporan</h5>
-                            <table class="mb-0 table table__laporan" id="table__laporan">
+                            <table class="display nowrap table__laporan" style="width:100%" id="table__laporan">
                                 <thead>
                                     <tr>
                                         <th>ID Penjualan</th>

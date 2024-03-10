@@ -58,7 +58,7 @@
                     <div class="main-card mb-3 card">
                         <div class="card-body">
                             <h5 class="card-title text-center font-size-xlg">Kategori</h5>
-                            <table class="mb-0 table" id="tableCategory">
+                            <table class="display nowrap" style="width:100%" id="tableCategory">
                                 <thead>
                                     <tr>
                                         <th>ID</th>

@@ -143,8 +143,8 @@
                         </div>
                     </div>
                     <div class="table-responsive">
-                        <table class="align-middle mb-0 table table-borderless table-striped table-hover"
-                            id="tableBestSellingProducts">
+                        <table class="align-middle display nowrap table-borderless table-striped table-hover"
+                            style="width:100%" id="tableBestSellingProducts">
                             <thead>
                                 <tr>
                                     <th class="text-center">#</th>

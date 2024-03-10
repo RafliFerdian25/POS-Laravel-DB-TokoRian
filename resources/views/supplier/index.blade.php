@@ -33,7 +33,7 @@
                     <div class="main-card mb-3 card">
                         <div class="card-body">
                             <h5 class="card-title text-center font-size-xlg">Supplier</h5>
-                            <table class="mb-0 table table__supplier" id="supplier">
+                            <table class="display nowrap table__supplier" style="width:100%" id="supplier">
                                 <thead>
                                     <tr>
                                         <th>ID</th>
