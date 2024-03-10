@@ -48,7 +48,7 @@ class ProductSearchController extends Controller
             $daterange = explode(' - ', $request->daterange);
             $date = Carbon::parse($daterange[1]);
             $startDate = Carbon::parse($daterange[0]);
-            $endDate = Carbon::parse($daterange[1]);
+            $endDate = Carbon::parse($daterange[1])->addDay();
             $typeReport = "Harian";
         } elseif ($request->month != null) {
             $date = Carbon::parse($request->month);
