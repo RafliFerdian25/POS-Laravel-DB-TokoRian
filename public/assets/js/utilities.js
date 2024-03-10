@@ -146,17 +146,17 @@ const initDateRange = (typeReport, callbackFunction) => {
 
 // Function to initialize DataTable based on screen size
 const initializeDataTable = (tableId, config = {}) => {
-    config = { ...config, scrollX: true };
+    configScroll = { ...config, scrollX: true };
     // Get the screen width
     var screenWidth = $(window).width();
 
     // Check if the screen width is below 992 pixels
     if (screenWidth < 992) {
         // Initialize DataTable without scrollX
-        $(`#${tableId}`).DataTable(config);
+        $(`#${tableId}`).DataTable(configScroll);
     } else {
         // Initialize DataTable with scrollX
-        $("#" + tableId).DataTable();
+        $("#" + tableId).DataTable(config);
     }
 }
 

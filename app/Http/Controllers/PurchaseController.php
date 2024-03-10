@@ -162,14 +162,15 @@ class PurchaseController extends Controller
     public function detailData(Purchase $purchase)
     {
         $purchaseDetails = PurchaseDetail::with('product')->where('purchase_id', $purchase->id)->get();
-        $countProduct = PurchaseDetail::where('purchase_id', $purchase->id)->count('quantity');
-        $sumAmountPurchase = PurchaseDetail::where('purchase_id', $purchase->id)->sum('sub_amount');
+        $reportProduct = PurchaseDetail::selectRaw('count(product_id) as countProduct, sum(sub_amount) as sumAmountPurchase')
+            ->where('purchase_id', $purchase->id)
+            ->first();
 
         return ResponseFormatter::success(
             [
                 'purchaseDetails' => $purchaseDetails,
-                'countProduct' => $countProduct,
-                'sumAmountPurchase' => $sumAmountPurchase,
+                'countProduct' => $reportProduct->countProduct,
+                'sumAmountPurchase' => $reportProduct->sumAmountPurchase,
             ],
             'Data detail pembelian berhasil diambil'
         );
@@ -276,8 +277,12 @@ class PurchaseController extends Controller
 
     public function editDetail(PurchaseDetail $purchaseDetail)
     {
+        $product = Product::find($purchaseDetail->product_id, ['IdBarang', 'hargaJual']);
         return ResponseFormatter::success(
-            ['purchaseDetail' => $purchaseDetail],
+            [
+                'purchaseDetail' => $purchaseDetail,
+                'product' => $product,
+            ],
             'Data detail pembelian berhasil diambil'
         );
     }
@@ -287,6 +292,7 @@ class PurchaseController extends Controller
         $rules = [
             'costOfGoodSold' => 'required|numeric',
             'qty' => 'required|numeric',
+            'sellingPrice' => 'required|numeric',
         ];
 
         $validated = Validator::make($request->all(), $rules);
@@ -309,6 +315,7 @@ class PurchaseController extends Controller
             $product->expDate = $purchaseDetail->exp_date_old;
             $product->hargaPokok = $request->costOfGoodSold;
             $product->stok -= $purchaseDetail->quantity;
+            $product->hargaJual = $request->sellingPrice;
             if ($product->stok <= 0) {
                 $product->stok = 0;
             }

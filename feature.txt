@@ -1,11 +1,7 @@
 ## BACKLOG ##
 
-// Pembelian
-setelah menambahkan barang pembelian, hapus data barang pada belanja baik local / hosting
-tambahkan kolom harga jual baru pada form (pembelian detail)
-
 // TABEL BARANG PERNAH DICARI
-Tabel barang pernah dicari (id, product_id, name, timestamps)
+✅ Tabel barang pernah dicari (id, product_id, name, timestamps)
 index (Card: jumlah barang dicari. Tabel: transaksi barang dicari, daftar barang dicari dengan jumlah) (rentang tanggal)
 create barang dicari
 delete barang dicari
@@ -145,6 +141,8 @@ delete data
 ✅ perbaiki card jumlah pembelian barang (pembelian detail)
 ✅ tambahkan card total pembelian barang (Rp) (pembelian detail)
 ✅ ketika berhasil menambahkan barang, form tanggal kadaluarsa, dan harga pokok di input data sesuai data barang yang ada 
+✅ setelah menambahkan barang pembelian, hapus data barang pada belanja baik local / hosting
+✅ tambahkan kolom harga jual baru pada form edit barang(pembelian detail)
 
 // View Laporan Barang
 ✅ search barang

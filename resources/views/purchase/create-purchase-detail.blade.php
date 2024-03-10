@@ -105,7 +105,7 @@
             <div class="main-card mb-3 card">
                 <div class="card-body">
                     <h5 class="card-title text-center">Daftar Barang</h5>
-                    <table class="display nowrap" style="width:100%" id="tableListProduct">
+                    <table class="display" style="width:100%" id="tableListProduct">
                         <thead>
                             <tr>
                                 <th>No</th>
@@ -115,6 +115,7 @@
                                 <th>Tanggal Kadaluarsa Baru</th>
                                 <th>Harga Pokok Lama</th>
                                 <th>Harga Pokok Baru</th>
+                                <th>Harga Jual</th>
                                 <th>Total Barang</th>
                                 <th>Total Pembelian</th>
                                 <th>Aksi</th>
@@ -169,7 +170,7 @@
             $('#tableListProduct').DataTable({
                 "scrollX": true,
                 "columnDefs": [{
-                    "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+                    "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
                     "className": "text-center"
                 }],
 
@@ -242,7 +243,7 @@
 
         const getProduct = () => {
             $('#tableListProduct').DataTable().clear().draw();
-            $('#tableListProductBody').html(tableLoader(8, `{{ asset('assets/svg/Ellipsis-2s-48px.svg') }}`));
+            $('#tableListProductBody').html(tableLoader(11, `{{ asset('assets/svg/Ellipsis-2s-48px.svg') }}`));
 
             $.ajax({
                 type: "GET",
@@ -267,6 +268,7 @@
                                     .exp_date).format('DD-MM-YYYY') : '-',
                                 purchaseDetail.cost_of_good_sold_old,
                                 purchaseDetail.cost_of_good_sold,
+                                purchaseDetail.product.hargaJual,
                                 purchaseDetail.quantity,
                                 purchaseDetail.sub_amount,
                                 `<button class="btn btn-sm btn-warning" onclick="showEdit('${purchaseDetail.id}')">Edit</button>
@@ -281,7 +283,7 @@
                             // $(rowNode).find('td').eq(4).addClass('text-center text-nowrap');
                         });
                     } else {
-                        $('#tableListProductBody').html(tableEmpty(8,
+                        $('#tableListProductBody').html(tableEmpty(11,
                             'barang'));
                     }
                 }
@@ -347,6 +349,14 @@
                                             id="expDate" name="expDate">
                                     </div>
                                 </div>
+                                <div class="row mb-3">
+                                    <label for="sellingPrice" class="col-sm-2 col-form-label">Harga Jual</label>
+                                    <div class="col-sm-10">
+                                        <input required value="${response.data.product.hargaJual}" type="number"
+                                            class="form-control rounded__10 "
+                                            min="0" id="sellingPrice" name="sellingPrice">
+                                    </div>
+                                </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
@@ -371,6 +381,11 @@
                             expDate: {
                                 date: true,
                             },
+                            sellingPrice: {
+                                required: true,
+                                number: true,
+                                min: 0
+                            }
                         },
                         messages: {
                             costOfGoodSold: {
@@ -385,6 +400,11 @@
                             },
                             expDate: {
                                 date: "Tanggal kadaluarsa tidak valid",
+                            },
+                            sellingPrice: {
+                                required: "Harga jual tidak boleh kosong",
+                                number: "Harga jual harus berupa angka",
+                                min: "Harga jual minimal 0"
                             }
                         },
                         errorClass: "invalid-feedback",
@@ -414,6 +434,7 @@
                                     costOfGoodSold: $('#costOfGoodSold').val(),
                                     qty: $('#qty').val(),
                                     expDate: $('#expDate').val(),
+                                    sellingPrice: $('#sellingPrice').val(),
                                 },
                                 success: function(response) {
                                     $('#updateButton').html('Update');
