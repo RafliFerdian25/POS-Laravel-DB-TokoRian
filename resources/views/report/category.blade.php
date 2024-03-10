@@ -35,106 +35,23 @@
             </div>
         </div>
         <!-- END TITLE -->
-        <!-- CARD DASHBOARD -->
-        <div class="row">
-            <!-- total pendapatan -->
-            <div class="col-sm-6 col-md-4 col-xl-3 p-3">
-                <div class="card mb-0 widget-content row">
-                    <div class="content">
-                        <div class="widget-content-left row mb-2">
-                            <i class="pe-7s-cash col-2" style="font-size: 30px;"></i>
-                            <div class="widget-heading col-10 widget__title">Total Pendapatan</div>
-                        </div>
-                        <div class="widget-content-right">
-                            <div class="widget-numbers mb-2"><span>Rp. {{ format_uang(100000) }}</span></div>
-                            <div class="perubahan row">
-                                {{-- <div class="widget-subheading col-10" id="total_pendapatan">
-                                    -2000000
-                                </div> --}}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- total keuntungan -->
-            <div class="col-sm-6 col-md-4 col-xl-3 p-3">
-                <div class="card mb-0 widget-content row">
-                    <div class="content">
-                        <div class="widget-content-left row mb-2">
-                            <i class="pe-7s-graph1 col-2" style="font-size: 30px;"></i>
-                            <div class="widget-heading col-10 widget__title">Total Keuntungan</div>
-                        </div>
-                        <div class="widget-content-right">
-                            <div class="widget-numbers mb-2"><span>Rp {{ format_uang(100000) }}</span></div>
-                            <div class="change row" id="change">
-                                {{-- <div class="widget-subheading col-10" id="total_keuntungan">
-                                    2000000
-                                </div> --}}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- total order -->
-            <div class="col-sm-6 col-md-4 col-xl-3 p-3">
-                <div class="card mb-0 widget-content row">
-                    <div class="content">
-                        <div class="widget-content-left row mb-2">
-                            <i class="pe-7s-news-paper col-2" style="font-size: 30px;"></i>
-                            <div class="widget-heading col-10 widget__title">Total Order</div>
-                        </div>
-                        <div class="widget-content-right">
-                            <div class="widget-numbers mb-2"><span>{{ format_uang(100000) }}</span>
-                            </div>
-                            <div class="change row" id="change">
-                                {{-- <div class="widget-subheading col-10" id="total_order">
-                                    -20
-                                </div> --}}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- total barang terjual -->
-            <div class="col-sm-6 col-md-4 col-xl-3 p-3">
-                <div class="card mb-0 widget-content row">
-                    <div class="content">
-                        <div class="widget-content-left row mb-2">
-                            <i class="pe-7s-box2 col-2" style="font-size: 30px;"></i>
-                            <div class="widget-heading col-10 widget__title">Total Barang Terjual</div>
-                        </div>
-                        <div class="widget-content-right">
-                            <div class="widget-numbers mb-2"><span>{{ format_uang(100000) }}</span></div>
-                            <div class="change row" id="change">
-                                {{-- <div class="widget-subheading col-10" id="total_barang">
-                                    -8
-                                </div> --}}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
 
         {{-- Terlaris --}}
         <div class="chartCategorySection">
-            {{-- Jenis terlaris --}}
+            {{-- Pernjualan Berdasarkan Kategori --}}
             <div class="main-card mb-3 card">
                 <div class="card-header">
-                    Jenis Terlaris
+                    Pernjualan Berdasarkan Kategori
                 </div>
                 <div class="card-body">
                     <div>
-                        <canvas id="categoryChart" width="400" height="100"></canvas>
+                        <div id="categoryChart"></div>
                     </div>
                 </div>
             </div>
-            {{-- End Jenis terlaris --}}
+            {{-- End Pernjualan Berdasarkan Kategori --}}
         </div>
         {{-- END Terlaris --}}
-        <!-- END CARD DASHBOARD -->
-
 
         {{-- Chart Category Report --}}
         <div class="row">
@@ -168,39 +85,29 @@
 
 
         {{--  --}}
-        <!-- Barang Terjual -->
-        <div class="barang__terjual__section">
+        <!-- Jenis Terlaris -->
+        <div class="bestSellingCategorySection">
             <div class="main-card mb-3 card">
                 <div class="card-body">
-                    <h5 class="card-title text-center">Riwayat Penjualan</h5>
-                    <table class="display nowrap" style="width:100%" id="barang_terjual">
+                    <h5 class="card-title text-center">Jenis Terlaris</h5>
+                    <table class="display nowrap" style="width:100%" id="tableBestSellingCategory">
                         <thead>
                             <tr>
-                                <th>Tanggal</th>
-                                <th>No. Kasir</th>
-                                <th>Total Item</th>
-                                <th>Total Harga</th>
-                                <th>Keuntungan</th>
-                                <th>Aksi</th>
+                                <th class="text-center">No</th>
+                                <th class="text-center">Nama</th>
+                                <th class="text-center">Jumlah Terjual</th>
+                                <th class="text-center">Total Penjualan</th>
+                                <th class="text-center">Total Keuntungan</th>
+                                <th class="text-center">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td scope="row">10</td>
-                                <td>10</td>
-                                <td>10</td>
-                                <td>10</td>
-                                <td>10</td>
-                                <td>
-                                    <a href="{{ route('laporan.show', 1) }}" class="btn btn-primary">Detail</a>
-                                </td>
-                            </tr>
+                        <tbody id="tableBestSellingCategoryBody">
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-        <!-- end barang terjual -->
+        <!-- end Jenis Terlaris -->
 
     </div>
 @endsection
@@ -277,37 +184,168 @@
             if (categoryChart) {
                 categoryChart.destroy();
             }
+            // $('#tableBestSellingCategoryBody').html(tableLoader(6))
+
             $.ajax({
                 type: "GET",
                 url: "{{ route('laporan.kategori.data') }}",
                 data: $("#formBulan").serialize(),
                 success: function(response) {
-                    categoryChart = new Chart(ctx, {
-                        type: 'doughnut',
-                        data: {
-                            labels: response.data.reports.map(report => report.keterangan),
-                            datasets: [{
-                                label: '# of Votes',
-                                data: response.data.reports.map(report => report.jumlah),
-                                backgroundColor: [
-                                    'rgb(255, 99, 132)',
-                                    'rgb(54, 162, 235)',
-                                    'rgb(255, 205, 86)',
-                                    'rgb(75, 192, 192)',
-                                    'rgb(153, 102, 255)',
-                                    'rgb(255, 159, 64)'
-                                ],
-                                borderWidth: 1
-                            }]
-                        },
-                        options: {
-                            scales: {
-                                y: {
-                                    beginAtZero: true
+                    (function(H) {
+                        H.seriesTypes.pie.prototype.animate = function(init) {
+                            const series = this,
+                                chart = series.chart,
+                                points = series.points,
+                                {
+                                    animation
+                                } = series.options,
+                                {
+                                    startAngleRad
+                                } = series;
+
+                            function fanAnimate(point, startAngleRad) {
+                                const graphic = point.graphic,
+                                    args = point.shapeArgs;
+
+                                if (graphic && args) {
+
+                                    graphic
+                                        // Set inital animation values
+                                        .attr({
+                                            start: startAngleRad,
+                                            end: startAngleRad,
+                                            opacity: 1
+                                        })
+                                        // Animate to the final position
+                                        .animate({
+                                            start: args.start,
+                                            end: args.end
+                                        }, {
+                                            duration: animation.duration / points.length
+                                        }, function() {
+                                            // On complete, start animating the next point
+                                            if (points[point.index + 1]) {
+                                                fanAnimate(points[point.index + 1], args.end);
+                                            }
+                                            // On the last point, fade in the data labels, then
+                                            // apply the inner size
+                                            if (point.index === series.points.length - 1) {
+                                                series.dataLabelsGroup.animate({
+                                                        opacity: 1
+                                                    },
+                                                    void 0,
+                                                    function() {
+                                                        points.forEach(point => {
+                                                            point.opacity = 1;
+                                                        });
+                                                        series.update({
+                                                            enableMouseTracking: true
+                                                        }, false);
+                                                        chart.update({
+                                                            plotOptions: {
+                                                                pie: {
+                                                                    innerSize: '40%',
+                                                                    borderRadius: 8
+                                                                }
+                                                            }
+                                                        });
+                                                    });
+                                            }
+                                        });
                                 }
                             }
-                        }
+
+                            if (init) {
+                                // Hide points on init
+                                points.forEach(point => {
+                                    point.opacity = 0;
+                                });
+                            } else {
+                                fanAnimate(points[0], startAngleRad);
+                            }
+                        };
+                    }(Highcharts));
+
+
+                    var totalJumlah = response.data.reports.reduce((total, report) => total + parseInt(
+                        report.jumlah), 0);
+
+                    var dataChart = response.data.reports.map(report => ({
+                        name: report.keterangan,
+                        y: parseInt(report.jumlah),
+                        percentage: (parseInt(report.jumlah) / totalJumlah) * 100,
+                    }));
+
+                    Highcharts.chart('categoryChart', {
+                        chart: {
+                            type: 'pie'
+                        },
+                        title: {
+                            text: 'Departamental Strength of the Company',
+                            align: 'left'
+                        },
+                        subtitle: {
+                            text: 'Custom animation of pie series',
+                            align: 'left'
+                        },
+                        tooltip: {
+                            pointFormat: 'Jumlah:<b>{point.y}</b><br>Persen: <b>{point.percentage:.1f}%</b>'
+                        },
+                        accessibility: {
+                            point: {
+                                valueSuffix: '%'
+                            }
+                        },
+                        plotOptions: {
+                            pie: {
+                                allowPointSelect: true,
+                                borderWidth: 2,
+                                cursor: 'pointer',
+                                dataLabels: {
+                                    enabled: true,
+                                    format: '<b>{point.name}</b><br>{point.y} ({point.percentage:.1f}%)',
+                                    distance: 20
+                                }
+                            }
+                        },
+                        series: [{
+                            // Disable mouse tracking on load, enable after custom animation
+                            enableMouseTracking: false,
+                            animation: {
+                                duration: 2000
+                            },
+                            colorByPoint: true,
+                            data: dataChart
+                        }]
                     });
+
+                    $('#tableBestSellingCategory').DataTable().clear().draw();
+                    if (response.data.bestSellingCategories.length > 0) {
+                        $.each(response.data.bestSellingCategories, function(index, category) {
+                            var rowData = [
+                                index + 1,
+                                category.name,
+                                category.total,
+                                formatCurrency(category.income),
+                                formatCurrency(category.profit),
+                                `<a href="{{ url('/laporan/kategori/${category.id}/detail') }}" class="btn btn-sm btn-warning"">Detail</button>`
+                            ];
+                            var rowNode = $('#tableBestSellingCategory').DataTable().row.add(
+                                    rowData)
+                                .draw(false)
+                                .node();
+
+                            $(rowNode).find('td').eq(0).addClass('text-center');
+                            $(rowNode).find('td').eq(1).addClass('text-center');
+                            $(rowNode).find('td').eq(2).addClass('text-center');
+                            $(rowNode).find('td').eq(3).addClass('text-center');
+                            $(rowNode).find('td').eq(4).addClass('text-center');
+                            // $(rowNode).find('td').eq(4).addClass('text-center text-nowrap');
+                        });
+                    } else {
+                        $('#tableBestSellingCategoryBody').html(tableEmpty(6,
+                            'Riwayat Penjualan'));
+                    }
                 },
                 error: function(xhr, status, error) {
                     console.log(xhr);

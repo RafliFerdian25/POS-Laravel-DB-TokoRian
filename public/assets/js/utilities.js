@@ -235,3 +235,19 @@ const initializationSelect2Merk = (selectId, url) => {
         }
     })
 }
+
+// Function to generate a random pastel color
+const getRandomPastelColor = () => {
+    const min = 150; // Nilai minimum untuk merah, hijau, dan biru
+    const max = 255; // Nilai maksimum untuk merah, hijau, dan biru
+
+    // Fungsi untuk menghasilkan nilai warna antara min dan max
+    const getRandomValue = () => Math.floor(Math.random() * (max - min + 1)) + min;
+
+    // Menghasilkan warna pastel dengan kombinasi warna yang lebih lembut
+    const red = getRandomValue();
+    const green = getRandomValue();
+    const blue = getRandomValue();
+
+    return `rgb(${red},${green},${blue})`;
+};

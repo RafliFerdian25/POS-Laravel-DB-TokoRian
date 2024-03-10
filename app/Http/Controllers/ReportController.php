@@ -277,21 +277,61 @@ class ReportController extends Controller
 
     public function getCategoriesReport(Request $request)
     {
-        $date = Carbon::createFromFormat('Y-m', $request->month);
+        $typeReport = null;
+        $date = null;
+        $startDate = null;
+        $endDate = null;
 
-        $reports = Category::leftJoin('t_barang', function ($join) use ($date) {
+        if ($request->daterange == null && $request->month == null) {
+            $date = Carbon::now();
+            $typeReport = "Bulanan";
+        } elseif ($request->daterange != null) {
+            $daterange = explode(' - ', $request->daterange);
+            $date = Carbon::parse($daterange[1]);
+            $startDate = Carbon::parse($daterange[0]);
+            $endDate = Carbon::parse($daterange[1]);
+            $typeReport = "Harian";
+        } elseif ($request->month != null) {
+            $date = Carbon::parse($request->month);
+            $startDate = Carbon::parse($request->month)->startOfMonth();
+            $endDate = Carbon::now()->format('Y-m') == $request->month ? Carbon::now() : Carbon::parse($request->month)->endOfMonth();
+            $typeReport = "Bulanan";
+        }
+
+        $reports = Category::leftJoin('t_barang', function ($join) use ($date, $typeReport, $startDate, $endDate) {
             $join->on('p_jenis.jenis', '=', 't_barang.jenis')
                 ->leftJoin('t_kasir', 't_kasir.idBarang', '=', 't_barang.idBarang')
-                ->whereYear('t_kasir.tanggal', $date->year)
-                ->whereMonth('t_kasir.tanggal', $date->month);
+                ->when($typeReport == 'Bulanan', function ($query) use ($date) {
+                    return $query->whereMonth('tanggal', $date->month)
+                        ->whereYear('tanggal', $date->year);
+                })
+                ->when($typeReport == 'Harian', function ($query) use ($startDate, $endDate) {
+                    return $query->whereBetween('tanggal', [$startDate, $endDate]);
+                });
         })
             ->selectRaw('p_jenis.jenis, p_jenis.keterangan, COALESCE(SUM(t_kasir.jumlah), 0) as jumlah')
             ->groupBy('p_jenis.jenis', 'p_jenis.keterangan')
             ->get();
 
+        $bestSellingCategories = Category::selectRaw('p_jenis.ID as id, p_jenis.keterangan as name, sum(t_kasir.jumlah) as total, sum(t_kasir.total) as income, sum(t_kasir.laba) as profit')
+            ->join('t_barang', 't_barang.jenis', '=', 'p_jenis.jenis')
+            ->join('t_kasir', 't_kasir.idBarang', '=', 't_barang.idBarang')
+            ->when($typeReport == 'Bulanan', function ($query) use ($date) {
+                return $query->whereMonth('tanggal', $date->month)
+                    ->whereYear('tanggal', $date->year);
+            })
+            ->when($typeReport == 'Harian', function ($query) use ($startDate, $endDate) {
+                return $query->whereBetween('tanggal', [$startDate, $endDate]);
+            })
+            ->groupBy('id', 'name')
+            ->orderBy('total', 'desc')
+            ->limit(10)
+            ->get();
+
         return ResponseFormatter::success(
             [
-                'reports' => $reports
+                'reports' => $reports,
+                'bestSellingCategories' => $bestSellingCategories,
             ],
             'Data kategori berhasil diambil'
         );
