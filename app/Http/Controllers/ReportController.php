@@ -182,7 +182,6 @@ class ReportController extends Controller
             $endDate = Carbon::now()->format('Y-m') == $request->month ? Carbon::now() : Carbon::parse($request->month)->endOfMonth();
             $typeReport = "Bulanan";
         }
-        // dd($dateRangeData);
 
         $categories = Category::get(['jenis']);
         $categoryByDate = collect([]);
@@ -270,6 +269,7 @@ class ReportController extends Controller
             'title' => 'Laporan Kategori',
             'kategori' => Category::all(),
             'currentNav' => 'reportCategory',
+            'typeReport' => 'Bulanan',
         ];
 
         return view('report.category', $data);
@@ -277,7 +277,7 @@ class ReportController extends Controller
 
     public function getCategoriesReport(Request $request)
     {
-        $date = Carbon::createFromFormat('Y-m', $request->reportDate);
+        $date = Carbon::createFromFormat('Y-m', $request->month);
 
         $reports = Category::leftJoin('t_barang', function ($join) use ($date) {
             $join->on('p_jenis.jenis', '=', 't_barang.jenis')

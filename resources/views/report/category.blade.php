@@ -16,8 +16,18 @@
                         </div>
                         <div class="row justify-content-center justify-content-lg-start">
                             <form id="formBulan" class="col-6 col-lg-12">
-                                <input type="month" name="reportDate" id="reportDate" class="form-control mb-3"
-                                    onchange="laporanBulanan(this)" value="{{ now()->format('Y-m') }}">
+                                @csrf
+                                <div class="row">
+                                    <label for="daterange" class="col">Rentang Tanggal :</label>
+                                    <input type="text" name="daterange" id="daterange" class="form-control mb-3 col">
+                                </div>
+
+                                <div class="row">
+                                    <label for="month" class="col">Bulan :</label>
+                                    <input type="month" name="month" id="month" class="form-control mb-3 col"
+                                        @if ($typeReport == 'Bulanan') value="{{ date('Y-m') }}" @endif
+                                        onchange="getReportSaleByCategory('bulanan')">
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -124,6 +134,39 @@
         </div>
         {{-- END Terlaris --}}
         <!-- END CARD DASHBOARD -->
+
+
+        {{-- Chart Category Report --}}
+        <div class="row">
+            {{-- Chart Laporan Kategori --}}
+            <div class="col-lg-6">
+                <div class="main-card mb-3 card">
+                    <div class="card-header">
+                        Laporan Kategori Harian
+                    </div>
+                    <div class="card-body">
+                        <div id="dailyCategoryReportChart"></div>
+                    </div>
+                </div>
+            </div>
+            {{-- End hart Laporan Kategori --}}
+
+            {{-- Chart Laporan Kategori --}}
+            <div class="col-lg-6">
+                <div class="main-card mb-3 card">
+                    <div class="card-header">
+                        Laporan Kategori Bulanan
+                    </div>
+                    <div class="card-body">
+                        <div id="monthlyCategoryReportChart"></div>
+                    </div>
+                </div>
+            </div>
+            {{-- End chart Laporan Kategori --}}
+        </div>
+        {{-- END Chart Category Report --}}
+
+
         {{--  --}}
         <!-- Barang Terjual -->
         <div class="barang__terjual__section">
@@ -166,6 +209,59 @@
     <script>
         $(document).ready(function() {
             getCategoriesData()
+            getReportSaleByCategory()
+        });
+
+        $(function() {
+            $('#daterange').daterangepicker({
+                opens: 'right',
+                maxDate: moment(),
+                ranges: {
+                    'Hari Ini': [moment(), moment()],
+                    'Kemarin': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    '7 Hari Terakhir': [moment().subtract(6, 'days'), moment()],
+                    '30 Hari Terakhir': [moment().subtract(29, 'days'), moment()],
+                    'Bulan Ini': [moment().startOf('month'), moment().endOf('month')],
+                    'Bulan Kemarin': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1,
+                        'month').endOf('month')],
+                    'Tahun Ini': [moment().startOf('year'), moment().endOf('year')],
+                    'Tahun Kemarin': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1,
+                        'year').endOf('year')],
+                },
+                locale: {
+                    format: 'DD/MM/YYYY',
+                    separator: ' - ',
+                    applyLabel: 'Pilih',
+                    cancelLabel: 'Batal',
+                    fromLabel: 'Dari',
+                    toLabel: 'Ke',
+                    customRangeLabel: 'Custom',
+                    weekLabel: 'W',
+                    daysOfWeek: ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'],
+                    monthNames: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli',
+                        'Agustus', 'September', 'Oktober', 'November', 'Desember'
+                    ],
+                    firstDay: 1
+                }
+            });
+
+            @if ($typeReport == 'Harian')
+                $('#daterange').data('daterangepicker').setStartDate(moment('{{ $date[0] }}', 'YYYY-MM-DD')
+                    .format('DD/MM/YYYY'));
+                $('#daterange').data('daterangepicker').setEndDate(moment('{{ $date[1] }}', 'YYYY-MM-DD')
+                    .format('DD/MM/YYYY'));
+            @else
+                $('#daterange').val(null);
+            @endif
+
+            $('#daterange').on('apply.daterangepicker', function(ev, picker) {
+                $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format(
+                    'YYYY-MM-DD'));
+                $("#month").val(null);
+            });
+            $('#daterange').on('cancel.daterangepicker', function(ev, picker) {
+                $(this).val(null);
+            });
         });
 
         function laporanBulanan(input) {
@@ -215,6 +311,208 @@
                 },
                 error: function(xhr, status, error) {
                     console.log(xhr);
+                }
+            });
+        }
+
+        const getReportSaleByCategory = (typeReport) => {
+            if (typeReport == 'harian') {
+                $('#month').val(null);
+            } else if (typeReport == 'bulanan') {
+                $('#daterange').val(null);
+            }
+
+            $('#dailyCategoryReportChart').html(inlineLoader())
+            $('#monthlyCategoryReportChart').html(inlineLoader())
+
+            $.ajax({
+                type: "GET",
+                url: `{{ route('report.sale.catgory.data') }}`,
+                data: {
+                    daterange: $('#daterange').val(),
+                    month: $('#month').val()
+                },
+                success: function(response) {
+                    // dailyCategoryReportChart
+                    Highcharts.chart('dailyCategoryReportChart', {
+                        chart: {
+                            type: 'spline'
+                        },
+                        title: {
+                            text: 'Laporan Penjualan Harian ',
+                            align: 'center'
+                        },
+
+                        subtitle: {
+                            text: 'Harian',
+                            align: 'center'
+                        },
+
+                        yAxis: {
+                            title: {
+                                text: 'Total Pendapatan'
+                            }
+                        },
+
+                        xAxis: {
+                            title: {
+                                text: 'Tanggal'
+                            },
+                            type: 'datetime', // Menggunakan tipe datetime
+                            categories: response.data.categoryByDate[Object.keys(response.data
+                                .categoryByDate)[0]].map(category => Date
+                                .parse(
+                                    category.tanggal)),
+                            // Mengonversi tanggal ke timestamp
+                            accessibility: {
+                                rangeDescription: 'Date'
+                            },
+                            labels: {
+                                format: '{value:%e-%m}', // Menampilkan nilai tanggal
+                            }
+                        },
+                        tooltip: {
+                            crosshairs: true,
+                            shared: true,
+                            formatter: function() {
+                                // Sort points by income in descending order
+                                var points = this.points.sort(function(a, b) {
+                                    return b.y - a.y;
+                                });
+
+                                // Build tooltip content with sorted points
+                                var tooltipContent = '<b>' + Highcharts.dateFormat(
+                                    '%A,%e %b',
+                                    this
+                                    .x) + '</b><br/>';
+                                points.forEach(function(point) {
+                                    tooltipContent += point.series.name + ': ' +
+                                        formatCurrency(point.y) + '<br/>';
+                                });
+
+                                return tooltipContent;
+                            }
+                        },
+                        plotOptions: {
+                            series: {
+                                label: {
+                                    connectorAllowed: true
+                                },
+                            }
+                        },
+
+                        series: Object.entries(response.data.categoryByDate).map(([key,
+                            category
+                        ]) => ({
+                            name: key,
+                            data: category.map(transaction => parseInt(transaction
+                                .income))
+                        })),
+                        responsive: {
+                            rules: [{
+                                condition: {
+                                    maxWidth: 500
+                                },
+                                chartOptions: {
+                                    legend: {
+                                        layout: 'horizontal',
+                                        align: 'center',
+                                        verticalAlign: 'bottom'
+                                    }
+                                }
+                            }]
+                        }
+                    });
+
+                    // monthlyCategoryReportChart
+                    Highcharts.chart('monthlyCategoryReportChart', {
+                        chart: {
+                            type: 'spline'
+                        },
+                        title: {
+                            text: 'Laporan Penjualan Bulanan ',
+                            align: 'center'
+                        },
+
+                        subtitle: {
+                            text: 'Bulanan',
+                            align: 'center'
+                        },
+
+                        yAxis: {
+                            title: {
+                                text: 'Jumlah Pendapatan'
+                            },
+                        },
+
+                        xAxis: {
+                            title: {
+                                text: 'Bulan'
+                            },
+                            type: 'datetime', // Menggunakan tipe datetime
+                            categories: response.data.categoryByYear[Object.keys(response.data
+                                .categoryByYear)[0]].map(category => Date
+                                .parse(
+                                    category.month)), // Mengonversi tanggal ke timestamp
+                            accessibility: {
+                                rangeDescription: 'Date'
+                            },
+                            labels: {
+                                format: '{value:%m-%Y}', // Menampilkan nilai tanggal
+                            }
+                        },
+                        tooltip: {
+                            crosshairs: true,
+                            shared: true,
+                            formatter: function() {
+                                // Sort points by income in descending order
+                                var points = this.points.sort(function(a, b) {
+                                    return b.y - a.y;
+                                });
+
+                                // Build tooltip content with sorted points
+                                var tooltipContent = '<b>' + Highcharts.dateFormat(
+                                    '%b-%Y',
+                                    this
+                                    .x) + '</b><br/>';
+                                points.forEach(function(point) {
+                                    tooltipContent += point.series.name + ': ' +
+                                        formatCurrency(point.y) + '<br/>';
+                                });
+
+                                return tooltipContent;
+                            }
+                        },
+                        plotOptions: {
+                            series: {
+                                label: {
+                                    connectorAllowed: true,
+                                },
+                            }
+                        },
+
+                        series: Object.entries(response.data.categoryByYear).map(([key,
+                            category
+                        ]) => ({
+                            name: key,
+                            data: category.map(transaction => parseInt(transaction
+                                .income))
+                        })),
+                        responsive: {
+                            rules: [{
+                                condition: {
+                                    maxWidth: 500
+                                },
+                                chartOptions: {
+                                    legend: {
+                                        layout: 'horizontal',
+                                        align: 'center',
+                                        verticalAlign: 'bottom'
+                                    }
+                                }
+                            }]
+                        },
+                    });
                 }
             });
         }
