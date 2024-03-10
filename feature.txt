@@ -9,7 +9,7 @@ pisahkan pengambilan data (berdasarkan card)
 
 
 // Laporan Penjualan Barang
-Edit barang
+✅ Edit barang
 grafik penjualan 
 
 // Kategori
