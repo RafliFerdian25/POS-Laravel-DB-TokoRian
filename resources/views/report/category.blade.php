@@ -26,7 +26,7 @@
                                     <label for="month" class="col">Bulan :</label>
                                     <input type="month" name="month" id="month" class="form-control mb-3 col"
                                         @if ($typeReport == 'Bulanan') value="{{ date('Y-m') }}" @endif
-                                        onchange="getReportSaleByCategory('bulanan')">
+                                        onchange="getCategoriesData('bulanan'); getReportSaleByCategory('bulanan')">
                                 </div>
                             </form>
                         </div>
@@ -173,25 +173,29 @@
                 $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format(
                     'YYYY-MM-DD'));
                 $("#month").val(null);
+                getCategoriesData('harian')
+                getReportSaleByCategory('harian')
             });
             $('#daterange').on('cancel.daterangepicker', function(ev, picker) {
                 $(this).val(null);
             });
         });
 
-        function laporanBulanan(input) {
-            getCategoriesData()
-        }
-
         // Chart
         const ctx = document.getElementById('categoryChart');
         // Declare a global variable to store the Chart instance
         let categoryChart;
 
-        const getCategoriesData = () => {
+        const getCategoriesData = (typeReport) => {
+            if (typeReport == 'harian') {
+                $('#month').val(null);
+            } else if (typeReport == 'bulanan') {
+                $('#daterange').val(null);
+            }
             if (categoryChart) {
                 categoryChart.destroy();
             }
+            $('#categoryChart').html(inlineLoader())
             $('#tableBestSellingCategoryBody').html(tableLoader(6))
 
             $.ajax({

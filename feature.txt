@@ -7,12 +7,6 @@ detail barang (Card: jumlah barang dicari. informasi barang. grafik jumlah dicar
 // Laporan Penjualan
 pisahkan pengambilan data (berdasarkan card)
 
-// View Laporan Penjualan Kategori
-Total Transaksi
-Filter Tanggal 
-Tabel kategori terlaris
-grafik batang penjualan harian (custom tanggal)
-grafik pie bulanan (custom tanggal)
 
 // Laporan Penjualan Barang
 Edit barang
@@ -97,14 +91,13 @@ delete data
 ✅ delete tabel barang
 
 // View Laporan Penjualan Berdasarkan Kategori
-✅ Total Pendapatan
-✅ Total Keuntungan
-✅ Total Transaksi
-✅ Total barang terjual
 ✅ Filter Tanggal 
 ✅ Tabel barang terlaris
 ✅ Tabel transaksi
 ✅ grafik penjualan custom tanggal
+✅ Tabel kategori terlaris (jumlah terjual, total penjualan, total keuntungan)
+✅ grafik batang penjualan harian (custom tanggal)
+✅ grafik pie bulanan (custom tanggal)
 
 // CRUD tabel merk
 ✅ read merk
