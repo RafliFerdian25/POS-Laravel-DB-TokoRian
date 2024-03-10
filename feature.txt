@@ -6,7 +6,6 @@ detail barang (Card: jumlah barang dicari. informasi barang. grafik jumlah dicar
 
 // Laporan Penjualan
 pisahkan pengambilan data (berdasarkan card)
-detail barang pada barang terlaris
 
 // View Laporan Penjualan Kategori
 Total Transaksi
@@ -123,6 +122,7 @@ delete data
 ✅ Tabel transaksi
 ✅ grafik penjualan (Pendapatan, keuntungan, barang terjual) keseluruhan
 ✅ grafik penjualan (Pendapatan, keuntungan, barang terjual) kategori
+✅ detail barang pada barang terlaris
 
 // CRUD Pembelian (Belanja) Barang
 ✅ tabel pembelian barang (id, total, amount, supplier_id)

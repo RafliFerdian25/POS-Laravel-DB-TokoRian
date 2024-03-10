@@ -163,7 +163,7 @@
                         Jenis Terlaris
                     </div>
                     <div class="table-responsive">
-                        <table class="align-middle display nowraptable-borderless table-striped table-hover"
+                        <table class="align-middle table table-borderless table-striped table-hover"
                             id="tableBestSellingCategories">
                             <thead>
                                 <tr>
@@ -192,7 +192,7 @@
                         </div>
                     </div>
                     <div class="table-responsive">
-                        <table class="align-middle display nowraptable-borderless table-striped table-hover"
+                        <table class="align-middle table table-borderless table-striped table-hover"
                             id="tableBestSellingProducts">
                             <thead>
                                 <tr>
@@ -437,9 +437,9 @@
                                 </td>
                                 <td class="text-center">${item.total}</td>
                                 <td class="text-center">
-                                    <a href="">
+                                    <a href="{{ url('/laporan/barang/${item.id}') }}">
                                         <button type="button" id="PopoverCustomT-1" class="btn btn-primary btn-sm">
-                                            Details
+                                            Detail
                                         </button>
                                     </a>
                                 </td>
