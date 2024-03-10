@@ -6,6 +6,7 @@ use App\Helpers\ResponseFormatter;
 use App\Models\Product;
 use App\Models\ProductSearch;
 use App\Models\Toko;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -26,6 +27,7 @@ class ProductSearchController extends Controller
         $data = [
             'setting' => $setting,
             'title' => $title,
+            'typeReport' => 'Bulanan',
             'currentNav' => 'productSearch',
         ];
 
@@ -34,7 +36,35 @@ class ProductSearchController extends Controller
 
     public function indexData(Request $request)
     {
+        $typeReport = null;
+        $date = null;
+        $startDate = null;
+        $endDate = null;
+
+        if ($request->daterange == null && $request->month == null) {
+            $date = Carbon::now();
+            $typeReport = "Bulanan";
+        } elseif ($request->daterange != null) {
+            $daterange = explode(' - ', $request->daterange);
+            $date = Carbon::parse($daterange[1]);
+            $startDate = Carbon::parse($daterange[0]);
+            $endDate = Carbon::parse($daterange[1]);
+            $typeReport = "Harian";
+        } elseif ($request->month != null) {
+            $date = Carbon::parse($request->month);
+            $typeReport = "Bulanan";
+        }
+
+        $threeMonthAgo = null;
+        if ($typeReport == 'Bulanan') {
+            $threeMonthAgo = $date->copy()->subMonths(3);
+        }
         $products = ProductSearch::select('product_id', 'name', DB::raw('COUNT(name) as total'))
+            ->when($typeReport == 'Bulanan', function ($query) use ($date, $threeMonthAgo) {
+                return $query->whereBetween('created_at', [$threeMonthAgo->startOfMonth(), $date->copy()->endOfMonth()]);
+            }, function ($query) use ($startDate, $endDate) {
+                return $query->whereBetween('created_at', [$startDate, $endDate]);
+            })
             ->groupBy('product_id', 'name')
             ->get();
 

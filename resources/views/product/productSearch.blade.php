@@ -73,11 +73,44 @@
         </div>
         <!-- END CARD DASHBOARD -->
 
+        <!-- FILTER Barang Habis -->
+        <div class="FilterEmptyProductSection">
+            <div class="main-card mb-3 card">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Filter Barang Habis</h5>
+                    <form id="formFilterProduct" method="GET" onsubmit="event.preventDefault(); getProduct();">
+                        @csrf
+                        <div class="modal-body">
+                            <div class="row mb-3">
+                                <label for="daterange" class="col-sm-2 col-form-label">Rentang Tanggal</label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="daterange" id="daterange" class="form-control rounded__10">
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label for="month" class="col-sm-2 col-form-label">Bulan</label>
+                                <div class="col-sm-10">
+                                    <input type="month" name="month" id="month" class="form-control rounded__10"
+                                        @if ($typeReport == 'Bulanan') value="{{ date('Y-m') }}" @endif
+                                        onchange="getProduct('bulanan')">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Cari</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- end barang terjual -->
+
         <!-- Daftar Barang -->
         <div class="ListProductSection">
             <div class="main-card mb-3 card">
                 <div class="card-body">
-                    <h5 class="card-title text-center">Daftar Barang</h5>
+                    <h5 class="card-title text-center">Daftar Barang (Dicari <span id="dateString"></span>)</h5>
                     <table class="display nowrap" style="width:100%" id="tableListProduct">
                         <thead>
                             <tr>
@@ -142,6 +175,7 @@
                 }],
             }
             initializeDataTable('tableListProduct', config)
+            initDateRange('{{ $typeReport }}', getProduct);
 
             $('#product_id').select2({
                 theme: "bootstrap-5",
@@ -207,16 +241,25 @@
             $('#product_id').val(null).trigger('change');
         });
 
-        const getProduct = () => {
+        const getProduct = (typeReport) => {
+            // mengosongkan inputan tanggal
+            if (typeReport == 'harian') {
+                $('#month').val(null);
+            } else if (typeReport == 'bulanan') {
+                $('#daterange').val(null);
+            }
+
             $('#tableListProduct').DataTable().clear().draw();
             $('#tableListProductBody').html(tableLoader(8, `{{ asset('assets/svg/Ellipsis-2s-48px.svg') }}`));
 
             $.ajax({
                 type: "GET",
                 url: `{{ route('product.search.index.data') }}`,
+                data: $('#formFilterProduct').serialize(),
                 dataType: "json",
                 success: function(response) {
                     $('#countProduct').html(response.data.countProduct);
+                    $('#dateString').html(response.data.dateString);
                     if (response.data.products.length > 0) {
                         $.each(response.data.products, function(index, product) {
                             var rowData = [
