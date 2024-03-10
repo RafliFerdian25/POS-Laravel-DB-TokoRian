@@ -143,7 +143,7 @@
                         </div>
                     </div>
                     <div class="table-responsive">
-                        <table class="align-middle display nowrap table-borderless table-striped table-hover"
+                        <table class="align-middle display nowrap table table-borderless table-striped table-hover"
                             style="width:100%" id="tableBestSellingProducts">
                             <thead>
                                 <tr>
@@ -169,7 +169,7 @@
                                     <td class="text-center">
                                         <a href="">
                                             <button type="button" id="PopoverCustomT-1" class="btn btn-primary btn-sm">
-                                                Details
+                                                Detail
                                             </button>
                                         </a>
                                     </td>
@@ -207,15 +207,15 @@
             <div class="main-card mb-3 card">
                 <div class="card-body">
                     <h5 class="card-title text-center">Riwayat Penjualan</h5>
-                    <table class="display nowrap" style="100%" id="tableProductSaleTransaction">
+                    <table class="display nowrap" style="width:100%" id="tableProductSaleTransaction">
                         <thead>
                             <tr>
-                                <th>No. Transaksi</th>
-                                <th>Tanggal</th>
-                                <th>Total Item</th>
-                                <th>Total Harga</th>
-                                <th>Keuntungan</th>
-                                <th>Aksi</th>
+                                <th class="text-center">No. Transaksi</th>
+                                <th class="text-center">Tanggal</th>
+                                <th class="text-center">Total Item</th>
+                                <th class="text-center">Total Harga</th>
+                                <th class="text-center">Keuntungan</th>
+                                <th class="text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="tableProductSaleTransactionBody">
@@ -232,9 +232,13 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            $("#tableProductSaleTransaction").DataTable({
-                // scrollX: true,
-            });
+            var configDataTable = {
+                "columnDefs": [{
+                    "targets": [1, 2, 3, 4, 5],
+                    "className": "text-center"
+                }],
+            }
+            initializeDataTable("tableProductSaleTransaction", configDataTable)
 
             getReportCategory()
         });
@@ -336,9 +340,9 @@
                             </td>
                             <td class="text-center">${item.total}</td>
                             <td class="text-center">
-                                <a href="">
+                                <a href="{{ url('/laporan/barang/${item.idBarang}') }}">
                                     <button type="button" id="PopoverCustomT-1" class="btn btn-primary btn-sm">
-                                        Details
+                                        Detail
                                     </button>
                                 </a>
                             </td>
@@ -576,8 +580,8 @@
                                 transaction.noTransaksi,
                                 transaction.tanggal,
                                 transaction.total_product,
-                                transaction.income,
-                                transaction.profit,
+                                formatCurrency(transaction.income),
+                                formatCurrency(transaction.profit),
                                 `<button class="btn btn-sm btn-warning" onclick="showEdit('${transaction.noTransaksi}')">Detail</button>`
                             ];
                             var rowNode = $('#tableProductSaleTransaction').DataTable().row.add(
@@ -586,7 +590,7 @@
                                     false)
                                 .node();
 
-                            // $(rowNode).find('td').eq(0).addClass('text-center');
+                            // $(rowNode).find('td').eq(1).addClass('text-center');
                             // $(rowNode).find('td').eq(4).addClass('text-center text-nowrap');
                         });
                     } else {

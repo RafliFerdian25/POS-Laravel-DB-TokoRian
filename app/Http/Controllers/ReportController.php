@@ -343,7 +343,7 @@ class ReportController extends Controller
     public function categoryDetail(Category $category)
     {
         $data = [
-            'title' => 'Laporan Kategori',
+            'title' => 'Toko Rian | Laporan Detail Kategori',
             'category' => $category,
             'typeReport' => 'Bulanan',
             'currentNav' => 'reportCategory',

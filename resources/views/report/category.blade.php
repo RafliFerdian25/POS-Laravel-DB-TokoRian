@@ -115,6 +115,14 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
+            var configDataTable = {
+                "columnDefs": [{
+                    "targets": [1, 2, 3, 4, 5],
+                    "className": "text-center"
+                }],
+            }
+            initializeDataTable("tableBestSellingCategory", configDataTable)
+
             getCategoriesData()
             getReportSaleByCategory()
         });
@@ -184,7 +192,7 @@
             if (categoryChart) {
                 categoryChart.destroy();
             }
-            // $('#tableBestSellingCategoryBody').html(tableLoader(6))
+            $('#tableBestSellingCategoryBody').html(tableLoader(6))
 
             $.ajax({
                 type: "GET",
@@ -281,12 +289,12 @@
                             type: 'pie'
                         },
                         title: {
-                            text: 'Departamental Strength of the Company',
-                            align: 'left'
+                            text: 'PERNJUALAN BERDASARKAN KATEGORI',
+                            align: 'center'
                         },
                         subtitle: {
-                            text: 'Custom animation of pie series',
-                            align: 'left'
+                            text: 'penjualan barang berdasarkan kategori',
+                            align: 'center'
                         },
                         tooltip: {
                             pointFormat: 'Jumlah:<b>{point.y}</b><br>Persen: <b>{point.percentage:.1f}%</b>'
@@ -334,13 +342,6 @@
                                     rowData)
                                 .draw(false)
                                 .node();
-
-                            $(rowNode).find('td').eq(0).addClass('text-center');
-                            $(rowNode).find('td').eq(1).addClass('text-center');
-                            $(rowNode).find('td').eq(2).addClass('text-center');
-                            $(rowNode).find('td').eq(3).addClass('text-center');
-                            $(rowNode).find('td').eq(4).addClass('text-center');
-                            // $(rowNode).find('td').eq(4).addClass('text-center text-nowrap');
                         });
                     } else {
                         $('#tableBestSellingCategoryBody').html(tableEmpty(6,
