@@ -53,7 +53,7 @@
         <!-- Kategori Section -->
         <div class="kategori__section">
             <!-- Barang -->
-            <div class="container kategori__container">
+            <div class="kategori__container">
                 <div class="kategori__content">
                     <div class="main-card mb-3 card">
                         <div class="card-body">
@@ -77,18 +77,12 @@
                                             <td>{{ $category->products_count }}</td>
                                             <td>
                                                 <div class="d-flex justify-content-center">
-                                                    <a href="{{ route('kategori.edit', $category->ID) }}"
+                                                    <a href="{{ route('category.edit', $category->ID) }}"
                                                         class="btn btn-link btn-lg float-left px-0"><i
                                                             class="fa fa-edit"></i></a>
-                                                    <form action="{{ route('kategori.destroy', $category->ID) }}"
-                                                        method="POST">
-                                                        @method('DELETE')
-                                                        @csrf
-                                                        <button type="submit"
-                                                            onclick="return confirm('Yakin ingin menghapus kategori')"
-                                                            class="btn btn-link btn-lg float-right px-0 color__red1"><i
-                                                                class="fa fa-trash"></i></button>
-                                                    </form>
+                                                    <button class="btn btn-sm btn-danger"
+                                                        onclick="deleteCategory('{{ $category->ID }}')"><i
+                                                            class="bi bi-trash"></i></button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -108,7 +102,62 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            $('#tableCategory').DataTable();
+            initializeDataTable('tableCategory');
         });
+
+        const deleteCategory = (id) => {
+            Swal.fire({
+                title: 'Apakah anda yakin hapus kategori?',
+                text: "Data yang dihapus tidak dapat dikembalikan!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Hapus Produk',
+                        text: 'Sedang menghapus produk...',
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        willOpen: () => {
+                            Swal.showLoading();
+                        },
+                    });
+                    $.ajax({
+                        type: "DELETE",
+                        url: `{{ url('/kategori/${id}') }}`,
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                        },
+                        success: function(response) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil',
+                                text: 'Hapus Kategori Berhasil',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                            window.location.reload();
+                            // getProducts();
+                        },
+                        error: function(xhr, ajaxOptions, thrownError) {
+                            if (xhr.responseJSON) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal',
+                                    text: `Hapus Kategori Gagal. ${xhr.responseJSON.meta.message} Error: ${xhr.responseJSON.data.error}`,
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                })
+                            }
+                            return false;
+                        },
+                    });
+                }
+            })
+        }
     </script>
 @endpush

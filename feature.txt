@@ -8,10 +8,6 @@ detail barang (Card: jumlah barang dicari. informasi barang. grafik jumlah dicar
 pisahkan pengambilan data (berdasarkan card)
 
 
-// Laporan Penjualan Barang
-✅ Edit barang
-grafik penjualan 
-
 // Kategori
 Edit Kategori
 Delete Kategori
@@ -135,6 +131,7 @@ delete data
 
 // View Laporan Barang
 ✅ search barang
+✅ Edit barang
 
 // View Laporan Barang Detail
 ✅ grafik penjualan barang harian dalam sebulan (grafik batang/garis)

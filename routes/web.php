@@ -88,7 +88,15 @@ Route::controller(ProductController::class)->group(function () {
 });
 
 // Kategori
-Route::resource('/kategori', CategoryController::class)->except('show');
+Route::controller(CategoryController::class)->group(function () {
+    Route::get('/kategori', 'index')->name('category.index');
+    Route::get('/kategori/data', 'data')->name('category.data');
+    Route::get('/kategori/create', 'create')->name('category.create');
+    Route::post('/kategori', 'store')->name('category.store');
+    Route::get('/kategori/{category:id}/edit', 'edit')->name('category.edit');
+    Route::put('/kategori/{category:id}', 'update')->name('category.update');
+    Route::delete('/kategori/{category:id}', 'destroy')->name('category.destroy');
+});
 Route::resource('/supplier', SupplierController::class)->except('show');
 
 // Penjualan

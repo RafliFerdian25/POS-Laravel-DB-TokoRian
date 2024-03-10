@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ResponseFormatter;
 use App\Models\Category;
 use App\Models\Merk;
 use Illuminate\Http\Request;
@@ -65,7 +66,7 @@ class CategoryController extends Controller
         ]);
 
         // jika data berhasil ditambahkan, akan kembali ke halaman utama
-        return redirect()->route('kategori.index')->with('success', 'Berhasil menambahkan kategori.');
+        return redirect()->route('category.index')->with('success', 'Berhasil menambahkan kategori.');
     }
 
     /**
@@ -125,6 +126,6 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         Category::destroy($id);
-        return redirect()->route('category.index')->with('success', 'Kategori berhasil dihapus');
+        return ResponseFormatter::success(null, 'Kategori berhasil dihapus');
     }
 }

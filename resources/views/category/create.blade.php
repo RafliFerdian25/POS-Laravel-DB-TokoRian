@@ -10,7 +10,7 @@
                     <div class="title__card text-center">
                         Tambah Kategori
                     </div>
-                    <form action="{{ route('kategori.store') }}" method="POST">
+                    <form action="{{ route('category.store') }}" method="POST">
                         @csrf
                         <div class="row mb-3">
                             <label for="id" class="col-sm-2 col-form-label">ID Kategori</label>

@@ -303,8 +303,6 @@
         $('#filterCategory').on('input', handleInput('filterCategory', ['filterProduct', 'filterMerk']));
         $('#filterMerk').on('input', handleInput('filterMerk', ['filterProduct', 'filterCategory']));
 
-
-
         function showEdit(idBarang) {
             // Mengisi konten modal dengan data yang sesuai
             let modalContent = $('#modalEdit .modal-content');
