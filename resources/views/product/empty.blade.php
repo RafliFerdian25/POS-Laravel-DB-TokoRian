@@ -61,7 +61,7 @@
                             <div class="row mb-3">
                                 <label for="filterCategory" class="col-sm-2 col-form-label">Kategori</label>
                                 <div class="col-sm-10">
-                                    <select class="form-select rounded__10 " name="filterCategory"
+                                    <select class="form-select rounded__10 " name="filterCategory" id="filterCategory"
                                         aria-label="Default select example">
                                         <option value="" selected>Pilih Kategori</option>
                                         @foreach ($categories as $category)
@@ -111,12 +111,12 @@
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>Barcode</th>
-                                <th>Nama Barang</th>
-                                <th>Stok</th>
-                                <th>Tanggal Habis</th>
-                                <th>Terjual</th>
-                                <th>Aksi</th>
+                                <th class="text-center">Barcode</th>
+                                <th class="text-center">Nama Barang</th>
+                                <th class="text-center">Stok</th>
+                                <th class="text-center">Tanggal Habis</th>
+                                <th class="text-center">Terjual</th>
+                                <th class="text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="tableEmptyProductBody">
@@ -165,13 +165,21 @@
     @endif
     <script>
         $(document).ready(function() {
-            initializeDataTable('tableEmptyProduct');
+            var configDataTable = {
+                "columnDefs": [{
+                    "targets": [1, 2, 3, 4, 5, 6],
+                    "className": "text-center"
+                }],
+            }
+            initializeDataTable('tableEmptyProduct', configDataTable);
 
             initDateRange('{{ $typeReport }}', getEmptyProduct);
             getEmptyProduct();
         });
 
         const getEmptyProduct = (typeReport) => {
+            // menonaktifkan form ketika proses pengambilan data
+            $('#formFilterProduct').find('input, select, button').prop('disabled', true);
             // mengosongkan inputan tanggal
             if (typeReport == 'harian') {
                 $('#month').val(null);
@@ -189,6 +197,9 @@
                 data: $('#formFilterProduct').serialize(),
                 dataType: "json",
                 success: function(response) {
+                    // mengaktifkan form ketika proses pengambilan data selesai
+                    $('#formFilterProduct').find('input, select, button').prop('disabled', false);
+
                     $('#countProduct').html(response.data.countProduct);
                     $('#dateString').html(response.data.dateString);
                     if (response.data.products.length > 0) {
@@ -219,6 +230,10 @@
                 }
             });
         }
+
+        $('#filterName').on('input', debounce(getEmptyProduct, 750));
+        $('#filterCategory').on('change', debounce(getEmptyProduct, 100));
+        $('#filterStock').on('input', debounce(getEmptyProduct, 750));
 
         function showEdit(idBarang, status) {
             // Mengisi konten modal dengan data yang sesuai
