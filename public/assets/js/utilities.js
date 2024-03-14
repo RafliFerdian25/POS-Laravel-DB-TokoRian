@@ -168,7 +168,7 @@ const calculateAverage = (data) => {
     return parseFloat(average.toFixed(0));
 }
 
-const debounce = (func, delay, formId = "") => {
+const debounce = (func, delay) => {
     let timeoutId;
     return function () {
         const context = this;

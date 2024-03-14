@@ -310,7 +310,7 @@ class ProductController extends Controller
     {
         $data = [
             'setting' => Toko::first(),
-            'title' => 'POS TOKO | Laporan',
+            'title' => 'POS TOKO | Barang Kadaluarsa',
             'categories' => Category::get(),
             'currentNav' => 'productExpired',
         ];

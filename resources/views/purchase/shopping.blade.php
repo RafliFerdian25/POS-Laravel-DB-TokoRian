@@ -279,7 +279,6 @@
                         timer: 1500
                     });
 
-                    getShoppingProduct();
                     $('#submitAddProduct').html(
                         'Tambah');
                     $('#submitAddProduct').prop('disabled', false);
@@ -321,7 +320,6 @@
                         },
                     });
 
-                    // Use Promise.all to wait for both requests to complete
                     requestLocal.then(function(response) {
                         Swal.fire({
                             text: "Tambah Produk Local Berhasil",
