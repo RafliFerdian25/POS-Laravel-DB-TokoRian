@@ -97,7 +97,7 @@
                                 <div class="col-sm-10">
                                     <select required class="form-select rounded__10" name="filterCategory"
                                         id="filterCategory" aria-label="Default select example">
-                                        <option value="">&nbsp;</option>
+                                        <option value="">Pilih Kategori</option>
                                         @foreach ($categories as $category)
                                             <option value="{{ $category->ID }}">{{ $category->keterangan }} </option>
                                         @endforeach
@@ -386,6 +386,9 @@
         });
 
         const getShoppingProduct = () => {
+            var formData = $('#formFilterProduct').serialize();
+            disableFormElements('formFilterProduct', true)
+
             $('#tableShoppingProduct').DataTable().clear().draw();
             $('#tableShoppingProductBody').html(tableLoader(8,
                 `{{ asset('assets/svg/Ellipsis-2s-48px.svg') }}`));
@@ -393,14 +396,10 @@
             $.ajax({
                 url: "{{ route('wholesale.purchase.index.data') }}",
                 type: "GET",
-                data: {
-                    token: '{{ csrf_token() }}',
-                    filterProduct: $('#filterProduct').val(),
-                    filterCategory: $('#filterCategory').val(),
-                    filterMerk: $('#filterMerk').val(),
-                },
+                data: formData,
                 dataType: "json",
                 success: function(response) {
+                    disableFormElements('formFilterProduct', false)
                     $('#countProduct').html(response.data.shoppingProducts.length);
                     if (response.data.shoppingProducts.length > 0) {
                         response.data.shoppingProducts.forEach((product, index) => {
@@ -429,18 +428,23 @@
             });
         }
 
-        function handleInput(inputId, otherInputIds) {
-            return debounce(function() {
-                $('#' + otherInputIds.join(', #')).val(null).trigger('change');
-                getShoppingProduct();
-            }, 750);
-        }
+        // function handleInput(inputId, otherInputIds) {
+        //     return debounce(function() {
+        //         $('#' + otherInputIds.join(', #')).val(null).trigger('change');
+        //         getShoppingProduct();
+        //     }, 750);
+        // }
 
-        $('#filterProduct').on('input', handleInput('filterProduct', ['filterCategory', 'filterMerk']));
-        $(
-            '#filterCategory').on('input', handleInput('filterCategory', ['filterProduct', 'filterMerk']));
-        $(
-            '#filterMerk').on('input', handleInput('filterMerk', ['filterProduct', 'filterCategory']));
+        // $('#filterProduct').on('input', handleInput('filterProduct', ['filterCategory', 'filterMerk']));
+        // $(
+        //     '#filterCategory').on('input', handleInput('filterCategory', ['filterProduct', 'filterMerk']));
+        // $(
+        //     '#filterMerk').on('input', handleInput('filterMerk', ['filterProduct', 'filterCategory']));
+
+
+        $('#filterProduct').on('input', debounce(getShoppingProduct, 750));
+        $('#filterCategory').on('change', debounce(getShoppingProduct, 750));
+        $('#filterMerk').on('input', debounce(getShoppingProduct, 750));
 
         // Menampilkan modal edit product
         const editShoppingProduct = (id) => {
