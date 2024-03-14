@@ -119,6 +119,18 @@
                 "columnDefs": [{
                     "targets": [1, 2, 3, 4, 5],
                     "className": "text-center"
+                }, {
+                    // Mengatur aturan pengurutan kustom untuk kolom keempat (index 3)
+                    "targets": [3, 4],
+                    "render": function(data, type, row) {
+                        // Memeriksa tipe data, jika tampilan atau filter
+                        if (type === 'display' || type === 'filter') {
+                            // Memformat angka menggunakan fungsi formatCurrency
+                            return formatCurrency(data);
+                        }
+                        // Jika tipe data selain tampilan atau filter, kembalikan data tanpa perubahan
+                        return data;
+                    }
                 }],
             }
             initializeDataTable("tableBestSellingCategory", configDataTable)
@@ -338,8 +350,8 @@
                                 index + 1,
                                 category.name,
                                 category.total,
-                                formatCurrency(category.income),
-                                formatCurrency(category.profit),
+                                category.income,
+                                category.profit,
                                 `<a href="{{ url('/laporan/kategori/${category.id}/detail') }}" class="btn btn-sm btn-warning"">Detail</button>`
                             ];
                             var rowNode = $('#tableBestSellingCategory').DataTable().row.add(

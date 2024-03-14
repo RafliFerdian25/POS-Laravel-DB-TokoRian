@@ -324,8 +324,7 @@ class ReportController extends Controller
                 return $query->whereBetween('tanggal', [$startDate, $endDate]);
             })
             ->groupBy('id', 'name')
-            ->orderBy('total', 'desc')
-            ->limit(10)
+            ->orderBy('profit', 'desc')
             ->get();
 
         return ResponseFormatter::success(
