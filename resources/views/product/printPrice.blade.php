@@ -131,12 +131,8 @@
     @endif
     <script>
         $(document).ready(function() {
-            $("#tableListProduct").DataTable({
-                pageLength: 10,
-                info: false,
-                responsive: true,
+            initializeDataTable('tableListProduct');
 
-            });
 
             $('#product').select2({
                 theme: "bootstrap-5",
@@ -234,7 +230,7 @@
 
         const getPrintPriceProduct = () => {
             $('#tableListProduct').DataTable().clear().draw();
-            $('#tableListProductBody').html(tableLoader(5, `{{ asset('assets/svg/Ellipsis-2s-48px.svg') }}`));
+            $('#tableListProductBody').html(tableLoader(6, `{{ asset('assets/svg/Ellipsis-2s-48px.svg') }}`));
 
             $.ajax({
                 type: "GET",
@@ -262,12 +258,9 @@
                                 .draw(
                                     false)
                                 .node();
-
-                            // $(rowNode).find('td').eq(0).addClass('text-center');
-                            // $(rowNode).find('td').eq(4).addClass('text-center text-nowrap');
                         });
                     } else {
-                        $('#tableListProductBody').html(tableEmpty(5,
+                        $('#tableListProductBody').html(tableEmpty(6,
                             'barang'));
                     }
                 }
