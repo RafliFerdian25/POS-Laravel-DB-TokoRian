@@ -61,7 +61,7 @@
                             <div class="row mb-3">
                                 <label for="filterCategory" class="col-sm-2 col-form-label">Kategori</label>
                                 <div class="col-sm-10">
-                                    <select class="form-select rounded__10 " name="filterCategory"
+                                    <select class="form-select rounded__10 " name="filterCategory" id="filterCategory"
                                         aria-label="Default select example">
                                         <option value="" selected>Pilih Kategori</option>
                                         @foreach ($categories as $category)
@@ -102,11 +102,11 @@
                     <table id="tableExpiredProduct" class="display nowrap" style="width:100%">
                         <thead>
                             <tr>
-                                <th>Barcode</th>
-                                <th>Nama Barang</th>
-                                <th>Stok</th>
-                                <th>Tanggal Kadaluarsa</th>
-                                <th>Aksi</th>
+                                <th class="text-center">Barcode</th>
+                                <th class="text-center">Nama Barang</th>
+                                <th class="text-center">Stok</th>
+                                <th class="text-center">Tanggal Kadaluarsa</th>
+                                <th class="text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="tableExpiredProductBody">
@@ -155,21 +155,27 @@
     @endif
     <script>
         $(document).ready(function() {
-            $("#tableExpiredProduct").DataTable({
-                responsive: true,
+            var configDataTable = {
                 columnDefs: [{
                     targets: [3], // Kolom "Tanggal" ada di indeks 1 (0-indexed)
                     type: "date-eu" // Tentukan tipe pengurutan khusus untuk format "DD/MM/YYYY",
-                   }],
+                }, {
+                    "targets": [0, 1, 2, 3, 4],
+                    "className": "text-center"
+                }],
                 order: [
                     [3, 'asc']
                 ],
-            });
+            }
+            initializeDataTable('tableExpiredProduct', configDataTable)
 
             getExpiredProduct();
         });
 
         const getExpiredProduct = () => {
+            // menonaktifkan form ketika proses pengambilan data
+            $('#formFilterProduct').find('input, select, button').attr('disabled', true);
+
             $('#tableExpiredProduct').DataTable().clear().draw();
             $('#tableExpiredProductBody').html(tableLoader(5, `{{ asset('assets/svg/Ellipsis-2s-48px.svg') }}`));
 
@@ -179,6 +185,8 @@
                 data: $('#formFilterProduct').serialize(),
                 dataType: "json",
                 success: function(response) {
+                    // mengaktifkan form ketika proses pengambilan data selesai
+                    $('#formFilterProduct').find('input, select, button').attr('disabled', false);
                     $('#countProduct').html(response.data.countProduct);
                     if (response.data.products.length > 0) {
                         $.each(response.data.products, function(index, product) {
@@ -206,6 +214,11 @@
                 }
             });
         }
+
+        $('#filterName').on('input', debounce(getExpiredProduct, 750));
+        $('#filterCategory').on('change', debounce(getExpiredProduct, 100));
+        $('#filterStartDate').on('input', debounce(getExpiredProduct, 750));
+        $('#filterEndDate').on('input', debounce(getExpiredProduct, 750));
 
         function showEdit(idBarang) {
             // Mengisi konten modal dengan data yang sesuai

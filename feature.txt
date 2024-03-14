@@ -3,9 +3,6 @@
 // Laporan Penjualan
 pisahkan pengambilan data (berdasarkan card)
 
-// Barang habis
-filter barang (nama, kategori, stok) langsung berubah ketika di input
-
 // navbar
 perbaiki active pada barang habis, kadaluarsa
 
@@ -66,6 +63,7 @@ delete data
 ✅ update barang habis
 ✅ Filter tanggal
 ✅ Kolom penjualan barang dan tanggal habis berdasarkan tanggal
+✅ filter barang (nama, kategori, stok) langsung berubah ketika di input
 
 // CRUD tabel barang
 ✅ read tabel barang
