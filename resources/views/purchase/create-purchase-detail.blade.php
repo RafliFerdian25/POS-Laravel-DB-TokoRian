@@ -251,7 +251,7 @@
                 data: $('#formFilterProduct').serialize(),
                 dataType: "json",
                 success: function(response) {
-                    $('#sumAmountPurchase').html(response.data.sumAmountPurchase);
+                    $('#sumAmountPurchase').html(formatCurrency(response.data.sumAmountPurchase));
                     $('#countProduct').html(response.data.countProduct);
                     if (response.data.purchaseDetails.length > 0) {
                         printPriceProduct = response.data.purchaseDetails.map((purchase) => {
