@@ -168,7 +168,7 @@ const calculateAverage = (data) => {
     return parseFloat(average.toFixed(0));
 }
 
-const debounce = (func, delay) => {
+const debounce = (func, delay, formId = "") => {
     let timeoutId;
     return function () {
         const context = this;
@@ -179,6 +179,11 @@ const debounce = (func, delay) => {
         }, delay);
     };
 }
+
+// Menonaktifkan semua input, select, dan date dalam sebuah form
+const disableFormElements = (formId, disabled) => {
+    $(`#${formId} input, #${formId} select`).prop('disabled', disabled);
+};
 
 const initializationSelect2Merk = (selectId, url) => {
     $(`#${selectId}`).select2({

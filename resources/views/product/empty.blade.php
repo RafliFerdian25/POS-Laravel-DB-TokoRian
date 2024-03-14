@@ -178,8 +178,8 @@
         });
 
         const getEmptyProduct = (typeReport) => {
-            // menonaktifkan form ketika proses pengambilan data
-            $('#formFilterProduct').find('input, select, button').prop('disabled', true);
+            var formData = $('#formFilterProduct').serialize();
+            disableFormElements('formFilterProduct', true)
             // mengosongkan inputan tanggal
             if (typeReport == 'harian') {
                 $('#month').val(null);
@@ -194,12 +194,10 @@
             $.ajax({
                 type: "GET",
                 url: `{{ route('barang.habis.data') }}`,
-                data: $('#formFilterProduct').serialize(),
+                data: formData,
                 dataType: "json",
                 success: function(response) {
-                    // mengaktifkan form ketika proses pengambilan data selesai
-                    $('#formFilterProduct').find('input, select, button').prop('disabled', false);
-
+                    disableFormElements('formFilterProduct', false)
                     $('#countProduct').html(response.data.countProduct);
                     $('#dateString').html(response.data.dateString);
                     if (response.data.products.length > 0) {
@@ -212,8 +210,7 @@
                                 product.last_product_sold,
                                 product.total_product_sold,
                                 `<button class="btn btn-sm btn-warning" onclick="showEdit('${product.IdBarang}')">Edit</button>
-                                ${product.print_price.length > 0 ? '':`<button class="btn btn-sm btn-primary" onclick="addShopping('${product.IdBarang}')">Tambah Belanja</button>`}
-                                `
+                                ${product.print_price.length > 0 ? '':`<button class="btn btn-sm btn-primary" onclick="addShopping('${product.IdBarang}')">Tambah Belanja</button>`}`
                             ];
                             var rowNode = $('#tableEmptyProduct').DataTable().row.add(rowData)
                                 .draw(
@@ -232,7 +229,7 @@
         }
 
         $('#filterName').on('input', debounce(getEmptyProduct, 750));
-        $('#filterCategory').on('change', debounce(getEmptyProduct, 100));
+        $('#filterCategory').on('change', debounce(getEmptyProduct, 750));
         $('#filterStock').on('input', debounce(getEmptyProduct, 750));
 
         function showEdit(idBarang, status) {

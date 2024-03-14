@@ -6,9 +6,6 @@ pisahkan pengambilan data (berdasarkan card)
 // navbar
 perbaiki active pada barang habis, kadaluarsa
 
-// Laporan Barang Kadaluarsa
-filter nama, kategori langsung berubah ketika di input
-
 // Pembukaan kardus barang
 read Pembukaan kardus barang
 form buka kardus (nama barang retail, stok sebelum - disable, isi kardus, harga pokok retail, harga jual retail)

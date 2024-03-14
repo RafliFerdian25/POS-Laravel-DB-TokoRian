@@ -381,6 +381,7 @@ class ProductController extends Controller
      */
     public function emptyData(Request $request)
     {
+        // dd($request->all());
         $typeReport = null;
         $date = null;
         $startDate = null;

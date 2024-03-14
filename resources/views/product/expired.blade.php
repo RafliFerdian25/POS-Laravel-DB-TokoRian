@@ -173,8 +173,9 @@
         });
 
         const getExpiredProduct = () => {
+            var formData = $('#formFilterProduct').serialize();
             // menonaktifkan form ketika proses pengambilan data
-            $('#formFilterProduct').find('input, select, button').attr('disabled', true);
+            disableFormElements('formFilterProduct', true)
 
             $('#tableExpiredProduct').DataTable().clear().draw();
             $('#tableExpiredProductBody').html(tableLoader(5, `{{ asset('assets/svg/Ellipsis-2s-48px.svg') }}`));
@@ -182,11 +183,11 @@
             $.ajax({
                 type: "GET",
                 url: `{{ route('barang.kadaluarsa.data') }}`,
-                data: $('#formFilterProduct').serialize(),
+                data: formData,
                 dataType: "json",
                 success: function(response) {
                     // mengaktifkan form ketika proses pengambilan data selesai
-                    $('#formFilterProduct').find('input, select, button').attr('disabled', false);
+                    disableFormElements('formFilterProduct', false)
                     $('#countProduct').html(response.data.countProduct);
                     if (response.data.products.length > 0) {
                         $.each(response.data.products, function(index, product) {
