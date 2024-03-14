@@ -26,16 +26,36 @@
         <!-- END TITLE -->
         <!-- CARD DASHBOARD -->
         <div class="row">
-            <!-- total pendapatan -->
+            <!-- total barang aktif -->
             <div class="col-sm-6 col-md-4 col-xl-3 p-3">
                 <div class="card mb-0 widget-content row">
                     <div class="content">
                         <div class="widget-content-left row mb-2">
                             <i class="pe-7s-cash col-2" style="font-size: 30px;"></i>
-                            <div class="widget-heading col-10 widget__title">Total Barang</div>
+                            <div class="widget-heading col-10 widget__title">Total Barang Aktif</div>
                         </div>
                         <div class="widget-content-right">
                             <div class="widget-numbers mb-2"><span id="countProduct">-</span></div>
+                            <div class="perubahan row">
+                                {{-- <div class="widget-subheading col-10" id="total_pendapatan">
+                                    -2000000
+                                </div> --}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end total barang aktif -->
+            <!-- jumlah stok barang -->
+            <div class="col-sm-6 col-md-4 col-xl-3 p-3">
+                <div class="card mb-0 widget-content row">
+                    <div class="content">
+                        <div class="widget-content-left row mb-2">
+                            <i class="pe-7s-cash col-2" style="font-size: 30px;"></i>
+                            <div class="widget-heading col-10 widget__title">Jumlah Stok Barang</div>
+                        </div>
+                        <div class="widget-content-right">
+                            <div class="widget-numbers mb-2"><span id="countStockProduct">-</span></div>
                             <div class="perubahan row">
                                 {{-- <div class="widget-subheading col-10" id="total_pendapatan">
                                     -2000000
@@ -58,7 +78,8 @@
                         <div class="modal-body row">
                             <div class="col-md-6">
                                 <div class="row mb-3">
-                                    <label for="filterProduct" class="col-sm-2 col-form-label">Nama / Barcode</label>
+                                    <label for="filterProduct" class="col-sm-2 col-form-label">Nama /
+                                        Barcode</label>
                                     <div class="col-sm-10">
                                         <input type="text" class="form-control rounded__10 " id="filterProduct"
                                             name="filterProduct">
@@ -72,7 +93,8 @@
                                             aria-label="Default select example" onchange="getProducts();">
                                             <option value="" selected>Pilih Kategori</option>
                                             @foreach ($categories as $category)
-                                                <option value="{{ $category->ID }}">{{ $category->keterangan }}</option>
+                                                <option value="{{ $category->ID }}">{{ $category->keterangan }}
+                                                </option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -175,7 +197,7 @@
 
         const getProducts = () => {
             $('#tableProduct').DataTable().clear().draw();
-            $('#tableProductBody').html(tableLoader(11));
+            $('#tableProductBody').html(tableLoader(12));
 
             $.ajax({
                 type: "GET",
@@ -183,7 +205,8 @@
                 data: $('#formFilterProduct').serialize(),
                 dataType: "json",
                 success: function(response) {
-                    $('#countProduct').html(response.data.countProduct);
+                    $('#countProduct').html(response.data.countProduct.count);
+                    $('#countStockProduct').html(response.data.countProduct.totalStock);
                     if (response.data.products.length > 0) {
                         $.each(response.data.products, function(index, product) {
                             var rowData = [
@@ -212,7 +235,7 @@
                             // $(rowNode).find('td').eq(4).addClass('text-center text-nowrap');
                         });
                     } else {
-                        $('#tableProductBody').html(tableEmpty(11,
+                        $('#tableProductBody').html(tableEmpty(12,
                             'barang'));
                     }
                 }

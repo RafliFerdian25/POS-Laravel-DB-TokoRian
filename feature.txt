@@ -3,10 +3,6 @@
 // Laporan Penjualan
 pisahkan pengambilan data (berdasarkan card)
 
-// Barang
-Card Total barang aktif (stok > 0)
-Card Jumlah Stok barang 
-
 // Barang habis
 filter barang (nama, kategori, stok) langsung berubah ketika di input
 
@@ -76,6 +72,8 @@ delete data
 ✅ create tabel barang
 ✅ update tabel barang
 ✅ delete tabel barang
+✅ Card Total barang aktif (stok > 0)
+✅ Card Jumlah Stok barang 
 
 // View Laporan Penjualan Berdasarkan Kategori
 ✅ Filter Tanggal 

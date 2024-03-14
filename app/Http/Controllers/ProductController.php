@@ -38,17 +38,19 @@ class ProductController extends Controller
     }
     public function data(Request $request)
     {
-        $query = Product::with('merk')->when($request->filterProduct != null, function ($query) use ($request) {
+        $products = Product::with('merk')->when($request->filterProduct != null, function ($query) use ($request) {
             return $query->where('nmBarang', 'LIKE', '%' . $request->filterProduct . '%')->orWhere('IdBarang', 'LIKE', '%' . $request->filterProduct . '%');
         })
             ->when($request->filterCategory != null, function ($query) use ($request) {
                 return $query->where('jenis',  $request->filterCategory);
             })
             ->orderBy('nmBarang', 'asc')
-            ->limit(100);
+            ->limit(100)
+            ->get();
 
-        $products = $query->get();
-        $countProduct = $query->count();
+        $countProduct = Product::selectRaw('count(*) as count, sum(stok) as totalStock')
+            ->where('stok', '>', 0)
+            ->first();
 
         return ResponseFormatter::success(
             [
