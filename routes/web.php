@@ -144,13 +144,13 @@ Route::controller(MerkController::class)->group(function () {
 // Supplier
 Route::controller(SupplierController::class)->group(function () {
     Route::get('/supplier', 'index')->name('supplier.index');
-    Route::get('/supplier/data', 'indexData')->name('supplier.data');
+    Route::get('/supplier/data', 'data')->name('supplier.data');
     Route::get('/supplier/cari/data', 'searchData')->name('supplier.search.data');
     Route::get('/supplier/create', 'create')->name('supplier.create');
     Route::post('/supplier', 'store')->name('supplier.store');
-    Route::get('/supplier/{supplier:id}/edit', 'edit')->name('supplier.edit');
-    Route::put('/supplier/{supplier:id}', 'update')->name('supplier.update');
-    Route::delete('/supplier/{supplier:id}', 'destroy')->name('supplier.destroy');
+    Route::get('/supplier/{supplier:IdSupplier}/edit', 'edit')->name('supplier.edit');
+    Route::put('/supplier/{supplier:IdSupplier}', 'update')->name('supplier.update');
+    Route::delete('/supplier/{supplier:IdSupplier}', 'destroy')->name('supplier.destroy');
 });
 
 // Barang Dicari

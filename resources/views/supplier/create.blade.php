@@ -39,7 +39,7 @@
                             <label for="kota" class="col-sm-2 col-form-label">Kota <span
                                     class="text-danger">*</span></label>
                             <div class="col-sm-10">
-                                <input required type="text" maxlength="100" class="form-control rounded__10"
+                                <input required type="text" maxlength="25" class="form-control rounded__10"
                                     id="kota" name="kota">
                             </div>
                         </div>

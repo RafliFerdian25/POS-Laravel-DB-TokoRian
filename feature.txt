@@ -3,8 +3,6 @@
 // Laporan Penjualan
 pisahkan pengambilan data (berdasarkan card)
 
-// navbar
-perbaiki active pada barang habis, kadaluarsa
 
 // Pembukaan kardus barang
 read Pembukaan kardus barang

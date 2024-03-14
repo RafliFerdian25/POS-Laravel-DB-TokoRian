@@ -19,15 +19,22 @@ class SupplierController extends Controller
      */
     public function index()
     {
-        $suppliers = Supplier::all();
         $title = "POS TOKO | Supplier";
         $data = [
             "title" => $title,
-            "suppliers" => $suppliers,
             "currentNav" => "supplier"
         ];
 
         return view("supplier.index", $data);
+    }
+
+    public function data()
+    {
+        $suppliers = Supplier::all();
+
+        return ResponseFormatter::success([
+            "suppliers" => $suppliers
+        ], "Data berhasil diambil");
     }
 
     /**
@@ -100,17 +107,11 @@ class SupplierController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Supplier $supplier)
     {
-        $title = "POS TOKO | Supplier";
-        $supplier = Supplier::findOrFail($id);
-        $data = [
-            "title" => $title,
-            "supplier" => $supplier,
-            "currentNav" => "supplier"
-        ];
-
-        return view("supplier.update", $data);
+        return ResponseFormatter::success([
+            "supplier" => $supplier
+        ], "Data berhasil diambil");
     }
 
     /**
@@ -120,17 +121,37 @@ class SupplierController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Supplier $supplier)
     {
-        $validated = $request->validate([
-            "name" => "required",
+        $rules = [
+            "name" => "required|max:100",
+            "product" => "required|max:100",
             "address" => "required",
-            "phone" => "required|numeric|unique:suppliers,phone," . $id,
+            "city" => "required|max:25",
+            "phone" => "required|numeric|unique:t_supplier,telp," . $supplier->IdSupplier . ",IdSupplier",
+            "email" => "required|email|unique:t_supplier,email," . $supplier->IdSupplier . ",IdSupplier"
+        ];
+
+        $validated = Validator::make($request->all(), $rules);
+
+        if ($validated->fails()) {
+            return ResponseFormatter::error([
+                "error" => $validated->errors()->first()
+            ], "Data gagal divalidasi", 422);
+        }
+
+        $supplier->update([
+            "Nama" => $request->name,
+            "Produk" => $request->product,
+            "alamat" => $request->address,
+            "kota" => $request->city,
+            "telp" => $request->phone,
+            "email" => $request->email
         ]);
 
-        Supplier::whereId($id)->update($validated);
-
-        return redirect()->route("supplier.index")->with("success", "Data Supplier Berhasil Diubah");
+        return ResponseFormatter::success([
+            "message" => "Data Supplier Berhasil Diubah",
+        ], "Data berhasil diubah");
     }
 
     /**
@@ -143,7 +164,9 @@ class SupplierController extends Controller
     {
         Supplier::destroy($id);
 
-        return redirect()->route("supplier.index")->with("success", "Data Supplier Berhasil Dihapus");
+        return ResponseFormatter::success([
+            "message" => "Data Supplier Berhasil Dihapus"
+        ], "Data berhasil dihapus");
     }
 
     /**
