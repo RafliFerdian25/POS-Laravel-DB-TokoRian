@@ -31,7 +31,7 @@ class ProductSearchController extends Controller
             'currentNav' => 'productSearch',
         ];
 
-        return view('product.productSearch', $data);
+        return view('product.searched', $data);
     }
 
     public function indexData(Request $request)

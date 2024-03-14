@@ -1,15 +1,7 @@
 ## BACKLOG ##
 
-// TABEL BARANG PERNAH DICARI
-detail barang (Card: jumlah barang dicari. informasi barang. grafik jumlah dicari: bulanan, harian. Tabel: transaksi penjualan) (rentang tanggal)
-
-
 // Laporan Penjualan
 pisahkan pengambilan data (berdasarkan card)
-
-// Kategori
-Edit Kategori
-Delete Kategori
 
 // Barang
 Card Total barang aktif (stok > 0)
@@ -142,3 +134,7 @@ delete data
 ✅ index (Card: jumlah barang dicari. Tabel: transaksi barang dicari, daftar barang dicari dengan jumlah) (rentang tanggal)
 ✅ create barang dicari
 ✅ delete barang dicari
+
+// Kategori
+✅ Edit Kategori
+✅ Delete Kategori
