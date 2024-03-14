@@ -7,7 +7,6 @@ detail barang (Card: jumlah barang dicari. informasi barang. grafik jumlah dicar
 // Laporan Penjualan
 pisahkan pengambilan data (berdasarkan card)
 
-
 // Kategori
 Edit Kategori
 Delete Kategori

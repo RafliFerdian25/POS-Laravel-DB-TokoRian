@@ -774,7 +774,7 @@
                         showConfirmButton: false,
                         timer: 1500
                     })
-                    $('#buttonDownloadData').html('Download Data');
+                    $('#buttonDownloadData').html('Sinkron Data');
                     $('#buttonDownloadData').prop('disabled', false);
                     getShoppingProduct()
                 },
@@ -783,12 +783,12 @@
                         Swal.fire({
                             icon: 'error',
                             title: 'Gagal',
-                            text: `Download Data Gagal. ${xhr.responseJSON.meta.message} Error: ${xhr.responseJSON.data.error}`,
+                            text: `Sinkron Data Gagal. ${xhr.responseJSON.meta.message} Error: ${xhr.responseJSON.data.error}`,
                             showConfirmButton: false,
                             timer: 1500
                         })
                     }
-                    $('#buttonDownloadData').html('Download Data');
+                    $('#buttonDownloadData').html('Sinkron Data');
                     $('#buttonDownloadData').prop('disabled', false);
                     return false;
                 },

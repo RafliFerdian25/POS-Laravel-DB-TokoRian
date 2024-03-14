@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Merk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
 {
@@ -26,6 +27,14 @@ class CategoryController extends Controller
         ];
 
         return view('category.index', $data);
+    }
+
+    public function data()
+    {
+        $categories = Category::withCount('products')->get();
+        return ResponseFormatter::success([
+            'categories' => $categories
+        ], 'Kategori berhasil diambil');
     }
 
     /**
@@ -75,18 +84,12 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Category $category)
     {
-        // menyeleksi data product berdasarkan id yang dipilih
-        $category = DB::table('categories')->find($id);
-        $title = 'POS TOKO | Kategori';
-        $data = [
-            'category' => $category,
-            'title' => $title,
-            'currentNav' => 'category',
-        ];
-
-        return view('category.update', $data);
+        // menyeleksi data kategori berdasarkan id yang dipilih
+        return ResponseFormatter::success([
+            'category' => $category
+        ], 'Kategori berhasil diambil');
     }
 
     /**
@@ -96,26 +99,31 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Category $category)
     {
         // menyeleksi data yang akan diinputkan
-        if ($request->id == $id) {
-            $validated = $request->validate([
-                'id' => 'required',
-                'name' => 'required',
-            ]);
-        } else {
-            $validated = $request->validate([
-                'id' => 'required|unique:categories',
-                'name' => 'required',
-            ]);
+        $rules = [
+            'id' => 'required|unique:p_jenis,id,' . $category->ID . ',ID',
+            'name' => 'required',
+        ];
+
+        $validated = Validator::make($request->all(), $rules);
+
+        if ($validated->fails()) {
+            return ResponseFormatter::error([
+                'message' => $validated->errors()->first()
+            ], 'Gagal mengupdate kategori', 422);
         }
-        $validated['id'] = strtoupper($validated['id']);
-        // mengupdate data di table Categoriess
-        Category::whereId($id)->update($validated);
+
+        // mengubah data kategori 
+        $category->update([
+            'ID' => strtoupper($request->id),
+            'jenis' => strtoupper($request->id),
+            'keterangan' => $request->name,
+        ]);
 
         // jika data berhasil ditambahkan, akan kembali ke halaman utama
-        return redirect()->route('category.index')->with('success', 'Kategori berhasil diupdate');
+        return ResponseFormatter::success(null, 'Kategori berhasil diubah');
     }
     /**
      * Remove the specified resource from storage.
