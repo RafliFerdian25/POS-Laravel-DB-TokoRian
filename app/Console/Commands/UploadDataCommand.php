@@ -119,7 +119,6 @@ class UploadDataCommand extends Command
         // Barang Dicari
         $this->info('Data Barang Dicari Mulai Di Upload');
         $searchProducts = DB::table('t_barang_dicari')->get();
-        dd($searchProducts);
 
         $response = Http::post(env('HOSTING_DOMAIN') . '/api/upload-data/search-product', [
             'searchProducts' => $searchProducts
