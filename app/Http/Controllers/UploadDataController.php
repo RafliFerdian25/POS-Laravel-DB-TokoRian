@@ -121,8 +121,8 @@ class UploadDataController extends Controller
             foreach ($searchProducts as $data) {
                 DB::table('t_barang_dicari')->insert(
                     [
-                        'id' => $data['id'],
                         'product_id' => $data['product_id'],
+                        'name' => $data['name'],
                         'created_at' => $data['created_at'],
                         'updated_at' => $data['updated_at'],
                     ],

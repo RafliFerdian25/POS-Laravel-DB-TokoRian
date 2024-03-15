@@ -6,3 +6,6 @@ serve:
 
 ip: 
 	@ipconfig | findstr IPv4
+
+upload:
+	@php artisan upload:data

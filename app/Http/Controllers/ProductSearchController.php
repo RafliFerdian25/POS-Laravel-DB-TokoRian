@@ -70,6 +70,7 @@ class ProductSearchController extends Controller
 
         return ResponseFormatter::success([
             'products' => $products,
+            'dateString' => $typeReport == 'Bulanan' ? $threeMonthAgo->format('F Y') . " - " . $date->format('F Y') : $startDate->copy()->format('d M Y') . ' - ' . $endDate->copy()->format('d M Y'),
         ], 'Data berhasil diambil');
     }
 

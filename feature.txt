@@ -29,9 +29,9 @@ update penjualan gas
 delete penjualan gas
 
 // Supplier
-buatkan data table pada data 
-edit data
-delete data
+✅ buatkan datatable pada data 
+✅ edit data
+✅ delete data
 
 ## DONE ##
 ✅ perubahan NULL pada tanggal kadaluarsa product
