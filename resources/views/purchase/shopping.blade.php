@@ -166,12 +166,25 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            $('#tableShoppingProduct').DataTable({
-                pageLength: 10,
-                info: false,
-                responsive: true,
-
-            })
+            var configDataTable = {
+                "columnDefs": [{
+                    "targets": [3, 4, 6],
+                    "className": "text-center"
+                }, {
+                    // Mengatur aturan pengurutan kustom untuk kolom keempat (index 3)
+                    "targets": [5, 7],
+                    "render": function(data, type, row) {
+                        // Memeriksa tipe data, jika tampilan atau filter
+                        if (type === 'display' || type === 'filter') {
+                            // Memformat angka menggunakan fungsi formatCurrency
+                            return formatCurrency(data);
+                        }
+                        // Jika tipe data selain tampilan atau filter, kembalikan data tanpa perubahan
+                        return data;
+                    }
+                }],
+            }
+            initializeDataTable('tableShoppingProduct', configDataTable)
 
             $('#addProduct').select2({
                 theme: "bootstrap-5",
@@ -409,9 +422,9 @@
                                 product.nmBarang,
                                 product.product.stok,
                                 product.satuan,
-                                formatCurrency(product.hargaPokok),
+                                product.hargaPokok,
                                 product.jumlah,
-                                formatCurrency(product.total),
+                                product.total,
                                 `<button class="btn btn-danger rounded-circle px-2" onclick="deleteShoppingProduct('${product.IdBarang}','${product.nmBarang}')"><i class="bi bi-trash"></i></button>
                                     <button class="btn btn-primary rounded-circle px-2" onclick="editShoppingProduct('${product.IdBarang}')"><i class="bi bi-pencil"></i></button>`
                             ]).draw(false).node();

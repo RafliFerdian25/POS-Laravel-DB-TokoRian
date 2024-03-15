@@ -167,14 +167,25 @@
     @endif
     <script>
         $(document).ready(function() {
-            $('#tableListProduct').DataTable({
-                "scrollX": true,
+            var configDataTable = {
                 "columnDefs": [{
-                    "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                    "targets": "_all",
                     "className": "text-center"
+                }, {
+                    // Mengatur aturan pengurutan kustom untuk kolom keempat (index 3)
+                    "targets": [5, 6, 7, 9],
+                    "render": function(data, type, row) {
+                        // Memeriksa tipe data, jika tampilan atau filter
+                        if (type === 'display' || type === 'filter') {
+                            // Memformat angka menggunakan fungsi formatCurrency
+                            return formatCurrency(data);
+                        }
+                        // Jika tipe data selain tampilan atau filter, kembalikan data tanpa perubahan
+                        return data;
+                    }
                 }],
-
-            })
+            }
+            initializeDataTable('tableListProduct', configDataTable)
 
             $('#product_id').select2({
                 theme: "bootstrap-5",

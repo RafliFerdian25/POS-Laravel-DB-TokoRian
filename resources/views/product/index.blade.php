@@ -183,13 +183,28 @@
     <script>
         $(document).ready(function() {
             // datatable reponsive
-            var configDatatable = {
-                columnDefs: [{
+            var configDataTable = {
+                "columnDefs": [{
+                    "targets": "_all",
+                    "className": "text-center"
+                }, {
+                    // Mengatur aturan pengurutan kustom untuk kolom keempat (index 3)
+                    "targets": [4, 5, 6],
+                    "render": function(data, type, row) {
+                        // Memeriksa tipe data, jika tampilan atau filter
+                        if (type === 'display' || type === 'filter') {
+                            // Memformat angka menggunakan fungsi formatCurrency
+                            return formatCurrency(data);
+                        }
+                        // Jika tipe data selain tampilan atau filter, kembalikan data tanpa perubahan
+                        return data;
+                    }
+                }, {
                     targets: [8], // Kolom "Tanggal" ada di indeks 1 (0-indexed)
                     type: "date-eu" // Tentukan tipe pengurutan khusus untuk format "DD/MM/YYYY"
                 }],
-            };
-            initializeDataTable("tableProduct", configDatatable);
+            }
+            initializeDataTable("tableProduct", configDataTable);
 
             // Do this before you initialize any of your modals
             getProducts();
@@ -214,16 +229,17 @@
                                 product.IdBarang,
                                 product.nmBarang,
                                 product.satuan,
-                                formatCurrency(product.hargaPokok),
-                                formatCurrency(product.hargaJual),
-                                formatCurrency(product.hargaGrosir),
+                                product.hargaPokok,
+                                product.hargaJual,
+                                product.hargaGrosir,
                                 product.stok,
                                 product.expDate != null ? moment(product.expDate, 'YYYY-MM-DD')
                                 .format(
                                     'DD-MM-YYYY') : '-',
                                 product.jenis,
                                 product.merk.merk,
-                                `<button class="btn btn-sm btn-warning" onclick="showEdit('${product.IdBarang}')">Edit</button>
+                                `<a href="{{ url('/laporan/barang/${product.IdBarang}') }}" class="btn btn-sm btn-primary">Laporan</a>
+                                <button class="btn btn-sm btn-warning" onclick="showEdit('${product.IdBarang}')">Edit</button>
                                 <button class="btn btn-sm btn-danger" onclick="deleteProduct('${product.IdBarang}', '${product.nmBarang}')"><i class="bi bi-trash"></i></button>`
                             ];
                             var rowNode = $('#tableProduct').DataTable().row.add(rowData)

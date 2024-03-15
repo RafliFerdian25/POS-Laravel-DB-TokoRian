@@ -103,7 +103,25 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            initializeDataTable('tablePurchase');
+            var configDataTable = {
+                "columnDefs": [{
+                    "targets": "_all",
+                    "className": "text-center"
+                }, {
+                    // Mengatur aturan pengurutan kustom untuk kolom keempat (index 3)
+                    "targets": [4],
+                    "render": function(data, type, row) {
+                        // Memeriksa tipe data, jika tampilan atau filter
+                        if (type === 'display' || type === 'filter') {
+                            // Memformat angka menggunakan fungsi formatCurrency
+                            return formatCurrency(data);
+                        }
+                        // Jika tipe data selain tampilan atau filter, kembalikan data tanpa perubahan
+                        return data;
+                    }
+                }],
+            }
+            initializeDataTable('tablePurchase', configDataTable);
 
             getPurchase();
         });
@@ -126,7 +144,7 @@
                                 purchase.id,
                                 purchase.supplier.Nama,
                                 purchase.total,
-                                formatCurrency(purchase.amount),
+                                purchase.amount,
                                 moment(purchase.created_at).format('DD-MM-Y'),
                                 `<button class="btn btn-danger rounded-circle px-2" onclick="deletePurchase('${purchase.id}','${purchase.supplier.Nama}')"><i class="bi bi-trash"></i></button>
                                     <a href="{{ url('pembelian/detail/${purchase.id}/create') }}" class="btn btn-primary rounded-circle px-2"><i class="bi bi-pencil"></i></a>`

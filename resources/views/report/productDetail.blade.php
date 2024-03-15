@@ -137,7 +137,7 @@
                 <div class="main-card mb-3 card">
                     <div class="card-body">
                         <h5 class="card-title text-center">Riwayat Penjualan</h5>
-                        <table class="display nowrap" style="100%" id="tableProductSaleTransaction">
+                        <table class="display nowrap" style="width:100%" id="tableProductSaleTransaction">
                             <thead>
                                 <tr>
                                     <th>No. Transaksi</th>
@@ -182,7 +182,7 @@
             <div class="main-card mb-3 card">
                 <div class="card-body">
                     <h5 class="card-title text-center">Riwayat Pembelian (Belanja)</h5>
-                    <table class="display nowrap" style="100%" id="tableProductPurchase">
+                    <table class="display nowrap" style="width:100%" id="tableProductPurchase">
                         <thead>
                             <tr>
                                 <th>No</th>
@@ -211,8 +211,42 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            initializeDataTable("tableProductSaleTransaction");
-            initializeDataTable("tableProductPurchase");
+            initializeDataTable("tableProductSaleTransaction", {
+                "columnDefs": [{
+                    "targets": "_all",
+                    "className": "text-center"
+                }, {
+                    // Mengatur aturan pengurutan kustom untuk kolom keempat (index 3)
+                    "targets": [3, 4],
+                    "render": function(data, type, row) {
+                        // Memeriksa tipe data, jika tampilan atau filter
+                        if (type === 'display' || type === 'filter') {
+                            // Memformat angka menggunakan fungsi formatCurrency
+                            return formatCurrency(data);
+                        }
+                        // Jika tipe data selain tampilan atau filter, kembalikan data tanpa perubahan
+                        return data;
+                    }
+                }]
+            });
+            initializeDataTable("tableProductPurchase", {
+                "columnDefs": [{
+                    "targets": "_all",
+                    "className": "text-center"
+                }, {
+                    // Mengatur aturan pengurutan kustom untuk kolom keempat (index 3)
+                    "targets": [5, 6, 8],
+                    "render": function(data, type, row) {
+                        // Memeriksa tipe data, jika tampilan atau filter
+                        if (type === 'display' || type === 'filter') {
+                            // Memformat angka menggunakan fungsi formatCurrency
+                            return formatCurrency(data);
+                        }
+                        // Jika tipe data selain tampilan atau filter, kembalikan data tanpa perubahan
+                        return data;
+                    }
+                }]
+            });
 
             getReportProduct()
         });
@@ -227,7 +261,8 @@
                     '7 Hari Terakhir': [moment().subtract(6, 'days'), moment()],
                     '30 Hari Terakhir': [moment().subtract(29, 'days'), moment()],
                     'Bulan Ini': [moment().startOf('month'), moment().endOf('month')],
-                    'Bulan Kemarin': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1,
+                    'Bulan Kemarin': [moment().subtract(1, 'month').startOf('month'), moment().subtract(
+                        1,
                         'month').endOf('month')],
                     'Tahun Ini': [moment().startOf('year'), moment().endOf('year')],
                     'Tahun Kemarin': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1,
@@ -350,9 +385,11 @@
                                 text: 'Tanggal'
                             },
                             type: 'datetime', // Menggunakan tipe datetime
-                            categories: response.data.transactionsByDate.map(transaction => Date
+                            categories: response.data.transactionsByDate.map(transaction =>
+                                Date
                                 .parse(
-                                    transaction.tanggal)), // Mengonversi tanggal ke timestamp
+                                    transaction.tanggal)
+                            ), // Mengonversi tanggal ke timestamp
                             accessibility: {
                                 rangeDescription: 'Date'
                             },
@@ -374,26 +411,30 @@
 
                         series: [{
                             name: 'Total Pendapatan',
-                            data: response.data.transactionsByDate.map(transaction =>
+                            data: response.data.transactionsByDate.map(
+                                transaction =>
                                 parseInt(
                                     transaction
                                     .income)),
                         }, {
                             name: 'Total Keuntungan',
-                            data: response.data.transactionsByDate.map(transaction =>
+                            data: response.data.transactionsByDate.map(
+                                transaction =>
                                 parseInt(
                                     transaction
                                     .profit))
                         }, {
                             name: 'Jumlah Barang Terjual',
-                            data: response.data.transactionsByDate.map(transaction =>
+                            data: response.data.transactionsByDate.map(
+                                transaction =>
                                 parseInt(
                                     transaction
                                     .total_product)),
                         }, {
                             name: 'Rata - Rata Pendapatan',
                             visible: false,
-                            data: response.data.transactionsByDate.map(transaction =>
+                            data: response.data.transactionsByDate.map(
+                                transaction =>
                                 calculateAverage(
                                     response.data.transactionsByDate
                                     .map(transaction => parseInt(transaction
@@ -402,7 +443,8 @@
                         }, {
                             name: 'Rata - Rata Keuntungan',
                             visible: false,
-                            data: response.data.transactionsByDate.map(transaction =>
+                            data: response.data.transactionsByDate.map(
+                                transaction =>
                                 calculateAverage(
                                     response.data.transactionsByDate
                                     .map(transaction => parseInt(transaction
@@ -411,7 +453,8 @@
                         }, {
                             name: 'Rata - Rata Barang Terjual',
                             visible: false,
-                            data: response.data.transactionsByDate.map(transaction =>
+                            data: response.data.transactionsByDate.map(
+                                transaction =>
                                 calculateAverage(
                                     response.data.transactionsByDate
                                     .map(transaction => parseInt(transaction
@@ -461,7 +504,8 @@
                                 text: 'Bulan'
                             },
                             type: 'datetime', // Menggunakan tipe datetime
-                            categories: response.data.transactionsByLastYear.map(transaction => Date
+                            categories: response.data.transactionsByLastYear.map(
+                                transaction => Date
                                 .parse(
                                     transaction.month)), // Mengonversi tanggal ke timestamp
                             accessibility: {
@@ -485,26 +529,30 @@
 
                         series: [{
                             name: 'Total Pendapatan',
-                            data: response.data.transactionsByLastYear.map(transaction =>
+                            data: response.data.transactionsByLastYear.map(
+                                transaction =>
                                 parseInt(
                                     transaction
                                     .income)),
                         }, {
                             name: 'Total Keuntungan',
-                            data: response.data.transactionsByLastYear.map(transaction =>
+                            data: response.data.transactionsByLastYear.map(
+                                transaction =>
                                 parseInt(
                                     transaction
                                     .profit))
                         }, {
                             name: 'Jumlah Barang Terjual',
-                            data: response.data.transactionsByLastYear.map(transaction =>
+                            data: response.data.transactionsByLastYear.map(
+                                transaction =>
                                 parseInt(
                                     transaction
                                     .total_product)),
                         }, {
                             name: 'Rata - Rata Pendapatan',
                             visible: false,
-                            data: response.data.transactionsByLastYear.map(transaction =>
+                            data: response.data.transactionsByLastYear.map(
+                                transaction =>
                                 calculateAverage(
                                     response.data.transactionsByLastYear
                                     .map(transaction => parseInt(transaction
@@ -513,7 +561,8 @@
                         }, {
                             name: 'Rata - Rata Keuntungan',
                             visible: false,
-                            data: response.data.transactionsByLastYear.map(transaction =>
+                            data: response.data.transactionsByLastYear.map(
+                                transaction =>
                                 calculateAverage(
                                     response.data.transactionsByLastYear
                                     .map(transaction => parseInt(transaction
@@ -522,7 +571,8 @@
                         }, {
                             name: 'Rata - Rata Barang Terjual',
                             visible: false,
-                            data: response.data.transactionsByLastYear.map(transaction =>
+                            data: response.data.transactionsByLastYear.map(
+                                transaction =>
                                 calculateAverage(
                                     response.data.transactionsByLastYear
                                     .map(transaction => parseInt(transaction
@@ -549,7 +599,8 @@
                     // table data barang terjual
                     $('#tableProductSaleTransaction').DataTable().clear().draw();
                     if (response.data.transactionsByNoTransaction.length > 0) {
-                        $.each(response.data.transactionsByNoTransaction, function(index, transaction) {
+                        $.each(response.data.transactionsByNoTransaction, function(index,
+                            transaction) {
                             var rowData = [
                                 transaction.noTransaksi,
                                 transaction.tanggal,
@@ -558,7 +609,8 @@
                                 transaction.profit,
                                 `<button class="btn btn-sm btn-warning" onclick="showEdit('${transaction.noTransaksi}')">Detail</button>`
                             ];
-                            var rowNode = $('#tableProductSaleTransaction').DataTable().row.add(
+                            var rowNode = $('#tableProductSaleTransaction').DataTable().row
+                                .add(
                                     rowData)
                                 .draw(
                                     false)
@@ -580,7 +632,8 @@
                                 index + 1,
                                 purchaseDetail.product_id,
                                 purchaseDetail.purchase.supplier.Nama,
-                                purchaseDetail.exp_date_old != null ? moment(purchaseDetail
+                                purchaseDetail.exp_date_old != null ? moment(
+                                    purchaseDetail
                                     .exp_date_old).format('DD-MM-YYYY') : '-',
                                 purchaseDetail.exp_date != null ? moment(purchaseDetail
                                     .exp_date).format('DD-MM-YYYY') : '-',

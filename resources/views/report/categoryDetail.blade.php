@@ -234,8 +234,20 @@
         $(document).ready(function() {
             var configDataTable = {
                 "columnDefs": [{
-                    "targets": [1, 2, 3, 4, 5],
+                    "targets": "_all",
                     "className": "text-center"
+                }, {
+                    // Mengatur aturan pengurutan kustom untuk kolom keempat (index 3)
+                    "targets": [3, 4],
+                    "render": function(data, type, row) {
+                        // Memeriksa tipe data, jika tampilan atau filter
+                        if (type === 'display' || type === 'filter') {
+                            // Memformat angka menggunakan fungsi formatCurrency
+                            return formatCurrency(data);
+                        }
+                        // Jika tipe data selain tampilan atau filter, kembalikan data tanpa perubahan
+                        return data;
+                    }
                 }],
             }
             initializeDataTable("tableProductSaleTransaction", configDataTable)
@@ -580,8 +592,8 @@
                                 transaction.noTransaksi,
                                 transaction.tanggal,
                                 transaction.total_product,
-                                formatCurrency(transaction.income),
-                                formatCurrency(transaction.profit),
+                                transaction.income,
+                                transaction.profit,
                                 `<button class="btn btn-sm btn-warning" onclick="showEdit('${transaction.noTransaksi}')">Detail</button>`
                             ];
                             var rowNode = $('#tableProductSaleTransaction').DataTable().row.add(

@@ -131,7 +131,25 @@
     @endif
     <script>
         $(document).ready(function() {
-            initializeDataTable('tableListProduct');
+            var configDataTable = {
+                "columnDefs": [{
+                    "targets": "_all",
+                    "className": "text-center"
+                }, {
+                    // Mengatur aturan pengurutan kustom untuk kolom keempat (index 3)
+                    "targets": [4],
+                    "render": function(data, type, row) {
+                        // Memeriksa tipe data, jika tampilan atau filter
+                        if (type === 'display' || type === 'filter') {
+                            // Memformat angka menggunakan fungsi formatCurrency
+                            return formatCurrency(data);
+                        }
+                        // Jika tipe data selain tampilan atau filter, kembalikan data tanpa perubahan
+                        return data;
+                    }
+                }],
+            }
+            initializeDataTable('tableListProduct', configDataTable);
 
 
             $('#product').select2({
@@ -250,7 +268,7 @@
                                 product.nmBarang,
                                 product.product.expDate != null ? moment(product.product
                                     .expDate).format('DD-MM-YYYY') : '-',
-                                formatCurrency(product.hargaJual),
+                                product.hargaJual,
                                 `<button class="btn btn-sm btn-warning" onclick="showEdit('${product.idBarang}')">Edit</button>
                                 <button class="btn btn-sm btn-danger" onclick="deleteProduct('${product.ID}')"><i class="bi bi-trash"></i></button>`
                             ];
