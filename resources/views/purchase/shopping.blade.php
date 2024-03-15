@@ -86,10 +86,10 @@
                         @csrf
                         <div class="modal-body">
                             <div class="row mb-3">
-                                <label for="filterBarcode" class="col-sm-2 col-form-label">Nama / Barcode</label>
+                                <label for="filterProduct" class="col-sm-2 col-form-label">Nama / Barcode</label>
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control rounded__10 " id="filterProduct"
-                                        name="filterBarcode">
+                                        name="filterProduct">
                                 </div>
                             </div>
                             <div class="row mb-3">
