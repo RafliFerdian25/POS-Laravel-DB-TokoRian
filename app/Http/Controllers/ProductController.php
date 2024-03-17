@@ -38,11 +38,13 @@ class ProductController extends Controller
     }
     public function data(Request $request)
     {
-        $products = Product::with('merk')->when($request->filterProduct != null, function ($query) use ($request) {
-            return $query->where('nmBarang', 'LIKE', '%' . $request->filterProduct . '%')->orWhere('IdBarang', 'LIKE', '%' . $request->filterProduct . '%');
-        })
+        $products = Product::with('merk')
             ->when($request->filterCategory != null, function ($query) use ($request) {
                 return $query->where('jenis',  $request->filterCategory);
+            })
+            ->when($request->filterProduct != null, function ($query) use ($request) {
+                return $query->where('nmBarang', 'LIKE', '%' . $request->filterProduct . '%')
+                    ->orWhere('IdBarang', 'LIKE', '%' . $request->filterProduct . '%');
             })
             ->orderBy('nmBarang', 'asc')
             ->limit(100)
