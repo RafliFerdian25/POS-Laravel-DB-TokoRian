@@ -289,6 +289,9 @@
                         return data;
                     }
                 }],
+                "order": [
+                    [1, "desc"]
+                ]
             }
             initializeDataTable("transactionByNoTransactions", configDataTable);
             getReportSale()
@@ -668,7 +671,7 @@
                                 transaction.total_product,
                                 transaction.income,
                                 transaction.profit,
-                                `<button class="btn btn-sm btn-warning" onclick="showEdit('${transaction.noTransaksi}')">Detail</button>`
+                                `<a href="{{ url('/laporan/penjualan/detail?id=${transaction.no_transaction}') }}" class="btn btn-sm btn-warning" >Detail</a>`
                             ];
                             var rowNode = $('#transactionByNoTransactions').DataTable().row
                                 .add(

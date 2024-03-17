@@ -36,6 +36,8 @@ Route::controller(ReportController::class)->group(function () {
     Route::get('/laporan/penjualan', 'ReportSale')->name('laporan.penjualan');
     Route::get('/laporan/penjualan/data', 'getReportSale')->name('laporan.penjualan.data');
     Route::get('/laporan/penjualan/kategori/data', 'getReportSaleByCategory')->name('report.sale.catgory.data');
+    Route::get('/laporan/penjualan/detail', 'ReportSaleDetail')->name('report.sale.detail');
+    Route::get('/laporan/penjualan/detail/data', 'getReportSaleDetail')->name('laporan.penjualan.detail.data');
     Route::get('/laporan/kategori', 'categoryIndex')->name('laporan.kategori');
     Route::get('/laporan/kategori/data', 'getCategoriesReport')->name('laporan.kategori.data');
     Route::get('/laporan/kategori/{category:ID}/detail', 'categoryDetail')->name('report.category.detail');

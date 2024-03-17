@@ -72,17 +72,4 @@ class SaleController extends Controller
 
         return view('sale.nota_kecil', compact('setting', 'penjualan', 'detail', 'title'));
     }
-
-    public function showReport($id)
-    {
-        $title = 'POS TOKO | Laporan';
-        $setting = Toko::first();
-        $sales = Kasir::join('sale_details', 'sales.id', '=', 'sale_details.sale_id')
-            ->join('products', 'sale_details.product_id', '=', 'products.id')
-            ->select('sales.id', 'sales.created_at', 'sale_details.*', 'products.name as product_name', 'products.purchase_price as purchase_price', 'products.selling_price as selling_price')
-            ->where("sales.id", $id)
-            ->get();
-        // dd($sales);
-        return view('report.show', compact('setting', 'sales', 'title'));
-    }
 }

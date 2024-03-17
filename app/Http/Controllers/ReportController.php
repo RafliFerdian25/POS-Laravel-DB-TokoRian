@@ -63,7 +63,7 @@ class ReportController extends Controller
             ->when($typeReport == 'Harian', function ($query) use ($startDate, $endDate) {
                 return $query->whereBetween('tanggal', [$startDate, $endDate]);
             })
-            ->orderBy('no_transaction', 'desc')
+            ->orderBy('date', 'desc')
             ->groupBy('no_transaction')
             ->get();
 
@@ -260,6 +260,37 @@ class ReportController extends Controller
                 'categories' => $categories
             ],
             'Data kategori berhasil diambil'
+        );
+    }
+
+    public function ReportSaleDetail(Request $request)
+    {
+        $title = 'Toko Rian | Detail Penjualan';
+        $sale = Kasir::where('noTransaksi', $request->id)->first();
+
+        $data = [
+            'title' => $title,
+            'sale' => $sale,
+            'currentNav' => 'reportSale',
+        ];
+
+        return view('report.saleDetail', $data);
+    }
+
+    public function getReportSaleDetail(Request $request)
+    {
+        $transactions = Kasir::where('noTransaksi', $request->id)->get();
+
+        $report = Kasir::selectRaw('sum(total) as income, sum(laba) as profit, COUNT(DISTINCT noTransaksi) as total_transaction, sum(jumlah) as total_product')
+            ->where('noTransaksi', $request->id)
+            ->first();
+
+        return ResponseFormatter::success(
+            [
+                'transactions' => $transactions,
+                'report' => $report,
+            ],
+            'Data penjualan berhasil diambil'
         );
     }
 
