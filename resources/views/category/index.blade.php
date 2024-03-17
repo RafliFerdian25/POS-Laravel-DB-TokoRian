@@ -107,7 +107,12 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            initializeDataTable('tableCategory');
+            initializeDataTable('tableCategory', {
+                "columnDefs": [{
+                    "targets": 3,
+                    "className": "text-center"
+                }],
+            });
 
             getCategories()
         });
@@ -128,7 +133,8 @@
                                 category.jenis,
                                 category.keterangan,
                                 category.products_count,
-                                `<button class="btn btn-link btn-lg float-left px-0" onclick="showEdit('${category.ID}')"><i class="fa fa-edit"></i></button>
+                                `<a href="{{ url('/laporan/kategori/${category.ID}/detail') }}" class="btn btn-sm btn-primary">Laporan</a>
+                                <button class="btn btn-sm btn-warning" onclick="showEdit('${category.ID}')">Edit</button>
                                 <button class="btn btn-sm btn-danger" onclick="deleteCategory('${category.ID}')"><i class="bi bi-trash"></i></button>`
                             ];
                             var rowNode = $('#tableCategory').DataTable().row.add(rowData)

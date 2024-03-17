@@ -58,7 +58,7 @@
                     <div class="main-card mb-3 card">
                         <div class="card-body">
                             <h5 class="card-title text-center font-size-xlg">Merk</h5>
-                            <table class="display nowrap table__merk" id="tableMerk">
+                            <table class="display nowrap" style="width:100%" id="tableMerk">
                                 <thead>
                                     <tr>
                                         <th>ID</th>
@@ -84,7 +84,12 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            $('#tableMerk').DataTable();
+            initializeDataTable('tableMerk', {
+                "columnDefs": [{
+                    "targets": 3,
+                    "className": "text-center"
+                }]
+            })
 
             getMerks();
         });

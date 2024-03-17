@@ -107,11 +107,11 @@
         </div>
         <!-- end Filter Barang -->
 
-        <!-- Barang -->
+        <!-- Penjualan Barang  -->
         <div class="productSection">
             <div class="main-card mb-3 card">
                 <div class="card-body">
-                    <h5 class="card-title text-center">Barang <span id="filterProductDate"></span></h5>
+                    <h5 class="card-title text-center">Penjualan Barang <span id="filterProductDate"></span></h5>
                     <table class="display nowrap" style="width:100%" id="tableProduct">
                         <thead>
                             <tr>
@@ -130,7 +130,7 @@
                 </div>
             </div>
         </div>
-        <!-- end barang terjual -->
+        <!-- end Penjualan barang -->
     </div>
 @endsection
 

@@ -395,7 +395,7 @@ class ReportController extends Controller
             $report->total_transaction = 0;
         }
 
-        $bestSellingProducts = Kasir::selectRaw('nmBarang as name, sum(jumlah) as total, idBarang')
+        $bestSellingProducts = Kasir::with('product:IdBarang,stok')->select('idBarang', 'nmBarang as name', DB::raw('COALESCE(SUM(t_kasir.jumlah), 0) as total'))
             ->whereHas('product', function ($query) use ($category) {
                 $query->where('jenis', $category->jenis);
             })
@@ -406,9 +406,9 @@ class ReportController extends Controller
             ->when($typeReport == 'Harian', function ($query) use ($startDate, $endDate) {
                 return $query->whereBetween('tanggal', [$startDate, $endDate]);
             })
-            ->groupBy('name', 'idBarang')
+            ->groupBy('nmBarang', 'idBarang')
             ->orderBy('total', 'desc')
-            ->limit(10)
+            ->limit(50)
             ->get();
 
         $transactionsByDate = Kasir::selectRaw('tanggal, sum(total) as income, sum(laba) as profit, sum(jumlah) as total_product')
@@ -438,21 +438,6 @@ class ReportController extends Controller
             ->orderBy('month', 'asc')
             ->get();
 
-        $transactionsByNoTransaction = Kasir::selectRaw('noTransaksi, max(tanggal) as tanggal, sum(total) as income, sum(laba) as profit, sum(jumlah) as total_product')
-            ->whereHas('product', function ($query) use ($category) {
-                $query->where('jenis', $category->jenis);
-            })
-            ->when($typeReport == 'Bulanan', function ($query) use ($date) {
-                return $query->whereMonth('tanggal', $date->month)
-                    ->whereYear('tanggal', $date->year);
-            })
-            ->when($typeReport == 'Harian', function ($query) use ($startDate, $endDate) {
-                return $query->whereBetween('tanggal', [$startDate, $endDate]);
-            })
-            ->groupBy('noTransaksi')
-            ->orderBy('tanggal', 'asc')
-            ->get();
-
         return ResponseFormatter::success(
             [
                 'dateString' => $typeReport == 'Bulanan' ? FormatDate::month($date->month) : $startDate->copy()->format('d M Y') . ' - ' . $endDate->copy()->format('d M Y'),
@@ -462,7 +447,6 @@ class ReportController extends Controller
                 'typeReport' => $typeReport,
                 'bestSellingProducts' => $bestSellingProducts,
                 'transactionsByDate' => $transactionsByDate,
-                'transactionsByNoTransaction' => $transactionsByNoTransaction,
                 'transactionsByLastYear' => $transactionsByLastYear,
             ],
             'Data kategori berhasil diambil'
