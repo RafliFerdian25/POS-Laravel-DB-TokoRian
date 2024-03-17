@@ -1,6 +1,7 @@
 ## BACKLOG ##
 
 // Laporan Penjualan
+detail riwayat penjualan
 pisahkan pengambilan data (berdasarkan card)
 
 
