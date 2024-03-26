@@ -630,7 +630,8 @@
                         $.each(response.data.purchaseDetails, function(index, purchaseDetail) {
                             var rowData = [
                                 index + 1,
-                                purchaseDetail.product_id,
+                                moment(
+                                    purchaseDetail.purchase.created_at).format('DD-MM-YYYY'),
                                 purchaseDetail.purchase.supplier.Nama,
                                 purchaseDetail.exp_date_old != null ? moment(
                                     purchaseDetail

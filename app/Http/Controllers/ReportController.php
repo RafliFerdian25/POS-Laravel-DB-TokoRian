@@ -678,7 +678,10 @@ class ReportController extends Controller
             ->orderBy('tanggal', 'asc')
             ->get();
 
-        $purchaseDetails = PurchaseDetail::with('purchase:id,supplier_id', 'purchase.supplier:IdSupplier,Nama')->where('product_id', $product->IdBarang)->get();
+        $purchaseDetails = PurchaseDetail::with('purchase:id,supplier_id,created_at', 'purchase.supplier:IdSupplier,Nama')
+            ->where('product_id', $product->IdBarang)
+            ->orderBy('id', 'desc')
+            ->get();
 
         return ResponseFormatter::success(
             [
