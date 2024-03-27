@@ -79,13 +79,13 @@ class ReportController extends Controller
             ->orderBy('tanggal', 'asc')
             ->get();
 
-        $transactionsByYear = Kasir::selectRaw('max(tanggal) as month, sum(total) as income, sum(laba) as profit, sum(jumlah) as total_product')
+        $transactionsByYear = Kasir::selectRaw('DATE_FORMAT(tanggal, "%m-%Y") as month, sum(total) as income, sum(laba) as profit, sum(jumlah) as total_product')
             ->when(true, function ($query) use ($date) {
                 $startOfTwoYearBefore = Carbon::parse($date->copy()->subYears(2))->startOfYear();
                 return $query->whereBetween('tanggal', [$startOfTwoYearBefore, $date->endOfMonth()]);
             })
-            ->groupBy(DB::raw('month(tanggal)'), DB::raw('year(tanggal)'))
-            ->orderBy('month', 'asc')
+            ->groupBy('month')
+            ->orderByRaw('MIN(tanggal)')
             ->get();
 
         $report = Kasir::selectRaw('sum(total) as income, sum(laba) as profit, COUNT(DISTINCT noTransaksi) as total_transaction, sum(jumlah) as total_product')

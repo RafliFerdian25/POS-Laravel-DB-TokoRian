@@ -475,7 +475,7 @@
                         },
                         tooltip: {
                             crosshairs: true,
-                            shared: true
+                            shared: true,
                         },
                         plotOptions: {
                             series: {
@@ -554,7 +554,7 @@
                             type: 'spline'
                         },
                         title: {
-                            text: 'Laporan Penjualan Bulanan ',
+                            text: 'Laporan Penjualan Bulanan',
                             align: 'center'
                         },
 
@@ -574,9 +574,8 @@
                                 text: 'Bulan'
                             },
                             type: 'datetime', // Menggunakan tipe datetime
-                            categories: response.data.transactionsByYear.map(transaction => Date
-                                .parse(
-                                    transaction.month)), // Mengonversi tanggal ke timestamp
+                            categories: response.data.transactionsByYear.map(transaction =>
+                                transaction.month), // Mengonversi tanggal ke timestamp
                             accessibility: {
                                 rangeDescription: 'Date'
                             },
