@@ -365,7 +365,7 @@
                                     <div class="col-sm-10">
                                         <input required value="${response.data.product.hargaJual}" type="number"
                                             class="form-control rounded__10 "
-                                            min="0" id="sellingPrice" name="sellingPrice">
+                                            min="0" id="sellingPrice" name="sellingPrice" step="500">
                                     </div>
                                 </div>
                             </div>

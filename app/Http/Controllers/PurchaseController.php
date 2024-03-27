@@ -321,6 +321,13 @@ class PurchaseController extends Controller
             }
             $product->save();
 
+            // update data cetak harga
+            $printPrinceProduct = Barcode::where('IdBarang', $product->IdBarang)->first();
+            if ($printPrinceProduct != null) {
+                $printPrinceProduct->hargaJual = $request->sellingPrice;
+                $printPrinceProduct->save();
+            }
+
             // update data pembelian
             $purchase = Purchase::find($purchaseDetail->purchase_id);
             $purchase->amount -= $purchaseDetail->sub_amount;
