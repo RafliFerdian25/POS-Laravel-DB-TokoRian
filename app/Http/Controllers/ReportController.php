@@ -526,7 +526,7 @@ class ReportController extends Controller
             $typeReport = "Bulanan";
         }
 
-        $query = Product::select('t_barang.IdBarang', 't_barang.nmBarang', 'expDate', 'stok', DB::raw('COALESCE(SUM(t_kasir.jumlah), 0) as jumlah'))
+        $query = Product::select('t_barang.IdBarang', 't_barang.nmBarang', 'expDate', 'stok', DB::raw('COALESCE(SUM(t_kasir.jumlah), 0) as sold'), DB::raw('COALESCE(SUM(t_kasir.total), 0) as income'), DB::raw('COALESCE(SUM(t_kasir.laba), 0) as profit'))
             ->leftJoin('t_kasir', function ($join) use ($typeReport, $date, $startDate, $endDate) {
                 $join->on('t_kasir.idBarang', '=', 't_barang.IdBarang')
                     ->when($typeReport == 'Bulanan', function ($query) use ($date) {
@@ -552,7 +552,7 @@ class ReportController extends Controller
             ->havingRaw('SUM(t_kasir.jumlah) > 0')
             ->count();
         $products = $query->groupBy('t_barang.IdBarang', 't_barang.nmBarang', 'expDate', 'stok')
-            ->orderByDesc('jumlah')
+            ->orderByDesc('sold')
             ->limit(100)
             ->get();
 

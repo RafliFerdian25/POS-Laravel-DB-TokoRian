@@ -121,6 +121,8 @@
                                 <th class="text-center">Stok</th>
                                 <th class="text-center">Tanggal Kadaluarsa</th>
                                 <th class="text-center">Terjual</th>
+                                <th class="text-center">Total Penjualan</th>
+                                <th class="text-center">Total Keuntungan</th>
                                 <th class="text-center">Aksi</th>
                             </tr>
                         </thead>
@@ -172,8 +174,20 @@
         $(document).ready(function() {
             var configDataTable = {
                 columnDefs: [{
-                    targets: [1, 2, 3, 4, 5, 6],
+                    targets: [1, 2, 3, 4, 5, 6, 7, 8],
                     className: 'text-center'
+                }, {
+                    // Mengatur aturan pengurutan kustom untuk kolom keempat (index 3)
+                    "targets": [6, 7],
+                    "render": function(data, type, row) {
+                        // Memeriksa tipe data, jika tampilan atau filter
+                        if (type === 'display' || type === 'filter') {
+                            // Memformat angka menggunakan fungsi formatCurrency
+                            return formatCurrency(data);
+                        }
+                        // Jika tipe data selain tampilan atau filter, kembalikan data tanpa perubahan
+                        return data;
+                    }
                 }],
             };
             initializeDataTable("tableProduct", configDataTable);
@@ -275,7 +289,9 @@
                                 product.stok,
                                 product.expDate == null ? '-' : moment(product.expDate).format(
                                     'DD/MM/YYYY'),
-                                product.jumlah,
+                                product.sold,
+                                product.income,
+                                product.profit,
                                 `<button class="btn btn-sm btn-warning" onclick="showEdit('${product.IdBarang}')">Edit</button>
                                 <a href="{{ url('/laporan/barang/${product.IdBarang}') }}" class="btn btn-sm btn-primary">Detail</a>`
                             ];

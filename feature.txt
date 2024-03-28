@@ -1,7 +1,5 @@
 ## BACKLOG ##
 
-// Laporan Detail Kategori
-table penjualan barang (tambah: total penjualan, total keuntungan)
 // Laporan Penjualan
 detail riwayat penjualan
 pisahkan pengambilan data (berdasarkan card)
@@ -79,6 +77,7 @@ delete penjualan gas
 ✅ Tabel kategori terlaris (jumlah terjual, total penjualan, total keuntungan)
 ✅ grafik batang penjualan harian (custom tanggal)
 ✅ grafik pie bulanan (custom tanggal)
+✅ table penjualan barang (tambah: total penjualan, total keuntungan)
 
 // CRUD tabel merk
 ✅ read merk
