@@ -161,6 +161,8 @@
                                 <th class="text-center">Nama Barang</th>
                                 <th class="text-center">Stok</th>
                                 <th class="text-center">Terjual</th>
+                                <th class="text-center">Total Penjualan</th>
+                                <th class="text-center">Total Keuntungan</th>
                                 <th class="text-center">Aksi</th>
                             </tr>
                         </thead>
@@ -202,8 +204,20 @@
         $(document).ready(function() {
             var configDataTable = {
                 "columnDefs": [{
-                    "targets": [0, 3, 4, 5],
+                    "targets": [0, 3, 4, 5, 6],
                     "className": "text-center"
+                }, {
+                    // Mengatur aturan pengurutan kustom untuk kolom keempat (index 3)
+                    "targets": [5, 6],
+                    "render": function(data, type, row) {
+                        // Memeriksa tipe data, jika tampilan atau filter
+                        if (type === 'display' || type === 'filter') {
+                            // Memformat angka menggunakan fungsi formatCurrency
+                            return formatCurrency(data);
+                        }
+                        // Jika tipe data selain tampilan atau filter, kembalikan data tanpa perubahan
+                        return data;
+                    }
                 }],
             }
             initializeDataTable("tableProduct", configDataTable)
@@ -276,7 +290,7 @@
             $('#total_transaction').html(inlineLoader())
             $('#total_product').html(inlineLoader())
             $('#tableProduct').DataTable().clear().draw();
-            $('#tableProductBody').html(tableLoader(7, `{{ asset('assets/svg/Ellipsis-2s-48px.svg') }}`));
+            $('#tableProductBody').html(tableLoader(8, `{{ asset('assets/svg/Ellipsis-2s-48px.svg') }}`));
 
             $.ajax({
                 type: "GET",
@@ -300,6 +314,8 @@
                                 product.name,
                                 product.product.stok,
                                 product.total,
+                                product.income,
+                                product.profit,
                                 `<button class="btn btn-sm btn-warning" onclick="showEdit('${product.idBarang}')">Edit</button>
                                 <a href="{{ url('/laporan/barang/${product.idBarang}') }}" class="btn btn-sm btn-primary">Laporan</a>`
                             ];
@@ -309,7 +325,7 @@
                                 .node();
                         });
                     } else {
-                        $('#tableProductBody').html(tableEmpty(7,
+                        $('#tableProductBody').html(tableEmpty(8,
                             'barang'));
                     }
 

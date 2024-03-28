@@ -1,5 +1,7 @@
 ## BACKLOG ##
 
+// Laporan Detail Kategori
+table penjualan barang (tambah: total penjualan, total keuntungan)
 // Laporan Penjualan
 detail riwayat penjualan
 pisahkan pengambilan data (berdasarkan card)

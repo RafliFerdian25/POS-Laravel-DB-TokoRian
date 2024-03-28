@@ -426,7 +426,8 @@ class ReportController extends Controller
             $report->total_transaction = 0;
         }
 
-        $bestSellingProducts = Kasir::with('product:IdBarang,stok')->select('idBarang', 'nmBarang as name', DB::raw('COALESCE(SUM(t_kasir.jumlah), 0) as total'))
+        $bestSellingProducts = Kasir::with('product:IdBarang,stok')
+            ->select('idBarang', 'nmBarang as name', DB::raw('COALESCE(SUM(t_kasir.jumlah), 0) as total'), DB::raw('COALESCE(SUM(t_kasir.total), 0) as income'), DB::raw('COALESCE(SUM(t_kasir.laba), 0) as profit'))
             ->whereHas('product', function ($query) use ($category) {
                 $query->where('jenis', $category->jenis);
             })
