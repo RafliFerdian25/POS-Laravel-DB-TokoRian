@@ -174,7 +174,7 @@
         $(document).ready(function() {
             var configDataTable = {
                 columnDefs: [{
-                    targets: [1, 2, 3, 4, 5, 6, 7, 8],
+                    targets: [3, 4, 5, 6, 7, 8],
                     className: 'text-center'
                 }, {
                     // Mengatur aturan pengurutan kustom untuk kolom keempat (index 3)
@@ -255,7 +255,7 @@
                 '<svg class="loader" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="25" height="25"><circle cx="50" cy="50" r="45" fill="none" stroke="#3498db" stroke-width="5" stroke-dasharray="89 89" stroke-linecap="round"><animateTransform attributeName="transform" dur="1s" type="rotate" from="0 50 50" to="360 50 50" repeatCount="indefinite" /></circle></svg>'
             );
             $('#tableProduct').DataTable().clear().draw();
-            $('#tableProductBody').html(tableLoader(7, `{{ asset('assets/svg/Ellipsis-2s-48px.svg') }}`));
+            $('#tableProductBody').html(tableLoader(9, `{{ asset('assets/svg/Ellipsis-2s-48px.svg') }}`));
 
             if (typeReport == 'harian') {
                 $('#month').val(null);
@@ -301,7 +301,7 @@
                                 .node();
                         });
                     } else {
-                        $('#tableProductBody').html(tableEmpty(7,
+                        $('#tableProductBody').html(tableEmpty(9,
                             'barang'));
                     }
                 }

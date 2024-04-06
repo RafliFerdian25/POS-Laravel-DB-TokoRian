@@ -403,7 +403,7 @@
             disableFormElements('formFilterProduct', true)
 
             $('#tableShoppingProduct').DataTable().clear().draw();
-            $('#tableShoppingProductBody').html(tableLoader(8,
+            $('#tableShoppingProductBody').html(tableLoader(9,
                 `{{ asset('assets/svg/Ellipsis-2s-48px.svg') }}`));
 
             $.ajax({
@@ -430,12 +430,12 @@
                             ]).draw(false).node();
                         });
                     } else {
-                        $('#tableShoppingProductBody').html(tableEmpty(8,
+                        $('#tableShoppingProductBody').html(tableEmpty(9,
                             'barang'));
                     }
                 },
                 error: function(error) {
-                    $('#tableShoppingProductBody').html(tableEmpty(8,
+                    $('#tableShoppingProductBody').html(tableEmpty(9,
                         'barang'));
                 }
             });

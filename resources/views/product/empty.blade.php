@@ -209,7 +209,7 @@
                                 product.stok,
                                 product.last_product_sold,
                                 product.total_product_sold,
-                                `<button class="btn btn-sm btn-warning" onclick="showEdit('${product.IdBarang}')">Edit</button>
+                                `<button class="btn btn-sm btn-warning" onclick="showEditProduct('${product.IdBarang}')">Edit</button>
                                 ${product.print_price.length > 0 ? '':`<button class="btn btn-sm btn-primary" onclick="addShopping('${product.IdBarang}')">Tambah Belanja</button>`}`
                             ];
                             var rowNode = $('#tableEmptyProduct').DataTable().row.add(rowData)
@@ -232,13 +232,13 @@
         $('#filterCategory').on('change', debounce(getEmptyProduct, 750));
         $('#filterStock').on('input', debounce(getEmptyProduct, 750));
 
-        function showEdit(idBarang, status) {
+        function showEditProduct(idBarang, status) {
             // Mengisi konten modal dengan data yang sesuai
             let modalContent = $('#modalEdit .modal-content');
 
             modalContent.html(`
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Ubah Barang</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body d-flex justify-content-center align-items-center">
@@ -258,7 +258,7 @@
 
                     modalContent.html(`
                         <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Ubah Barang</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <form id="${formId}">
