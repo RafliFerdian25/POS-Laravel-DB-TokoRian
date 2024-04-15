@@ -4,6 +4,11 @@
 detail riwayat penjualan
 pisahkan pengambilan data (berdasarkan card)
 
+// Pengeluaran Toko
+read pengeluaran Toko
+create pengeluaran Toko
+update pengeluaran Toko
+delete pengeluaran Toko
 
 // Pembukaan kardus barang
 read Pembukaan kardus barang
