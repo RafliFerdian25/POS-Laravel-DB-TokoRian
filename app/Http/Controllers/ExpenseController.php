@@ -74,7 +74,7 @@ class ExpenseController extends Controller
                 [
                     'error' => $validated->errors()->first()
                 ],
-                'Data gagal ditambahkan',
+                'Data pengeluaran gagal ditambahkan',
                 422
             );
         }
@@ -107,17 +107,6 @@ class ExpenseController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Expense  $expense
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Expense $expense)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param  \App\Models\Expense  $expense
@@ -125,7 +114,10 @@ class ExpenseController extends Controller
      */
     public function edit(Expense $expense)
     {
-        //
+        // menyeleksi data kategori berdasarkan id yang dipilih
+        return ResponseFormatter::success([
+            'expense' => $expense
+        ], 'Kategori berhasil diambil');
     }
 
     /**
@@ -137,7 +129,48 @@ class ExpenseController extends Controller
      */
     public function update(Request $request, Expense $expense)
     {
-        //
+
+        $rules = [
+            'name' => 'required',
+            'amount' => 'required|numeric|min:0|max:999999999',
+        ];
+
+        $validated = Validator::make($request->all(), $rules);
+
+        if ($validated->fails()) {
+            return ResponseFormatter::error(
+                [
+                    'error' => $validated->errors()->first()
+                ],
+                'Data pengeluaran gagal diubah',
+                422
+            );
+        }
+
+        try {
+            DB::beginTransaction();
+
+            // mengubah data pengeluaran
+            $expense->update([
+                'nama' => $request->name,
+                'jumlah' => $request->amount,
+            ]);
+
+            DB::commit();
+            return ResponseFormatter::success(
+                null,
+                'Data pengeluaran berhasil diubah'
+            );
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return ResponseFormatter::error(
+                [
+                    'error' => $e->getMessage()
+                ],
+                'Data pengeluaran gagal diubah',
+                422
+            );
+        }
     }
 
     /**

@@ -53,7 +53,7 @@
 
         <!-- Pengeluaran Section -->
         <div class="pengeluaran__section">
-            <!-- Barang -->
+            <!-- Pengeluaran -->
             <div class="pengeluaran__container">
                 <div class="pengeluaran__content">
                     <div class="main-card mb-3 card">
@@ -143,7 +143,7 @@
                         });
                     } else {
                         $('#tableExpenseBody').html(tableEmpty(11,
-                            'barang'));
+                            'pengeluaran'));
                     }
                 }
             });
@@ -155,7 +155,7 @@
 
             modalContent.html(`
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Ubah Data Barang</h1>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Ubah Data Pengeluaran</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body d-flex justify-content-center align-items-center">
@@ -175,7 +175,7 @@
 
                     modalContent.html(`
                         <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">Ubah Data Barang</h1>
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Ubah Data Pengeluaran</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <form id="${formId}">
@@ -185,19 +185,17 @@
                                 @method('PUT')
                                 @csrf
                                 <div class="row mb-3">
-                                    <label for="id" class="col-sm-2 col-form-label">ID Pengeluaran</label>
+                                    <label for="name" class="col-sm-2 col-form-label">Nama</label>
                                     <div class="col-sm-10">
-                                        <input required value="${response.data.expense.ID}" type="text"
-                                            class="form-control rounded__10" maxlength="3"
-                                            id="id" name="id" style="text-transform:uppercase">
+                                        <input required value="${response.data.expense.nama}" type="text" class="form-control rounded__10"
+                                            id="name" name="name">
                                     </div>
                                 </div>
                                 <div class="row mb-3">
-                                    <label for="name" class="col-sm-2 col-form-label">Nama Pengeluaran</label>
+                                    <label for="id" class="col-sm-2 col-form-label">Jumlah</label>
                                     <div class="col-sm-10">
-                                        <input required value="${response.data.expense.keterangan}" type="text"
-                                            class="form-control rounded__10"
-                                            id="name" name="name">
+                                        <input required value="${response.data.expense.jumlah}" type="number" class="form-control rounded__10"
+                                            id="amount" name="amount" step="1000">
                                     </div>
                                 </div>
                             </div>
@@ -210,23 +208,30 @@
 
                     $(`#${formId}`).validate({
                         rules: {
-                            id: {
-                                required: true,
-                                maxlength: 3,
-                            },
                             name: {
                                 required: true,
-                            }
+                                maxlength: 50,
+                                minlength: 3,
+                            },
+                            amount: {
+                                required: true,
+                                number: true,
+                                min: 0
+                            },
                         },
                         messages: {
-                            id: {
-                                required: "Kode pengeluaran tidak boleh kosong",
-                                maxlength: "Kode pengeluaran maksimal 15 karakter",
-                            },
                             name: {
-                                required: "Nama pengeluaran tidak boleh kosong",
-                            }
+                                required: "Nama barang tidak boleh kosong",
+                                maxlength: "Nama barang maksimal 50 karakter",
+                                minlength: "Nama barang minimal 3 karakter",
+                            },
+                            amount: {
+                                required: "Jumlah tidak boleh kosong",
+                                number: "Jumlah harus berupa angka",
+                                min: "Jumlah minimal 0"
+                            },
                         },
+                        errorClass: "invalid-feedback",
                         highlight: function(element) {
                             $(element).closest('.form-group').removeClass('has-success').addClass(
                                 'has-error');
@@ -242,7 +247,7 @@
                             );
                             $('#updateButton').prop('disabled', true);
                             $.ajax({
-                                url: `{{ url('/pengeluaran/${response.data.expense.ID}') }}`,
+                                url: `{{ url('/pengeluaran/${response.data.expense.id}') }}`,
                                 type: "POST",
                                 data: formData,
                                 processData: false,
