@@ -5,6 +5,7 @@ use App\Http\Controllers\MerkController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\ProductSearchController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\ShoppingController;
@@ -99,6 +100,8 @@ Route::controller(CategoryController::class)->group(function () {
     Route::put('/kategori/{category:id}', 'update')->name('category.update');
     Route::delete('/kategori/{category:id}', 'destroy')->name('category.destroy');
 });
+
+
 Route::resource('/supplier', SupplierController::class)->except('show');
 
 // Penjualan
@@ -161,4 +164,15 @@ Route::controller(ProductSearchController::class)->group(function () {
     Route::get('/barang-dicari/data', 'indexData')->name('product.search.index.data');
     Route::post('/barang-dicari', 'store')->name('product.search.store');
     Route::delete('/barang-dicari/{name}', 'destroy')->name('product.search.destroy');
+});
+
+// Pengeluaran
+Route::controller(ExpenseController::class)->group(function () {
+    Route::get('/pengeluaran', 'index')->name('expense.index');
+    Route::get('/pengeluaran/data', 'data')->name('expense.data');
+    Route::get('/pengeluaran/create', 'create')->name('expense.create');
+    Route::post('/pengeluaran', 'store')->name('expense.store');
+    Route::get('/pengeluaran/{expense:id}/edit', 'edit')->name('expense.edit');
+    Route::put('/pengeluaran/{expense:id}', 'update')->name('expense.update');
+    Route::delete('/pengeluaran/{expense:id}', 'destroy')->name('expense.destroy');
 });

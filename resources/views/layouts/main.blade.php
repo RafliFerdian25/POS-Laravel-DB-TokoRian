@@ -190,6 +190,12 @@
 
                             <li class="app-sidebar__heading">Belanja</li>
                             <li>
+                                <a href="{{ route('expense.index') }}" id="navbar__expense"
+                                    class="@if ($currentNav == 'expense') mm-active @endif">
+                                    <i class="metismenu-icon bi bi-cart3"></i>Pengeluaran
+                                </a>
+                            </li>
+                            <li>
                                 <a href="{{ route('purchase.index') }}" id="navbar__purchase"
                                     class="{{ Request::is('pembelian*') ? 'mm-active' : '' }}">
                                     <i class="metismenu-icon bi bi-cart3"></i>Pembelian

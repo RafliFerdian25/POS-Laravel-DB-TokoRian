@@ -3,7 +3,7 @@
 @section('content')
     <!-- Section Layouts  -->
     <div class="app-main__inner">
-        <!-- TITLE KATEGORI -->
+        <!-- TITLE PENGELUARAN -->
         <div class="app-page-title row justify-content-lg-between">
             <div class="page-title-wrapper col-3">
                 <div class="page-title-heading">
@@ -11,7 +11,7 @@
                         <i class="pe-7s-folder icon-gradient bg-plum-plate">
                         </i>
                     </div>
-                    <div>Kategori
+                    <div>Pengeluaran
                         <div class="page-title-subheading">
                             Dashboard
                         </div>
@@ -19,8 +19,8 @@
                 </div>
             </div>
             <div class="col-3 text-center align-self-center">
-                <a href="{{ url('/kategori/create') }}">
-                    <button class="btn btn-primary rounded-pill px-3" id="tambah-kategori">Tambah</button>
+                <a href="{{ url('/pengeluaran/create') }}">
+                    <button class="btn btn-primary rounded-pill px-3" id="tambah-pengeluaran">Tambah</button>
                 </a>
             </div>
         </div>
@@ -28,19 +28,19 @@
 
         <!-- CARD DASHBOARD -->
         <div class="row">
-            <!-- total pendapatan -->
+            <!-- total pengeluaran -->
             <div class="col-sm-6 col-md-4 col-xl-3 p-3">
                 <div class="card mb-0 widget-content row">
                     <div class="content">
                         <div class="widget-content-left row mb-2">
                             <i class="pe-7s-cash col-2" style="font-size: 30px;"></i>
-                            <div class="widget-heading col-10 widget__title">Total Kategori</div>
+                            <div class="widget-heading col-10 widget__title">Total Pengeluaran</div>
                         </div>
                         <div class="widget-content-right">
-                            <div class="widget-numbers mb-2"><span id="countCategory">-</span>
+                            <div class="widget-numbers mb-2"><span id="countExpense">-</span>
                             </div>
                             <div class="perubahan row">
-                                {{-- <div class="widget-subheading col-10" id="total_pendapatan">
+                                {{-- <div class="widget-subheading col-10" id="total_pengeluaran">
                                     -2000000
                                 </div> --}}
                             </div>
@@ -51,25 +51,25 @@
         </div>
         <!-- END CARD DASHBOARD -->
 
-        <!-- Kategori Section -->
-        <div class="kategori__section">
+        <!-- Pengeluaran Section -->
+        <div class="pengeluaran__section">
             <!-- Barang -->
-            <div class="kategori__container">
-                <div class="kategori__content">
+            <div class="pengeluaran__container">
+                <div class="pengeluaran__content">
                     <div class="main-card mb-3 card">
                         <div class="card-body">
-                            <h5 class="card-title text-center font-size-xlg">Kategori</h5>
-                            <table class="display nowrap" style="width:100%" id="tableCategory">
+                            <h5 class="card-title text-center font-size-xlg">Pengeluaran</h5>
+                            <table class="display nowrap" style="width:100%" id="tableExpense">
                                 <thead>
                                     <tr>
                                         <th>ID</th>
+                                        <th>Tanggal</th>
                                         <th>Nama</th>
-                                        <th>Keterangan</th>
-                                        <th>Jumlah Barang</th>
+                                        <th>Jumlah</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
-                                <tbody id="tableCategoryBody">
+                                <tbody id="tableExpenseBody">
                                 </tbody>
                             </table>
                         </div>
@@ -77,7 +77,7 @@
                 </div>
             </div>
         </div>
-        <!-- End kategori section -->
+        <!-- End pengeluaran section -->
     </div>
     <!-- END Section layouts   -->
 @endsection
@@ -107,43 +107,42 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            initializeDataTable('tableCategory', {
+            initializeDataTable('tableExpense', {
                 "columnDefs": [{
                     "targets": 3,
                     "className": "text-center"
                 }],
             });
 
-            getCategories()
+            getExpenses()
         });
 
-        const getCategories = () => {
-            $('#tableCategory').DataTable().clear().draw();
-            $('#tableCategoryBody').html(tableLoader(5));
+        const getExpenses = () => {
+            $('#tableExpense').DataTable().clear().draw();
+            $('#tableExpenseBody').html(tableLoader(5));
 
             $.ajax({
                 type: "GET",
-                url: `{{ route('category.data') }}`,
+                url: `{{ route('expense.data') }}`,
                 success: function(response) {
-                    $('#countCategory').html(response.data.categories.length);
-                    if (response.data.categories.length > 0) {
-                        $.each(response.data.categories, function(index, category) {
+                    $('#countExpense').html(response.data.expenses.length);
+                    if (response.data.expenses.length > 0) {
+                        $.each(response.data.expenses, function(index, expense) {
                             var rowData = [
                                 index + 1,
-                                category.jenis,
-                                category.keterangan,
-                                category.products_count,
-                                `<a href="{{ url('/laporan/kategori/${category.ID}/detail') }}" class="btn btn-sm btn-primary">Laporan</a>
-                                <button class="btn btn-sm btn-warning" onclick="showEdit('${category.ID}')">Edit</button>
-                                <button class="btn btn-sm btn-danger" onclick="deleteCategory('${category.ID}')"><i class="bi bi-trash"></i></button>`
+                                expense.created_at,
+                                expense.nama,
+                                expense.jumlah,
+                                `<button class="btn btn-sm btn-warning" onclick="showEdit('${expense.ID}')">Edit</button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteExpense('${expense.ID}')"><i class="bi bi-trash"></i></button>`
                             ];
-                            var rowNode = $('#tableCategory').DataTable().row.add(rowData)
+                            var rowNode = $('#tableExpense').DataTable().row.add(rowData)
                                 .draw(
                                     false)
                                 .node();
                         });
                     } else {
-                        $('#tableCategoryBody').html(tableEmpty(11,
+                        $('#tableExpenseBody').html(tableEmpty(11,
                             'barang'));
                     }
                 }
@@ -170,9 +169,9 @@
             // mengirim request ajax
             $.ajax({
                 type: "GET",
-                url: `{{ url('/kategori/${id}/edit') }}`,
+                url: `{{ url('/pengeluaran/${id}/edit') }}`,
                 success: function(response) {
-                    let formId = `formEditCategory${id}`;
+                    let formId = `formEditExpense${id}`;
 
                     modalContent.html(`
                         <div class="modal-header">
@@ -186,17 +185,17 @@
                                 @method('PUT')
                                 @csrf
                                 <div class="row mb-3">
-                                    <label for="id" class="col-sm-2 col-form-label">ID Kategori</label>
+                                    <label for="id" class="col-sm-2 col-form-label">ID Pengeluaran</label>
                                     <div class="col-sm-10">
-                                        <input required value="${response.data.category.ID}" type="text"
+                                        <input required value="${response.data.expense.ID}" type="text"
                                             class="form-control rounded__10" maxlength="3"
                                             id="id" name="id" style="text-transform:uppercase">
                                     </div>
                                 </div>
                                 <div class="row mb-3">
-                                    <label for="name" class="col-sm-2 col-form-label">Nama Kategori</label>
+                                    <label for="name" class="col-sm-2 col-form-label">Nama Pengeluaran</label>
                                     <div class="col-sm-10">
-                                        <input required value="${response.data.category.keterangan}" type="text"
+                                        <input required value="${response.data.expense.keterangan}" type="text"
                                             class="form-control rounded__10"
                                             id="name" name="name">
                                     </div>
@@ -221,11 +220,11 @@
                         },
                         messages: {
                             id: {
-                                required: "Kode kategori tidak boleh kosong",
-                                maxlength: "Kode kategori maksimal 15 karakter",
+                                required: "Kode pengeluaran tidak boleh kosong",
+                                maxlength: "Kode pengeluaran maksimal 15 karakter",
                             },
                             name: {
-                                required: "Nama kategori tidak boleh kosong",
+                                required: "Nama pengeluaran tidak boleh kosong",
                             }
                         },
                         highlight: function(element) {
@@ -243,7 +242,7 @@
                             );
                             $('#updateButton').prop('disabled', true);
                             $.ajax({
-                                url: `{{ url('/kategori/${response.data.category.ID}') }}`,
+                                url: `{{ url('/pengeluaran/${response.data.expense.ID}') }}`,
                                 type: "POST",
                                 data: formData,
                                 processData: false,
@@ -262,7 +261,7 @@
                                             },
                                         })
                                         .then(() => {
-                                            getCategories();
+                                            getExpenses();
                                             // menyembunyikan modal
                                             $('#modalEdit').modal('hide');
                                         });
@@ -272,7 +271,7 @@
                                     $('#updateButton').prop('disabled', false);
                                     if (xhr.responseJSON) {
                                         errorAlert("Gagal!",
-                                            `Ubah kategori gagal. ${xhr.responseJSON.meta.message} Error: ${xhr.responseJSON.data.error}`
+                                            `Ubah pengeluaran gagal. ${xhr.responseJSON.meta.message} Error: ${xhr.responseJSON.data.error}`
                                         );
                                     } else {
                                         errorAlert("Gagal!",
@@ -293,9 +292,9 @@
             $('#modalEdit').modal('show');
         }
 
-        const deleteCategory = (id) => {
+        const deleteExpense = (id) => {
             Swal.fire({
-                title: 'Apakah anda yakin hapus kategori?',
+                title: 'Apakah anda yakin hapus pengeluaran?',
                 text: "Data yang dihapus tidak dapat dikembalikan!",
                 icon: 'warning',
                 showCancelButton: true,
@@ -306,8 +305,8 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     Swal.fire({
-                        title: 'Hapus Kategori',
-                        text: 'Sedang menghapus kategori...',
+                        title: 'Hapus Pengeluaran',
+                        text: 'Sedang menghapus pengeluaran...',
                         showConfirmButton: false,
                         allowOutsideClick: false,
                         willOpen: () => {
@@ -316,7 +315,7 @@
                     });
                     $.ajax({
                         type: "DELETE",
-                        url: `{{ url('/kategori/${id}') }}`,
+                        url: `{{ url('/pengeluaran/${id}') }}`,
                         data: {
                             _token: '{{ csrf_token() }}',
                         },
@@ -324,18 +323,18 @@
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Berhasil',
-                                text: 'Hapus Kategori Berhasil',
+                                text: 'Hapus Pengeluaran Berhasil',
                                 showConfirmButton: false,
                                 timer: 1500
                             })
-                            getCategories();
+                            getExpenses();
                         },
                         error: function(xhr, ajaxOptions, thrownError) {
                             if (xhr.responseJSON) {
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Gagal',
-                                    text: `Hapus Kategori Gagal. ${xhr.responseJSON.meta.message} Error: ${xhr.responseJSON.data.error}`,
+                                    text: `Hapus Pengeluaran Gagal. ${xhr.responseJSON.meta.message} Error: ${xhr.responseJSON.data.error}`,
                                     showConfirmButton: false,
                                     timer: 1500
                                 })

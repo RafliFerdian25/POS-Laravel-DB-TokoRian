@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ResponseFormatter;
 use App\Models\Expense;
 use Illuminate\Http\Request;
 
@@ -24,6 +25,17 @@ class ExpenseController extends Controller
         return view('expense.index', $data);
     }
 
+    public function data()
+    {
+        $expenses = Expense::get();
+        return ResponseFormatter::success(
+            [
+                'expenses' => $expenses
+            ],
+            'Pengeluaran berhasil diambil'
+        );
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -31,7 +43,13 @@ class ExpenseController extends Controller
      */
     public function create()
     {
-        //
+        $title = 'POS TOKO | Pengeluaran';
+        $data = [
+            'title' => $title,
+            'currentNav' => 'expense',
+        ];
+
+        return view('expense.create', $data);
     }
 
     /**
