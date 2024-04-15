@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Helpers\ResponseFormatter;
 use App\Models\Expense;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class ExpenseController extends Controller
 {
@@ -15,7 +17,7 @@ class ExpenseController extends Controller
      */
     public function index()
     {
-        $title = 'POS TOKO | Pembelian Barang';
+        $title = 'POS TOKO | Pengeluaran Toko';
 
         $data = [
             'title' => $title,
@@ -60,7 +62,48 @@ class ExpenseController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $rules = [
+            'name' => 'required',
+            'amount' => 'required|numeric|min:0|max:999999999',
+        ];
+
+        $validated = Validator::make($request->all(), $rules);
+
+        if ($validated->fails()) {
+            return ResponseFormatter::error(
+                [
+                    'error' => $validated->errors()->first()
+                ],
+                'Data gagal ditambahkan',
+                422
+            );
+        }
+
+        try {
+            DB::beginTransaction();
+            // menginput data ke table products
+            Expense::create([
+                'nama' => $request->name,
+                'jumlah' => $request->amount,
+            ]);
+
+            DB::commit();
+            return ResponseFormatter::success(
+                [
+                    'redirect' => route('expense.index')
+                ],
+                'Data pengeluaran berhasil ditambahkan'
+            );
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return ResponseFormatter::error(
+                [
+                    'error' => $e->getMessage()
+                ],
+                'Data pengeluaran gagal ditambahkan',
+                422
+            );
+        }
     }
 
     /**
