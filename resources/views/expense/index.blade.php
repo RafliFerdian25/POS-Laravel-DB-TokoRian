@@ -4,21 +4,37 @@
     <!-- Section Layouts  -->
     <div class="app-main__inner">
         <!-- TITLE PENGELUARAN -->
-        <div class="app-page-title row justify-content-lg-between">
-            <div class="page-title-wrapper col-3">
+        <div class="app-page-title row justify-content-betweeen">
+            <div class="page-title-wrapper col-md-9">
                 <div class="page-title-heading">
                     <div class="page-title-icon">
-                        <i class="pe-7s-folder icon-gradient bg-plum-plate">
+                        <i class="pe-7s-note2 icon-gradient bg-plum-plate">
                         </i>
                     </div>
-                    <div>Pengeluaran
+                    <div>Laporan Pengeluaran
                         <div class="page-title-subheading">
-                            Dashboard
+                            Laporan Pengeluaran <span class="fw-bold" id="dateString"></span>
+                        </div>
+                        <div class="row justify-content-center justify-content-lg-start">
+                            <form id="formBulan" class="col-6 col-lg-12">
+                                @csrf
+                                <div class="row">
+                                    <label for="daterange" class="col">Rentang Tanggal :</label>
+                                    <input type="text" name="daterange" id="daterange" class="form-control mb-3 col">
+                                </div>
+
+                                <div class="row">
+                                    <label for="month" class="col">Bulan :</label>
+                                    <input type="month" name="month" id="month" class="form-control mb-3 col"
+                                        @if ($typeReport == 'Bulanan') value="{{ date('Y-m') }}" @endif
+                                        onchange="getExpenses('bulanan')">
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-3 text-center align-self-center">
+            <div class="col-md-3 text-center align-self-center">
                 <a href="{{ url('/pengeluaran/create') }}">
                     <button class="btn btn-primary rounded-pill px-3" id="tambah-pengeluaran">Tambah</button>
                 </a>
@@ -38,6 +54,25 @@
                         </div>
                         <div class="widget-content-right">
                             <div class="widget-numbers mb-2"><span id="countExpense">-</span>
+                            </div>
+                            <div class="perubahan row">
+                                {{-- <div class="widget-subheading col-10" id="total_pengeluaran">
+                                    -2000000
+                                </div> --}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-4 col-xl-3 p-3">
+                <div class="card mb-0 widget-content row">
+                    <div class="content">
+                        <div class="widget-content-left row mb-2">
+                            <i class="pe-7s-cash col-2" style="font-size: 30px;"></i>
+                            <div class="widget-heading col-10 widget__title">Jumlah Pengeluaran</div>
+                        </div>
+                        <div class="widget-content-right">
+                            <div class="widget-numbers mb-2"><span id="sumExpense">Rp. 0</span>
                             </div>
                             <div class="perubahan row">
                                 {{-- <div class="widget-subheading col-10" id="total_pengeluaran">
@@ -117,15 +152,81 @@
             getExpenses()
         });
 
-        const getExpenses = () => {
+
+        $(function() {
+            $('#daterange').daterangepicker({
+                opens: 'right',
+                maxDate: moment(),
+                ranges: {
+                    'Hari Ini': [moment(), moment()],
+                    'Kemarin': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    '7 Hari Terakhir': [moment().subtract(6, 'days'), moment()],
+                    '30 Hari Terakhir': [moment().subtract(29, 'days'), moment()],
+                    'Bulan Ini': [moment().startOf('month'), moment().endOf('month')],
+                    'Bulan Kemarin': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1,
+                        'month').endOf('month')],
+                    'Tahun Ini': [moment().startOf('year'), moment().endOf('year')],
+                    'Tahun Kemarin': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1,
+                        'year').endOf('year')],
+                },
+                locale: {
+                    format: 'DD/MM/YYYY',
+                    separator: ' - ',
+                    applyLabel: 'Pilih',
+                    cancelLabel: 'Batal',
+                    fromLabel: 'Dari',
+                    toLabel: 'Ke',
+                    customRangeLabel: 'Custom',
+                    weekLabel: 'W',
+                    daysOfWeek: ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'],
+                    monthNames: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli',
+                        'Agustus', 'September', 'Oktober', 'November', 'Desember'
+                    ],
+                    firstDay: 1
+                }
+            });
+
+            @if ($typeReport == 'Harian')
+                $('#daterange').data('daterangepicker').setStartDate(moment('{{ $date[0] }}', 'YYYY-MM-DD')
+                    .format('DD/MM/YYYY'));
+                $('#daterange').data('daterangepicker').setEndDate(moment('{{ $date[1] }}', 'YYYY-MM-DD')
+                    .format('DD/MM/YYYY'));
+            @else
+                $('#daterange').val(null);
+            @endif
+
+            $('#daterange').on('apply.daterangepicker', function(ev, picker) {
+                $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format(
+                    'YYYY-MM-DD'));
+                $("#month").val(null);
+                getExpenses('harian');
+            });
+            $('#daterange').on('cancel.daterangepicker', function(ev, picker) {
+                $(this).val(null);
+            });
+        });
+
+        const getExpenses = (typeReport) => {
+            if (typeReport == 'harian') {
+                $('#month').val(null);
+            } else if (typeReport == 'bulanan') {
+                $('#daterange').val(null);
+            }
+
             $('#tableExpense').DataTable().clear().draw();
             $('#tableExpenseBody').html(tableLoader(5));
 
             $.ajax({
                 type: "GET",
                 url: `{{ route('expense.data') }}`,
+                data: {
+                    daterange: $('#daterange').val(),
+                    month: $('#month').val()
+                },
                 success: function(response) {
                     $('#countExpense').html(response.data.expenses.length);
+                    $('#sumExpense').text(formatCurrency(response.data.expenses.reduce((a, b) => a + b
+                        .jumlah, 0)));
                     if (response.data.expenses.length > 0) {
                         $.each(response.data.expenses, function(index, expense) {
                             var rowData = [
@@ -233,8 +334,9 @@
                         },
                         errorClass: "invalid-feedback",
                         highlight: function(element) {
-                            $(element).closest('.form-group').removeClass('has-success').addClass(
-                                'has-error');
+                            $(element).closest('.form-group').removeClass('has-success')
+                                .addClass(
+                                    'has-error');
                         },
                         success: function(element) {
                             $(element).closest('.form-group').removeClass('has-error');

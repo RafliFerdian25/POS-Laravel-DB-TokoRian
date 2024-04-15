@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\FormatDate;
 use App\Helpers\ResponseFormatter;
 use App\Models\Expense;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -21,17 +23,48 @@ class ExpenseController extends Controller
 
         $data = [
             'title' => $title,
+            'typeReport' => 'Bulanan',
             'currentNav' => 'expense',
         ];
 
         return view('expense.index', $data);
     }
 
-    public function data()
+    public function data(Request $request)
     {
-        $expenses = Expense::get();
+        $typeReport = null;
+        $date = null;
+        $startDate = null;
+        $endDate = null;
+
+        if ($request->daterange == null && $request->month == null) {
+            $date = Carbon::now();
+            $typeReport = "Bulanan";
+        } elseif ($request->daterange != null) {
+            $daterange = explode(' - ', $request->daterange);
+            $date = Carbon::parse($daterange[1]);
+            $startDate = Carbon::parse($daterange[0]);
+            $endDate = Carbon::parse($daterange[1]);
+            $typeReport = "Harian";
+        } elseif ($request->month != null) {
+            $date = Carbon::parse($request->month);
+            $typeReport = "Bulanan";
+        }
+
+        $expenses = Expense::when($typeReport == 'Bulanan', function ($query) use ($date) {
+            return $query->whereMonth('created_at', $date->month)
+                ->whereYear('created_at', $date->year);
+        })
+            ->when($typeReport == 'Harian', function ($query) use ($startDate, $endDate) {
+                return $query->whereBetween('created_at', [$startDate, $endDate]);
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
         return ResponseFormatter::success(
             [
+                'typeReport' => $typeReport,
+                'dateString' => $typeReport == 'Bulanan' ? FormatDate::month($date->month) : $startDate->copy()->format('d M Y') . ' - ' . $endDate->copy()->format('d M Y'),
+                'date' => $typeReport == 'Bulanan' ? $date->format('Y-m') : $daterange,
                 'expenses' => $expenses
             ],
             'Pengeluaran berhasil diambil'

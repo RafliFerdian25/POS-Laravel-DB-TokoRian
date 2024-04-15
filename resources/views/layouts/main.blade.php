@@ -192,7 +192,7 @@
                             <li>
                                 <a href="{{ route('expense.index') }}" id="navbar__expense"
                                     class="@if ($currentNav == 'expense') mm-active @endif">
-                                    <i class="metismenu-icon bi bi-cart3"></i>Pengeluaran
+                                    <i class="metismenu-icon bi bi-cash-stack"></i>Pengeluaran
                                 </a>
                             </li>
                             <li>
