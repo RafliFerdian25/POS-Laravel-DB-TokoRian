@@ -130,11 +130,11 @@
                         $.each(response.data.expenses, function(index, expense) {
                             var rowData = [
                                 index + 1,
-                                expense.created_at,
+                                moment(expense.created_at).format('DD-MM-YYYY'),
                                 expense.nama,
                                 expense.jumlah,
-                                `<button class="btn btn-sm btn-warning" onclick="showEdit('${expense.ID}')">Edit</button>
-                                <button class="btn btn-sm btn-danger" onclick="deleteExpense('${expense.ID}')"><i class="bi bi-trash"></i></button>`
+                                `<button class="btn btn-sm btn-warning" onclick="showEdit('${expense.id}')">Edit</button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteExpense('${expense.id}')"><i class="bi bi-trash"></i></button>`
                             ];
                             var rowNode = $('#tableExpense').DataTable().row.add(rowData)
                                 .draw(

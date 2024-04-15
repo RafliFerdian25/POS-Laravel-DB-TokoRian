@@ -148,6 +148,10 @@ class ExpenseController extends Controller
      */
     public function destroy(Expense $expense)
     {
-        //
+        $expense->delete();
+        return ResponseFormatter::success(
+            null,
+            'Data pengeluaran berhasil dihapus'
+        );
     }
 }
