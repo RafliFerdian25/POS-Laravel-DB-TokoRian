@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\FormatDate;
 use App\Helpers\ResponseFormatter;
 use App\Models\Expense;
+use App\Models\Finance;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -98,6 +99,7 @@ class ExpenseController extends Controller
         $rules = [
             'name' => 'required',
             'amount' => 'required|numeric|min:0|max:999999999',
+            'place' => 'required|in:atas,bawah'
         ];
 
         $validated = Validator::make($request->all(), $rules);
@@ -118,7 +120,14 @@ class ExpenseController extends Controller
             Expense::create([
                 'nama' => $request->name,
                 'jumlah' => $request->amount,
+                'tempat' => $request->place
             ]);
+
+            if ($request->place == 'atas') {
+                Finance::where('id', 1)->decrement('cash_atas', $request->amount);
+            } else {
+                Finance::where('id', 1)->decrement('cash_bawah', $request->amount);
+            }
 
             DB::commit();
             return ResponseFormatter::success(
@@ -166,6 +175,7 @@ class ExpenseController extends Controller
         $rules = [
             'name' => 'required',
             'amount' => 'required|numeric|min:0|max:999999999',
+            'place' => 'required|in:atas,bawah'
         ];
 
         $validated = Validator::make($request->all(), $rules);
@@ -187,7 +197,14 @@ class ExpenseController extends Controller
             $expense->update([
                 'nama' => $request->name,
                 'jumlah' => $request->amount,
+                'tempat' => $request->place,
             ]);
+
+            if ($request->place == 'atas') {
+                Finance::where('id', 1)->decrement('cash_atas', $request->amount);
+            } else {
+                Finance::where('id', 1)->decrement('cash_bawah', $request->amount);
+            }
 
             DB::commit();
             return ResponseFormatter::success(
@@ -214,10 +231,29 @@ class ExpenseController extends Controller
      */
     public function destroy(Expense $expense)
     {
-        $expense->delete();
-        return ResponseFormatter::success(
-            null,
-            'Data pengeluaran berhasil dihapus'
-        );
+        try {
+            DB::beginTransaction();
+            if ($expense->tempat == 'atas') {
+                Finance::where('id', 1)->increment('cash_atas', $expense->jumlah);
+            } else {
+                Finance::where('id', 1)->increment('cash_bawah', $expense->jumlah);
+            }
+
+            $expense->delete();
+            DB::commit();
+            return ResponseFormatter::success(
+                null,
+                'Data pengeluaran berhasil dihapus'
+            );
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return ResponseFormatter::error(
+                [
+                    'error' => $e->getMessage()
+                ],
+                'Data pengeluaran gagal dihapus',
+                422
+            );
+        }
     }
 }

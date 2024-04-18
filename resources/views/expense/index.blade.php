@@ -299,6 +299,15 @@
                                             id="amount" name="amount" step="1000">
                                     </div>
                                 </div>
+                                <div class="row mb-3">
+                                    <label for="id" class="col-sm-2 col-form-label">Letak Laci</label>
+                                    <div class="col-sm-10">
+                                        <select required name="place" id="place" class="form-control rounded__10">
+                                            <option value="atas" ${response.data.expense.type}>Atas</option>
+                                            <option value="bawah" ${response.data.expense.type}>Bawah</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>

@@ -352,8 +352,8 @@
                                 <label for="hargaJual" class="col-sm-2 col-form-label">Harga Jual</label>
                                 <div class="col-sm-10">
                                     <input required value="${response.product.hargaJual}" type="number"
-                                        class="form-control rounded__10 "
-                                        min="0" id="hargaJual" name="hargaJual">
+                                        class="form-control rounded__10"
+                                        min="0" step="500" id="hargaJual" name="hargaJual">
                                 </div>
                             </div>
                             <div class="row mb-3">

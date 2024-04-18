@@ -3,11 +3,6 @@ const errorAlert = (title, msg) => {
         title: title,
         icon: "error",
         text: msg,
-        showCancelButton: false,
-        confirmButtonText: "Okay",
-        customClass: {
-            confirmButton: "btn btn-danger",
-        },
     });
 };
 
