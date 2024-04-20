@@ -7,6 +7,7 @@ use App\Helpers\ResponseFormatter;
 use App\Models\Expense;
 use App\Models\Finance;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -61,12 +62,16 @@ class ExpenseController extends Controller
             })
             ->orderBy('created_at', 'desc')
             ->get();
+
+        $finance = Finance::find(1);
+
         return ResponseFormatter::success(
             [
                 'typeReport' => $typeReport,
                 'dateString' => $typeReport == 'Bulanan' ? FormatDate::month($date->month) : $startDate->copy()->format('d M Y') . ' - ' . $endDate->copy()->format('d M Y'),
                 'date' => $typeReport == 'Bulanan' ? $date->format('Y-m') : $daterange,
-                'expenses' => $expenses
+                'expenses' => $expenses,
+                'finance' => $finance
             ],
             'Pengeluaran berhasil diambil'
         );
@@ -301,6 +306,67 @@ class ExpenseController extends Controller
                     'error' => $e->getMessage()
                 ],
                 'Data pengeluaran gagal dihapus',
+                422
+            );
+        }
+    }
+
+    /**
+     * transfer money in storage
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function transferMoney(): JsonResponse
+    {
+        $rules = [
+            'amount' => 'required|numeric|min:0|max:999999999',
+            'place' => 'required|in:atas,bawah'
+        ];
+
+        $validated = Validator::make(request()->all(), $rules);
+
+        if ($validated->fails()) {
+            return ResponseFormatter::error(
+                [
+                    'error' => $validated->errors()->first()
+                ],
+                'Data pengeluaran gagal ditambahkan',
+                422
+            );
+        }
+
+        try {
+            DB::beginTransaction();
+            $finance = Finance::find(1);
+            if (request()->place == 'atas') {
+                // mengecek jika uang yang akan ditransfer lebih besar dari uang yang ada
+                if (request()->amount > $finance->cash_atas) {
+                    throw new \Exception('Uang yang akan ditransfer melebihi uang yang ada');
+                }
+                $finance->decrement('cash_atas', request()->amount);
+                $finance->increment('cash_bawah', request()->amount);
+            } else {
+                // mengecek jika uang yang akan ditransfer lebih besar dari uang yang ada
+                if (request()->amount > $finance->cash_bawah) {
+                    throw new \Exception('Uang yang akan ditransfer melebihi uang yang ada');
+                }
+                $finance->decrement('cash_bawah', request()->amount);
+                $finance->increment('cash_atas', request()->amount);
+            }
+
+            DB::commit();
+            return ResponseFormatter::success(
+                null,
+                'Data pengeluaran berhasil ditambahkan'
+            );
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return ResponseFormatter::error(
+                [
+                    'error' => $e->getMessage()
+                ],
+                'Data pengeluaran gagal ditambahkan',
                 422
             );
         }

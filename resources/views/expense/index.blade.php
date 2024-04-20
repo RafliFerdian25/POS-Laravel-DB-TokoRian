@@ -38,6 +38,11 @@
                 <a href="{{ url('/pengeluaran/create') }}">
                     <button class="btn btn-primary rounded-pill px-3" id="tambah-pengeluaran">Tambah</button>
                 </a>
+
+                <button type="button" class="btn btn-primary rounded-pill px-3" data-toggle="modal"
+                    data-target="#modalTransferMoney">
+                    Pindah Uang
+                </button>
             </div>
         </div>
         <!-- END TITLE -->
@@ -83,6 +88,44 @@
                     </div>
                 </div>
             </div>
+            <div class="col-sm-6 col-md-4 col-xl-3 p-3">
+                <div class="card mb-0 widget-content row">
+                    <div class="content">
+                        <div class="widget-content-left row mb-2">
+                            <i class="pe-7s-cash col-2" style="font-size: 30px;"></i>
+                            <div class="widget-heading col-10 widget__title">Jumlah Uang Atas</div>
+                        </div>
+                        <div class="widget-content-right">
+                            <div class="widget-numbers mb-2"><span id="cashAbove">Rp. 0</span>
+                            </div>
+                            <div class="perubahan row">
+                                {{-- <div class="widget-subheading col-10" id="total_pengeluaran">
+                                    -2000000
+                                </div> --}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-4 col-xl-3 p-3">
+                <div class="card mb-0 widget-content row">
+                    <div class="content">
+                        <div class="widget-content-left row mb-2">
+                            <i class="pe-7s-cash col-2" style="font-size: 30px;"></i>
+                            <div class="widget-heading col-10 widget__title">Jumlah Uang Bawah</div>
+                        </div>
+                        <div class="widget-content-right">
+                            <div class="widget-numbers mb-2"><span id="cashBelow">Rp. 0</span>
+                            </div>
+                            <div class="perubahan row">
+                                {{-- <div class="widget-subheading col-10" id="total_pengeluaran">
+                                    -2000000
+                                </div> --}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <!-- END CARD DASHBOARD -->
 
@@ -115,6 +158,49 @@
         <!-- End pengeluaran section -->
     </div>
     <!-- END Section layouts   -->
+
+    {{-- Modal edit transfer uang --}}
+    <div class="modal fade" id="modalTransferMoney" role="dialog" tabindex="-1" aria-labelledby="modalTransferMoneyLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Pindah Uang</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="formTransferMoney">
+                    @method('PUT')
+                    @csrf
+                    <div class="modal-body">
+                        <div class="row mb-3">
+                            <label for="id" class="col-sm-2 col-form-label">Pindah Dari</label>
+                            <div class="col-sm-10">
+                                <select required name="placeTransfer" id="placeTransfer"
+                                    class="form-control rounded__10">
+                                    <option value="atas">Atas</option>
+                                    <option value="bawah">Bawah</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="id" class="col-sm-2 col-form-label">Jumlah</label>
+                            <div class="col-sm-10">
+                                <input required type="number" class="form-control rounded__10" id="amountTransfer"
+                                    name="amountTransfer" step="1000">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                        <button type="submit" id="updateButtonTransferMoney" class="btn btn-primary">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {{-- End modal edit letak uang --}}
 @endsection
 
 @section('modal')
@@ -152,6 +238,87 @@
             getExpenses()
         });
 
+        $(`#formTransferMoney`).validate({
+            rules: {
+                amount: {
+                    required: true,
+                    number: true,
+                    min: 0
+                },
+                placeTransfer: {
+                    required: true
+                }
+            },
+            messages: {
+                placeTransfer: {
+                    required: "Pilih letak laci"
+                },
+                amount: {
+                    required: "Jumlah tidak boleh kosong",
+                    number: "Jumlah harus berupa angka",
+                    min: "Jumlah minimal 0"
+                },
+            },
+            errorClass: "invalid-feedback",
+            highlight: function(element) {
+                $(element).closest('.form-group').removeClass('has-success')
+                    .addClass(
+                        'has-error');
+            },
+            success: function(element) {
+                $(element).closest('.form-group').removeClass('has-error');
+            },
+            submitHandler: function(form, event) {
+                event.preventDefault();
+                $('#updateButtonTransferMoney').html(
+                    '<svg class="spinners-2" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;"><path d="M12 22c5.421 0 10-4.579 10-10h-2c0 4.337-3.663 8-8 8s-8-3.663-8-8c0-4.336 3.663-8 8-8V2C6.579 2 2 6.58 2 12c0 5.421 4.579 10 10 10z"></path></svg>'
+                );
+                $('#updateButtonTransferMoney').prop('disabled', true);
+                $.ajax({
+                    url: `{{ route('expense.transfer.money') }}`,
+                    type: "POST",
+                    data: {
+                        _method: "PUT",
+                        _token: '{{ csrf_token() }}',
+                        amount: $('#amountTransfer').val(),
+                        place: $('#placeTransfer').val()
+                    },
+                    success: function(response) {
+                        $('#updateButtonTransferMoney').html('Pindah');
+                        $('#updateButtonTransferMoney').prop('disabled', false);
+                        Swal.fire({
+                                title: "Berhasil!",
+                                text: response.meta.message,
+                                icon: "success",
+                                showCancelButton: false,
+                                confirmButtonText: "Okay",
+                                customClass: {
+                                    confirmButton: "btn btn-success"
+                                },
+                            })
+                            .then(() => {
+                                getExpenses();
+                                // menyembunyikan modal
+                                $('#modalTransferMoney').modal('hide');
+                            });
+                    },
+                    error: function(xhr, status, error) {
+                        $('#updateButtonTransferMoney').html('Pindah');
+                        $('#updateButtonTransferMoney').prop('disabled', false);
+                        if (xhr.responseJSON) {
+                            errorAlert("Gagal!",
+                                `Pindah uang gagal. ${xhr.responseJSON.meta.message} Error: ${xhr.responseJSON.data.error}`
+                            );
+                        } else {
+                            errorAlert("Gagal!",
+                                `Terjadi kesalahan pada server. Error: ${xhr.responseText}`
+                            );
+                        }
+                        return false;
+                    }
+                });
+            }
+        })
 
         $(function() {
             $('#daterange').daterangepicker({
@@ -227,6 +394,8 @@
                     $('#countExpense').html(response.data.expenses.length);
                     $('#sumExpense').text(formatCurrency(response.data.expenses.reduce((a, b) => a + b
                         .jumlah, 0)));
+                    $('#cashAbove').text(formatCurrency(response.data.finance.cash_atas));
+                    $('#cashBelow').text(formatCurrency(response.data.finance.cash_bawah));
                     if (response.data.expenses.length > 0) {
                         $.each(response.data.expenses, function(index, expense) {
                             var rowData = [
