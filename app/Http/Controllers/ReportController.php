@@ -98,7 +98,7 @@ class ReportController extends Controller
             })
             ->first();
 
-        $reportPurchase = Purchase::selectRaw('sum(total) as total_purchase_product, sum(amount) as outcome')
+        $reportPurchase = Purchase::selectRaw('sum(total) as total_purchase_product, sum(amount) as purchase')
             ->when($typeReport == 'Bulanan', function ($query) use ($date) {
                 return $query->whereMonth('created_at', $date->month)
                     ->whereYear('created_at', $date->year);

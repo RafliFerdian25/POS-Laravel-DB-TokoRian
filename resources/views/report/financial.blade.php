@@ -26,7 +26,7 @@
                                     <label for="month" class="col">Bulan :</label>
                                     <input type="month" name="month" id="month" class="form-control mb-3 col"
                                         @if ($typeReport == 'Bulanan') value="{{ date('Y-m') }}" @endif
-                                        onchange="getReportSale('bulanan'); getReportSaleByCategory('bulanan')">
+                                        onchange="getReportSale('bulanan'); getReportSaleByCategory('bulanan'); getExpenses('bulanan')">
                                 </div>
                             </form>
                         </div>
@@ -114,16 +114,16 @@
                     </div>
                 </div>
             </div>
-            <!-- Total Pengeluaran -->
+            <!-- Total Pembelian -->
             <div class="col-sm-6 col-md-4 col-xl-3 p-3">
                 <div class="card mb-0 widget-content row">
                     <div class="content">
                         <div class="widget-content-left row mb-2">
                             <i class="pe-7s-cash col-2" style="font-size: 30px;"></i>
-                            <div class="widget-heading col-10 widget__title">Total Pengeluaran</div>
+                            <div class="widget-heading col-10 widget__title">Total Pembelian</div>
                         </div>
                         <div class="widget-content-right">
-                            <div class="widget-numbers mb-2"><span id="outcome"></span></div>
+                            <div class="widget-numbers mb-2"><span id="purchase"></span></div>
                             <div class="change row" id="change">
                                 {{-- <div class="widget-subheading col-10" id="total_barang">
                                     -8
@@ -143,6 +143,25 @@
                         </div>
                         <div class="widget-content-right">
                             <div class="widget-numbers mb-2"><span id="total_purchase_product"></span></div>
+                            <div class="change row" id="change">
+                                {{-- <div class="widget-subheading col-10" id="total_barang">
+                                    -8
+                                </div> --}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Total Pengeluaran -->
+            <div class="col-sm-6 col-md-4 col-xl-3 p-3">
+                <div class="card mb-0 widget-content row">
+                    <div class="content">
+                        <div class="widget-content-left row mb-2">
+                            <i class="pe-7s-cash col-2" style="font-size: 30px;"></i>
+                            <div class="widget-heading col-10 widget__title">Total Pengeluaran</div>
+                        </div>
+                        <div class="widget-content-right">
+                            <div class="widget-numbers mb-2"><span id="expense"></span></div>
                             <div class="change row" id="change">
                                 {{-- <div class="widget-subheading col-10" id="total_barang">
                                     -8
@@ -295,6 +314,7 @@
             }
             initializeDataTable("transactionByNoTransactions", configDataTable);
             getReportSale()
+            getExpenses()
         });
 
         $(function() {
@@ -344,6 +364,7 @@
                     'YYYY-MM-DD'));
                 $("#month").val(null);
                 getReportSale('harian');
+                getExpenses('harian')
             });
             $('#daterange').on('cancel.daterangepicker', function(ev, picker) {
                 $(this).val(null);
@@ -361,7 +382,7 @@
             $('#profit').html(inlineLoader())
             $('#total_transaction').html(inlineLoader())
             $('#total_product').html(inlineLoader())
-            $('#outcome').html(inlineLoader())
+            $('#purchase').html(inlineLoader())
             $('#total_purchase_product').html(inlineLoader())
 
             $('#tableBestSellingCategories tbody').html(tableLoader(4))
@@ -380,7 +401,7 @@
                     $('#profit').text(formatCurrency(response.data.report.profit));
                     $('#total_transaction').text(response.data.report.total_transaction);
                     $('#total_product').text(response.data.report.total_product);
-                    $('#outcome').text(formatCurrency(response.data.reportPurchase.outcome));
+                    $('#purchase').text(formatCurrency(response.data.reportPurchase.purchase));
                     $('#total_purchase_product').text(response.data.reportPurchase.total_purchase_product);
 
                     $('#tableBestSellingCategories tbody').empty();
@@ -689,5 +710,26 @@
                 }
             });
         };
+
+
+        const getExpenses = (typeReport) => {
+            if (typeReport == 'harian') {
+                $('#month').val(null);
+            } else if (typeReport == 'bulanan') {
+                $('#daterange').val(null);
+            }
+
+            $.ajax({
+                type: "GET",
+                url: `{{ route('expense.sum.data') }}`,
+                data: {
+                    daterange: $('#daterange').val(),
+                    month: $('#month').val()
+                },
+                success: function(response) {
+                    $('#expense').text(formatCurrency(response.data.expense));
+                }
+            });
+        }
     </script>
 @endpush

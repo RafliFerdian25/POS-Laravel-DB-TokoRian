@@ -73,6 +73,55 @@ class ExpenseController extends Controller
     }
 
     /**
+     * Get sum of expenses
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function sumData(Request $request)
+    {
+        $typeReport = null;
+        $date = null;
+        $startDate = null;
+        $endDate = null;
+
+        if ($request->daterange == null && $request->month == null) {
+            $date = Carbon::now();
+            $typeReport = "Bulanan";
+        } elseif ($request->daterange != null) {
+            $daterange = explode(' - ', $request->daterange);
+            $date = Carbon::parse($daterange[1]);
+            $startDate = Carbon::parse($daterange[0]);
+            $endDate = Carbon::parse($daterange[1]);
+            $typeReport = "Harian";
+        } elseif ($request->month != null) {
+            $date = Carbon::parse($request->month);
+            $typeReport = "Bulanan";
+        }
+
+        $expense = Expense::when($typeReport == 'Bulanan', function ($query) use ($date) {
+            return $query->whereMonth('created_at', $date->month)
+                ->whereYear('created_at', $date->year);
+        })
+            ->when($typeReport == 'Harian', function ($query) use ($startDate, $endDate) {
+                return $query->whereBetween('created_at', [$startDate, $endDate]);
+            })
+            ->orderBy('created_at', 'desc')
+            ->sum('jumlah');
+
+        return ResponseFormatter::success(
+            [
+                'typeReport' => $typeReport,
+                'dateString' => $typeReport == 'Bulanan' ? FormatDate::month($date->month) : $startDate->copy()->format('d M Y') . ' - ' . $endDate->copy()->format('d M Y'),
+                'date' => $typeReport == 'Bulanan' ? $date->format('Y-m') : $daterange,
+                'expense' => $expense
+            ],
+            'Pengeluaran berhasil diambil'
+        );
+    }
+
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response

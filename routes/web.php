@@ -170,6 +170,7 @@ Route::controller(ProductSearchController::class)->group(function () {
 Route::controller(ExpenseController::class)->group(function () {
     Route::get('/pengeluaran', 'index')->name('expense.index');
     Route::get('/pengeluaran/data', 'data')->name('expense.data');
+    Route::get('/pengeluaran/jumlah/data', 'sumData')->name('expense.sum.data');
     Route::get('/pengeluaran/create', 'create')->name('expense.create');
     Route::post('/pengeluaran', 'store')->name('expense.store');
     Route::get('/pengeluaran/{expense:id}/edit', 'edit')->name('expense.edit');
