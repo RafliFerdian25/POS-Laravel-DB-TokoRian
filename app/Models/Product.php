@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Relation;
 
 class Product extends Model
 {
@@ -40,5 +41,15 @@ class Product extends Model
     public function printPrice()
     {
         return $this->hasMany(Barcode::class, 'idBarang', 'IdBarang');
+    }
+
+    public function productBoxOpen(): Relation
+    {
+        return $this->hasMany(BoxOpen::class, 'dus_id', 'IdBarang');
+    }
+
+    public function productRetailOpen(): Relation
+    {
+        return $this->hasMany(BoxOpen::class, 'retail_id', 'IdBarang');
     }
 }

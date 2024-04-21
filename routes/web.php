@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BoxOpenController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MerkController;
 use App\Http\Controllers\SaleController;
@@ -177,4 +178,14 @@ Route::controller(ExpenseController::class)->group(function () {
     Route::get('/pengeluaran/{expense:id}/edit', 'edit')->name('expense.edit');
     Route::put('/pengeluaran/{expense:id}', 'update')->name('expense.update');
     Route::delete('/pengeluaran/{expense:id}', 'destroy')->name('expense.destroy');
+});
+
+// Buka Kardus
+Route::controller(BoxOpenController::class)->group(function () {
+    Route::post('/buka-kardus', 'store')->name('box.open.store');
+    Route::get('/buka-kardus/{product:idBarang}/data', 'getProductBoxOpen')->name('box.open.data');
+    Route::get('/buka-kardus/{product:idBarang}/create', 'create')->name('box.open.create');
+    Route::get('/buka-kardus/{boxOpen:id}/edit', 'edit')->name('box.open.edit');
+    Route::put('/buka-kardus/{boxOpen:id}', 'update')->name('box.open.update');
+    Route::delete('/buka-kardus/{boxOpen:id}', 'destroy')->name('box.open.destroy');
 });

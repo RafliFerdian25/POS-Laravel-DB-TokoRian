@@ -126,6 +126,7 @@
                                 <th>Barcode</th>
                                 <th>Nama Barang</th>
                                 <th>Satuan</th>
+                                <th>Isi</th>
                                 <th>Harga Pokok</th>
                                 <th>Harga Jual</th>
                                 <th>Harga Grosir</th>
@@ -189,7 +190,7 @@
                     "className": "text-center"
                 }, {
                     // Mengatur aturan pengurutan kustom untuk kolom keempat (index 3)
-                    "targets": [4, 5, 6],
+                    "targets": [5, 6, 7],
                     "render": function(data, type, row) {
                         // Memeriksa tipe data, jika tampilan atau filter
                         if (type === 'display' || type === 'filter') {
@@ -212,7 +213,8 @@
 
         const getProducts = () => {
             $('#tableProduct').DataTable().clear().draw();
-            $('#tableProductBody').html(tableLoader(12));
+            $('#tableProductBody').html(tableLoader(13));
+            var retail = ['PCS', 'BTL', 'SCT', 'CUP'];
 
             $.ajax({
                 type: "GET",
@@ -229,6 +231,7 @@
                                 product.IdBarang,
                                 product.nmBarang,
                                 product.satuan,
+                                product.isi,
                                 product.hargaPokok,
                                 product.hargaJual,
                                 product.hargaGrosir,
@@ -239,6 +242,7 @@
                                 product.jenis,
                                 product.merk.merk,
                                 `<a href="{{ url('/laporan/barang/${product.IdBarang}') }}" class="btn btn-sm btn-primary">Laporan</a>
+                                ${!retail.includes(product.satuan) ? `<a href="{{ url('/buka-kardus/${product.IdBarang}/create') }}" class="btn btn-sm btn-success">Buka Kardus</a>`:''}
                                 <button class="btn btn-sm btn-warning" onclick="showEdit('${product.IdBarang}')">Edit</button>
                                 <button class="btn btn-sm btn-danger" onclick="deleteProduct('${product.IdBarang}', '${product.nmBarang}')"><i class="bi bi-trash"></i></button>`
                             ];
@@ -251,7 +255,7 @@
                             // $(rowNode).find('td').eq(4).addClass('text-center text-nowrap');
                         });
                     } else {
-                        $('#tableProductBody').html(tableEmpty(12,
+                        $('#tableProductBody').html(tableEmpty(13,
                             'barang'));
                     }
                 }
