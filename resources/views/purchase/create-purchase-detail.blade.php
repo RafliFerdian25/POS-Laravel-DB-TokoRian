@@ -365,7 +365,7 @@
                                     <div class="col-sm-10">
                                         <input required value="${response.data.product.hargaJual}" type="number"
                                             class="form-control rounded__10 "
-                                            min="0" id="sellingPrice" name="sellingPrice" step="500">
+                                            min="0" id="sellingPrice" name="sellingPrice" step="50">
                                     </div>
                                 </div>
                             </div>
@@ -448,7 +448,7 @@
                                     sellingPrice: $('#sellingPrice').val(),
                                 },
                                 success: function(response) {
-                                    $('#updateButton').html('Update');
+                                    $('#updateButton').html('Ubah');
                                     $('#updateButton').prop('disabled', false);
                                     Swal.fire({
                                             title: "Berhasil!",
@@ -467,7 +467,7 @@
                                         });
                                 },
                                 error: function(xhr, status, error) {
-                                    $('#updateButton').html('Update');
+                                    $('#updateButton').html('Ubah');
                                     $('#updateButton').prop('disabled', false);
                                     if (xhr.responseJSON) {
                                         errorAlert("Gagal!",

@@ -485,7 +485,7 @@
                                 processData: false,
                                 contentType: false,
                                 success: function(response) {
-                                    $('#updateButton').html('Update');
+                                    $('#updateButton').html('Ubah');
                                     $('#updateButton').prop('disabled', false);
                                     Swal.fire({
                                             title: "Berhasil!",
@@ -504,7 +504,7 @@
                                         });
                                 },
                                 error: function(xhr, status, error) {
-                                    $('#updateButton').html('Update');
+                                    $('#updateButton').html('Ubah');
                                     $('#updateButton').prop('disabled', false);
                                     if (xhr.responseJSON) {
                                         errorAlert("Gagal!",

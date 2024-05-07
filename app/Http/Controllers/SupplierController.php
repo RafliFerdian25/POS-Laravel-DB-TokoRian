@@ -128,8 +128,8 @@ class SupplierController extends Controller
             "product" => "required|max:100",
             "address" => "required",
             "city" => "required|max:25",
-            "phone" => "required|numeric|unique:t_supplier,telp," . $supplier->IdSupplier . ",IdSupplier",
-            "email" => "required|email|unique:t_supplier,email," . $supplier->IdSupplier . ",IdSupplier"
+            "phone" => "nullable|numeric|unique:t_supplier,telp," . $supplier->IdSupplier . ",IdSupplier",
+            "email" => "nullable|email|unique:t_supplier,email," . $supplier->IdSupplier . ",IdSupplier"
         ];
 
         $validated = Validator::make($request->all(), $rules);

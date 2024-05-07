@@ -639,7 +639,7 @@
                                     jumlah: $('#jumlah').val(),
                                 },
                                 success: function(response) {
-                                    $('#updateButton').html('Update');
+                                    $('#updateButton').html('Ubah');
                                     $('#updateButton').prop('disabled',
                                         false);
                                     Swal.fire({
@@ -660,7 +660,7 @@
                                         });
                                 },
                                 error: function(xhr, status, error) {
-                                    $('#updateButton').html('Update');
+                                    $('#updateButton').html('Ubah');
                                     $('#updateButton').prop('disabled',
                                         false);
                                     if (xhr.responseJSON) {

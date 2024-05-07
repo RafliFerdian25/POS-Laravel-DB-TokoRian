@@ -56,6 +56,7 @@ class DownloadDataCommand extends Command
             $this->error('Error: ' . $response->original['data']['error']);
         }
 
+        // Barang dicari
         $this->info('Data Barang Dicari Mulai Di Download');
 
         $productSearchController = new ProductSearchController();

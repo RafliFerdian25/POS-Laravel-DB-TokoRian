@@ -357,7 +357,7 @@
                                 <div class="col-sm-10">
                                     <input required value="${response.product.hargaJual}" type="number"
                                         class="form-control rounded__10"
-                                        min="0" step="500" id="hargaJual" name="hargaJual">
+                                        min="0" step="50" id="hargaJual" name="hargaJual">
                                 </div>
                             </div>
                             <div class="row mb-3">
@@ -514,7 +514,7 @@
                                 processData: false,
                                 contentType: false,
                                 success: function(response) {
-                                    $('#updateButton').html('Update');
+                                    $('#updateButton').html('Ubah');
                                     $('#updateButton').prop('disabled', false);
                                     Swal.fire({
                                             title: "Berhasil!",
@@ -533,7 +533,7 @@
                                         });
                                 },
                                 error: function(xhr, status, error) {
-                                    $('#updateButton').html('Update');
+                                    $('#updateButton').html('Ubah');
                                     $('#updateButton').prop('disabled', false);
                                     if (xhr.responseJSON) {
                                         errorAlert("Gagal!",
