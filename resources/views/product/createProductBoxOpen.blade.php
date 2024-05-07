@@ -8,7 +8,7 @@
             <div class="tambah__body">
                 <div class="tambah__content card">
                     <div class="title__card text-center">
-                        Tambah Pengeluaran
+                        Buka Kardus
                     </div>
                     <form method="POST" id="formAddProductBoxOpen">
                         @csrf
@@ -51,8 +51,9 @@
                                 Pokok
                                 <span class="required-label">*</span></label>
                             <div class="col-sm-10">
-                                <input type="number" class="form-control rounded__10" id="costOfGoodSoldRetail"
-                                    name="costOfGoodSoldRetail" min="1" disabled>
+                                <input value="{{ round($productBox->hargaPokok / $productBox->isi) }}" type="number"
+                                    class="form-control rounded__10" id="costOfGoodSoldRetail" name="costOfGoodSoldRetail"
+                                    min="1" disabled>
                             </div>
                         </div>
                         <div class="submit text-end">
@@ -124,12 +125,8 @@
                 cache: true, // Cache the results for better performance
             }
         }).on('select2:select', function(e) {
-            var data = e.params.data.data;
-
-            // disable false
             $('#costOfGoodSoldRetail').prop('disabled', false);
-            $('#costOfGoodSoldRetail').val(data.hargaPokok);
-        })
+        });
 
         // submit form
         $(`#formAddProductBoxOpen`).validate({

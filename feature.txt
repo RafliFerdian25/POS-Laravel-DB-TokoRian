@@ -4,14 +4,6 @@
 detail riwayat penjualan
 pisahkan pengambilan data (berdasarkan card)
 
-// Pembukaan kardus barang dalam menu barang
-tabel (id, dus_id, retail_id, harga_pokok_retail)
-read Pembukaan kardus barang
-create Pembukaan kardus barang
-delete Pembukaan kardus barang
-form buka kardus (nama barang retail, stok sebelum - disable, isi kardus, harga pokok retail, harga jual retail)
-
-
 // CRUD tabel barang pernah kadaluarsa
 menambahkan tabel barang yang pernah kadaluarsa
 read barang pernah kadaluarsa
@@ -31,12 +23,13 @@ create penjualan gas
 update penjualan gas
 delete penjualan gas
 
+
+## DONE ##
 // Supplier
 ✅ buatkan datatable pada data 
 ✅ edit data
 ✅ delete data
 
-## DONE ##
 ✅ perubahan NULL pada tanggal kadaluarsa product
 ✅ mencetak harga
 ✅ grafik penjualan kategori bulanan
@@ -139,3 +132,11 @@ delete penjualan gas
 ✅ create pengeluaran Toko
 ✅ update pengeluaran Toko
 ✅ delete pengeluaran Toko
+
+
+// Pembukaan kardus barang dalam menu barang
+✅ tabel (id, dus_id, retail_id, harga_pokok_retail)
+✅ read Pembukaan kardus barang
+✅ create Pembukaan kardus barang
+✅ delete Pembukaan kardus barang
+✅ form buka kardus (nama barang retail, stok sebelum - disable, isi kardus, harga pokok retail, harga jual retail)
