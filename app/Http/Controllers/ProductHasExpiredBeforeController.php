@@ -50,7 +50,7 @@ class ProductHasExpiredBeforeController extends Controller
     public function store(Product $product, Request $request)
     {
         $rules = [
-            'expired_date' => 'required|date',
+            'expiredDate' => 'required|date',
             'quantity' => 'required|integer',
         ];
 
@@ -82,7 +82,7 @@ class ProductHasExpiredBeforeController extends Controller
             // simpan data barang kadaluarsa
             ProductHasExpiredBefore::create([
                 'product_id' => $product->IdBarang,
-                'expired_date' => $request->expired_date,
+                'expired_date' => $request->expiredDate,
                 'quantity' => $request->quantity,
                 'loss' => $loss,
             ]);

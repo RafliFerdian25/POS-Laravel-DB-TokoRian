@@ -198,7 +198,8 @@
                                 product.expDate != null ? moment(product.expDate, 'YYYY-MM-DD')
                                 .format(
                                     'DD-MM-YYYY') : '-',
-                                `<button class="btn btn-sm btn-warning" onclick="showEdit('${product.IdBarang}')">Edit</button>`
+                                `<button class="btn btn-sm btn-warning" onclick="showEdit('${product.IdBarang}')">Edit</button>
+                                <button class="btn btn-sm btn-primary" onclick="addProductExpired('${product.IdBarang}','${product.stok}','${product.expDate}')">Tambah Daftar Expired</button>`
                             ];
                             var rowNode = $('#tableExpiredProduct').DataTable().row.add(rowData)
                                 .draw(
@@ -579,6 +580,106 @@
                 // Jika sudah ada, langsung atur nilai dan perbarui tampilan
                 $('#merk_id').val(id).trigger('change');
             }
+        }
+
+
+        const addProductExpired = (IdBarang, stock, expiredDate) => {
+            var expDate = moment(expiredDate, 'YYYY-MM-DD').format('YYYY-MM-DD');
+            console.log(IdBarang, stock, expDate);
+            Swal.fire({
+                title: "Tambah Pembelian Grosir",
+                html: `
+                <form id="formaddProductExpired">
+                    @csrf
+                    <div class="">
+                        <label for="quantity" class="col-sm-6 col-form-label">Jumlah Barang</label>
+                        <div class="">
+                            <input required type="number" class="form-control rounded__10 " id="quantity" name="quantity" min="1" value="${stock}">
+                        </div>
+                    </div>
+                    <div class="">
+                        <label for="expiredDate" class="col-sm-6 col-form-label">Tanggal Kadaluarsa</label>
+                        <div class="">
+                            <input required type="date" class="form-control rounded__10 " id="expiredDate" name="expiredDate" value="${expDate}">
+                        </div>
+                    </div>
+                </form>
+                `,
+                showCancelButton: true,
+                confirmButtonText: "Tambah",
+                cancelButtonText: "Batal",
+                customClass: {
+                    confirmButton: "btn btn-primary",
+                    cancelButton: "btn btn-danger"
+                },
+                customId: {
+                    confirmButton: "submitaddProductExpired"
+                },
+                preConfirm: () => {
+                    const quantity = Swal.getPopup().querySelector('#quantity').value;
+                    const expiredDate = Swal.getPopup().querySelector('#expiredDate').value;
+
+                    if (!quantity) {
+                        Swal.showValidationMessage(`Jumlah Barang tidak boleh kosong`);
+                    }
+
+                    return {
+                        quantity: quantity,
+                        expiredDate: expiredDate
+                    }
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    console.log(result.value);
+                    $.ajax({
+                        type: "POST",
+                        url: `{{ url('/barang-pernah-kadaluarsa/${IdBarang}') }}`,
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            quantity: result.value.quantity,
+                            expiredDate: result.value.expiredDate,
+                        },
+                        success: function(response) {
+                            Swal.fire({
+                                    title: "Berhasil!",
+                                    text: response.meta.message,
+                                    icon: "success",
+                                    showCancelButton: false,
+                                    confirmButtonText: "Okay",
+                                    customClass: {
+                                        confirmButton: "btn btn-success"
+                                    },
+                                })
+                                .then(() => {
+                                    getExpiredProduct()
+                                });
+                        },
+                        error: function(xhr, status, error) {
+                            if (xhr.responseJSON) {
+                                errorAlert("Gagal!",
+                                    `Tambah Belanja Barang Gagal. ${xhr.responseJSON.meta.message} Error: ${xhr.responseJSON.data.error}`
+                                );
+                            } else {
+                                errorAlert("Gagal!",
+                                    `Terjadi kesalahan pada server. Error: ${xhr.responseText}`
+                                );
+                            }
+                            return false;
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        title: "Batal",
+                        text: "Tambah Belanja Barang dibatalkan",
+                        icon: "info",
+                        showCancelButton: false,
+                        confirmButtonText: "Okay",
+                        customClass: {
+                            confirmButton: "btn btn-primary"
+                        },
+                    });
+                }
+            })
         }
     </script>
 @endpush
