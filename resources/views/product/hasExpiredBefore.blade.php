@@ -55,11 +55,28 @@
                                 </div>
                             </div>
                             <div class="form-group form-show-validation row select2-form-input">
-                                <label for="nameProduct" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-sm-left">Nama Barang
+                                <label for="quantity" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-sm-left">Jumlah Stok
                                 </label>
                                 <div class="col-lg-9 col-md-9 col-sm-8">
-                                    <input type="text" class="form-control rounded__10" id="nameProduct"
-                                        name="nameProduct">
+                                    <input type="text" class="form-control rounded__10" id="quantity" name="quantity">
+                                </div>
+                            </div>
+                            <div class="form-group form-show-validation row select2-form-input">
+                                <label for="expired_date" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-sm-left">Tanggal
+                                    Kadaluarsa
+                                </label>
+                                <div class="col-lg-9 col-md-9 col-sm-8">
+                                    <input type="date" class="form-control rounded__10" id="expired_date"
+                                        name="expired_date">
+                                </div>
+                            </div>
+                            <div class="form-group form-show-validation row select2-form-input">
+                                <label for="cost_of_good_sold" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-sm-left">Harga
+                                    Pokok
+                                </label>
+                                <div class="col-lg-9 col-md-9 col-sm-8">
+                                    <input type="text" class="form-control rounded__10" id="cost_of_good_sold"
+                                        name="cost_of_good_sold">
                                 </div>
                             </div>
                         </div>
@@ -233,14 +250,13 @@
                     cache: true, // Cache the results for better performance
                 }
             }).on('select2:select', function(e) {
-                $('#nameProduct').val('');
+                data = e.params.data.data;
+                $('#quantity').val(data.stok);
+                $('#cost_of_good_sold').val(data.hargaPokok);
+                $('#expired_date').val(moment(data.expDate).format('YYYY-MM-DD'));
             });
 
             getProduct();
-        });
-
-        $('#nameProduct').on('input', function() {
-            $('#product_id').val(null).trigger('change');
         });
 
         const getProduct = (typeReport) => {
