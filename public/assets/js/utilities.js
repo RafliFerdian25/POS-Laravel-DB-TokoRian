@@ -256,3 +256,10 @@ const getRandomPastelColor = () => {
 
     return `rgb(${red},${green},${blue})`;
 };
+
+function handleInput(inputId, otherInputIds) {
+    return debounce(function () {
+        $('#' + otherInputIds.join(', #')).val(null).trigger('change');
+        getProducts();
+    }, 750);
+}

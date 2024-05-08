@@ -85,18 +85,27 @@
                                             name="filterProduct">
                                     </div>
                                 </div>
-                                <div class="row
-                                            mb-3">
+                                <div class="row mb-3">
                                     <label for="filterCategory" class="col-sm-2 col-form-label">Kategori</label>
                                     <div class="col-sm-10">
                                         <select class="form-select rounded__10 " name="filterCategory" id="filterCategory"
-                                            aria-label="Default select example" onchange="getProducts();">
+                                            aria-label="Default select example">
                                             <option value="" selected>Pilih Kategori</option>
                                             @foreach ($categories as $category)
                                                 <option value="{{ $category->ID }}">{{ $category->keterangan }}
                                                 </option>
                                             @endforeach
                                         </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="filterMerk" class="col-sm-2 col-form-label">Merk</label>
+                                    <div class="col-sm-10">
+                                        <div class="select2-input select2-info" style="width: 100%">
+                                            <select id="filterMerk" name="filterMerk" class="form-control rounded__10">
+                                                <option value="">&nbsp;</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -209,6 +218,7 @@
 
             // Do this before you initialize any of your modals
             getProducts();
+            initializationSelect2Merk('filterMerk', "{{ route('merk.search.data') }}");
         });
 
         const getProducts = () => {
@@ -262,8 +272,11 @@
             });
         }
 
-        $('#filterProduct').on('input', debounce(getProducts, 750));
+        // $('#filterProduct').on('input', debounce(getProducts, 750));
 
+        $('#filterProduct').on('input', handleInput('filterProduct', ['filterCategory', 'filterMerk']));
+        $('#filterCategory').on('input', handleInput('filterCategory', ['filterProduct', 'filterMerk']));
+        $('#filterMerk').on('input', handleInput('filterMerk', ['filterProduct', 'filterCategory']));
 
         function showEdit(idBarang, status) {
             // Mengisi konten modal dengan data yang sesuai

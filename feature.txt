@@ -11,6 +11,8 @@ create barang pernah kadaluarsa
 update barang pernah kadaluarsa
 delete barang pernah kadaluarsa
 
+// Jadwal Supplier
+
 // menambahkan tabel penerimaan gas
 read penerimaan gas
 create penerimaan gas

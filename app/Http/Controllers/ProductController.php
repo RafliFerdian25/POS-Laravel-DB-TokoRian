@@ -46,6 +46,9 @@ class ProductController extends Controller
                 return $query->where('nmBarang', 'LIKE', '%' . $request->filterProduct . '%')
                     ->orWhere('IdBarang', 'LIKE', '%' . $request->filterProduct . '%');
             })
+            ->when($request->filterMerk != null, function ($query) use ($request) {
+                return $query->where('merk_id', $request->input('filterMerk'));
+            })
             ->orderBy('nmBarang', 'asc')
             ->limit(100)
             ->get();
