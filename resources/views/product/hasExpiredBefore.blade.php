@@ -63,12 +63,12 @@
                                 </div>
                             </div>
                             <div class="form-group form-show-validation row select2-form-input">
-                                <label for="expired_date" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-sm-left">Tanggal
+                                <label for="expiredDate" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-sm-left">Tanggal
                                     Kadaluarsa
                                 </label>
                                 <div class="col-lg-9 col-md-9 col-sm-8">
-                                    <input type="date" class="form-control rounded__10" id="expired_date"
-                                        name="expired_date" disabled>
+                                    <input type="date" class="form-control rounded__10" id="expiredDate"
+                                        name="expiredDate" disabled>
                                 </div>
                             </div>
                             <div class="form-group form-show-validation row select2-form-input">
@@ -269,10 +269,10 @@
                 data = e.params.data.data;
                 $('#quantity').val(data.stok);
                 $('#cost_of_good_sold').val(data.hargaPokok);
-                $('#expired_date').val(moment(data.expDate).format('YYYY-MM-DD'));
+                $('#expiredDate').val(moment(data.expDate).format('YYYY-MM-DD'));
 
                 $('#quantity').prop('disabled', false);
-                $('#expired_date').prop('disabled', false);
+                $('#expiredDate').prop('disabled', false);
             });
 
             getProduct();
@@ -305,7 +305,7 @@
                                 product.product.nmBarang,
                                 product.product.hargaPokok,
                                 product.quantity,
-                                moment(product.expired_date).format('DD-MM-YYYY'),
+                                moment(product.expiredDate).format('DD-MM-YYYY'),
                                 product.loss,
                                 `<button class="btn btn-sm btn-danger" onclick="deleteProduct('${product.id}')"><i class="bi bi-trash"></i></button>`
                             ];
@@ -335,7 +335,7 @@
                     required: true,
                     number: true,
                 },
-                expired_date: {
+                expiredDate: {
                     required: true,
                 },
             },
@@ -347,7 +347,7 @@
                     required: "Jumlah Stok tidak boleh kosong",
                     number: "Jumlah Stok harus berupa angka",
                 },
-                expired_date: {
+                expiredDate: {
                     required: "Tanggal Kadaluarsa tidak boleh kosong",
                 }
             },
@@ -375,7 +375,7 @@
                     data: {
                         _token: '{{ csrf_token() }}',
                         quantity: $('#quantity').val(),
-                        expired_date: $('#expired_date').val(),
+                        expiredDate: $('#expiredDate').val(),
                     },
                     success: function(response) {
                         $('#submitButton').html('Tambah');

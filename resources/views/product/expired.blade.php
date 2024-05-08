@@ -585,7 +585,6 @@
 
         const addProductExpired = (IdBarang, stock, expiredDate) => {
             var expDate = moment(expiredDate, 'YYYY-MM-DD').format('YYYY-MM-DD');
-            console.log(IdBarang, stock, expDate);
             Swal.fire({
                 title: "Tambah Pembelian Grosir",
                 html: `
@@ -630,7 +629,6 @@
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
-                    console.log(result.value);
                     $.ajax({
                         type: "POST",
                         url: `{{ url('/barang-pernah-kadaluarsa/${IdBarang}') }}`,
