@@ -58,7 +58,8 @@
                                 <label for="quantity" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-sm-left">Jumlah Stok
                                 </label>
                                 <div class="col-lg-9 col-md-9 col-sm-8">
-                                    <input type="text" class="form-control rounded__10" id="quantity" name="quantity">
+                                    <input type="text" class="form-control rounded__10" id="quantity" name="quantity"
+                                        disabled>
                                 </div>
                             </div>
                             <div class="form-group form-show-validation row select2-form-input">
@@ -67,7 +68,7 @@
                                 </label>
                                 <div class="col-lg-9 col-md-9 col-sm-8">
                                     <input type="date" class="form-control rounded__10" id="expired_date"
-                                        name="expired_date">
+                                        name="expired_date" disabled>
                                 </div>
                             </div>
                             <div class="form-group form-show-validation row select2-form-input">
@@ -269,6 +270,9 @@
                 $('#quantity').val(data.stok);
                 $('#cost_of_good_sold').val(data.hargaPokok);
                 $('#expired_date').val(moment(data.expDate).format('YYYY-MM-DD'));
+
+                $('#quantity').prop('disabled', false);
+                $('#expired_date').prop('disabled', false);
             });
 
             getProduct();

@@ -68,7 +68,7 @@ class ProductHasExpiredBeforeController extends Controller
             // mengecek stok produk
             if ($product->stok < $request->quantity) {
                 return ResponseFormatter::error([
-                    'message' => 'Stok produk tidak mencukupi'
+                    'error' => 'Stok produk tidak mencukupi'
                 ], 'Data gagal disimpan', 422);
             }
 
@@ -77,7 +77,7 @@ class ProductHasExpiredBeforeController extends Controller
             $product->save();
 
             // hitung kerugian
-            $loss = $product->cost_of_goods_sold * $request->quantity;
+            $loss = $product->hargaPokok * $request->quantity;
 
             // simpan data barang kadaluarsa
             ProductHasExpiredBefore::create([
@@ -98,40 +98,6 @@ class ProductHasExpiredBeforeController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\ProductHasExpiredBefore  $productHasExpiredBefore
-     * @return \Illuminate\Http\Response
-     */
-    public function show(ProductHasExpiredBefore $productHasExpiredBefore)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\ProductHasExpiredBefore  $productHasExpiredBefore
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(ProductHasExpiredBefore $productHasExpiredBefore)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\ProductHasExpiredBefore  $productHasExpiredBefore
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, ProductHasExpiredBefore $productHasExpiredBefore)
-    {
-        //
-    }
-
-    /**
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\ProductHasExpiredBefore  $productHasExpiredBefore
@@ -139,6 +105,24 @@ class ProductHasExpiredBeforeController extends Controller
      */
     public function destroy(ProductHasExpiredBefore $productHasExpiredBefore)
     {
-        //
+        try {
+            DB::beginTransaction();
+
+            // edit stok produk
+            $product = Product::find($productHasExpiredBefore->product_id);
+            $product->stok = $product->stok + $productHasExpiredBefore->quantity;
+            $product->save();
+
+            // hapus data barang kadaluarsa
+            $productHasExpiredBefore->delete();
+
+            DB::commit();
+            return ResponseFormatter::success(null, 'Data berhasil dihapus');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return ResponseFormatter::error([
+                'message' => $e->getMessage()
+            ], 'Data gagal dihapus', 500);
+        }
     }
 }
