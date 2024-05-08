@@ -2,10 +2,10 @@
 
 // Laporan Penjualan
 detail riwayat penjualan
-pisahkan pengambilan data (berdasarkan card)
+pisahkan pengambilan data (berdasarkan card), atau function sendiri
 
 // CRUD tabel barang pernah kadaluarsa
-menambahkan tabel barang yang pernah kadaluarsa
+menambahkan tabel barang yang pernah kadaluarsa (id, product_id, quantity, loss, expired_date)
 read barang pernah kadaluarsa
 create barang pernah kadaluarsa
 update barang pernah kadaluarsa
@@ -22,6 +22,11 @@ read penjualan gas
 create penjualan gas
 update penjualan gas
 delete penjualan gas
+
+// Laporan Barang
+Compare laporan beberapa barang
+
+Menambahkan harga jual rekomendasi (edit barang, pembelian barang)
 
 
 ## DONE ##
