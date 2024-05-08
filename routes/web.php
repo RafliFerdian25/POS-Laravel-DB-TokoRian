@@ -195,6 +195,6 @@ Route::controller(BoxOpenController::class)->group(function () {
 Route::controller(ProductHasExpiredBeforeController::class)->group(function () {
     Route::get('/barang-pernah-kadaluarsa', 'index')->name('product.has.expired.before.index');
     Route::get('/barang-pernah-kadaluarsa/data', 'indexData')->name('product.has.expired.before.index.data');
-    Route::post('/barang-pernah-kadaluarsa', 'store')->name('product.has.expired.before.store');
+    Route::post('/barang-pernah-kadaluarsa/{product:idBarang}', 'store')->name('product.has.expired.before.store');
     Route::delete('/barang-pernah-kadaluarsa/{name}', 'destroy')->name('product.has.expired.before.destroy');
 });

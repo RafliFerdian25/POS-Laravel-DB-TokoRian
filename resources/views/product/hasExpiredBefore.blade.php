@@ -76,7 +76,7 @@
                                 </label>
                                 <div class="col-lg-9 col-md-9 col-sm-8">
                                     <input type="text" class="form-control rounded__10" id="cost_of_good_sold"
-                                        name="cost_of_good_sold">
+                                        name="cost_of_good_sold" disabled>
                                 </div>
                             </div>
                         </div>
@@ -189,8 +189,23 @@
         $(document).ready(function() {
             var config = {
                 "columnDefs": [{
-                    "targets": [0, 1, 2, 3],
+                    "targets": [0, 2, 4, 5],
                     "className": "text-center"
+                }, {
+                    // Mengatur aturan pengurutan kustom untuk kolom keempat (index 3)
+                    "targets": [3, 6],
+                    "render": function(data, type, row) {
+                        // Memeriksa tipe data, jika tampilan atau filter
+                        if (type === 'display' || type === 'filter') {
+                            // Memformat angka menggunakan fungsi formatCurrency
+                            return formatCurrency(data);
+                        }
+                        // Jika tipe data selain tampilan atau filter, kembalikan data tanpa perubahan
+                        return data;
+                    }
+                }, {
+                    targets: [5], // Kolom "Tanggal" ada di indeks 1 (0-indexed)
+                    type: "date-eu" // Tentukan tipe pengurutan khusus untuk format "DD/MM/YYYY"
                 }],
             }
             initializeDataTable('tableListProduct', config)
@@ -282,8 +297,8 @@
                         $.each(response.data.products, function(index, product) {
                             var rowData = [
                                 index + 1,
-                                product.product.product_id,
-                                product.product.id,
+                                product.product_id,
+                                product.product.nmBarang,
                                 product.product.hargaPokok,
                                 product.quantity,
                                 moment(product.expired_date).format('DD-MM-YYYY'),
@@ -310,23 +325,27 @@
         $('#formAddProductHasExpiredBefore').validate({
             rules: {
                 product_id: {
-                    required: function() {
-                        return $('#nameProduct').val() == '';
-                    },
+                    required: true,
                 },
-                nameProduct: {
-                    required: function() {
-                        return $('#product_id').val() == '';
-                    },
+                quantity: {
+                    required: true,
+                    number: true,
+                },
+                expired_date: {
+                    required: true,
                 },
             },
             messages: {
                 product_id: {
                     required: "Barcode Barang tidak boleh kosong",
                 },
-                nameProduct: {
-                    required: "Nama Barang tidak boleh kosong",
+                quantity: {
+                    required: "Jumlah Stok tidak boleh kosong",
+                    number: "Jumlah Stok harus berupa angka",
                 },
+                expired_date: {
+                    required: "Tanggal Kadaluarsa tidak boleh kosong",
+                }
             },
             errorClass: "invalid-feedback",
             highlight: function(element) {
@@ -341,17 +360,18 @@
             },
             submitHandler: function(form, event) {
                 event.preventDefault();
+                var product = $('#product_id').val();
                 $('#submitButton').html(
                     '<svg class="spinners-2" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;"><path d="M12 22c5.421 0 10-4.579 10-10h-2c0 4.337-3.663 8-8 8s-8-3.663-8-8c0-4.336 3.663-8 8-8V2C6.579 2 2 6.58 2 12c0 5.421 4.579 10 10 10z"></path></svg>'
                 );
                 $('#submitButton').prop('disabled', true);
                 $.ajax({
-                    url: `{{ route('product.search.store') }}`,
+                    url: `{{ url('/barang-pernah-kadaluarsa/${product}') }}`,
                     type: "POST",
                     data: {
                         _token: '{{ csrf_token() }}',
-                        product_id: $('#product_id').val(),
-                        name: $('#nameProduct').val(),
+                        quantity: $('#quantity').val(),
+                        expired_date: $('#expired_date').val(),
                     },
                     success: function(response) {
                         $('#submitButton').html('Tambah');

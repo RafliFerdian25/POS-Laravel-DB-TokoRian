@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ResponseFormatter;
+use App\Models\Product;
 use App\Models\ProductHasExpiredBefore;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class ProductHasExpiredBeforeController extends Controller
 {
@@ -44,9 +47,54 @@ class ProductHasExpiredBeforeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Product $product, Request $request)
     {
-        //
+        $rules = [
+            'expired_date' => 'required|date',
+            'quantity' => 'required|integer',
+        ];
+
+        $validated = Validator::make($request->all(), $rules);
+
+        if ($validated->fails()) {
+            return ResponseFormatter::error([
+                'message' => $validated->errors()->first()
+            ], 'Data gagal divalidasi', 422);
+        }
+
+        try {
+            DB::beginTransaction();
+
+            // mengecek stok produk
+            if ($product->stok < $request->quantity) {
+                return ResponseFormatter::error([
+                    'message' => 'Stok produk tidak mencukupi'
+                ], 'Data gagal disimpan', 422);
+            }
+
+            // edit stok produk
+            $product->stok = $product->stok - $request->quantity;
+            $product->save();
+
+            // hitung kerugian
+            $loss = $product->cost_of_goods_sold * $request->quantity;
+
+            // simpan data barang kadaluarsa
+            ProductHasExpiredBefore::create([
+                'product_id' => $product->IdBarang,
+                'expired_date' => $request->expired_date,
+                'quantity' => $request->quantity,
+                'loss' => $loss,
+            ]);
+
+            DB::commit();
+            return ResponseFormatter::success(null, 'Data berhasil disimpan');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return ResponseFormatter::error([
+                'message' => $e->getMessage()
+            ], 'Data gagal disimpan', 500);
+        }
     }
 
     /**
