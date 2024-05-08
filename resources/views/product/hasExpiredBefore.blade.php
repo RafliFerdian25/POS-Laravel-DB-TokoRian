@@ -10,9 +10,9 @@
                         <i class="pe-7s-note2 icon-gradient bg-plum-plate">
                         </i>
                     </div>
-                    <div>Barang Dicari
+                    <div>Barang Pernah Kadaluarsa
                         <div class="page-title-subheading">
-                            Daftar Barang Dicari
+                            Daftar Barang Pernah Kadaluarsa
                         </div>
                     </div>
                 </div>
@@ -27,7 +27,7 @@
                     <div class="content">
                         <div class="widget-content-left mb-2">
                             <i class="pe-7s-cash col-2" style="font-size: 30px;"></i>
-                            <div class="widget-heading col-10 widget__title">Jumlah Barang Dicari</div>
+                            <div class="widget-heading col-10 widget__title">Jumlah Barang Pernah Kadaluarsa</div>
                         </div>
                         <div class="widget-content-right">
                             <div class="widget-numbers mb-2"><span id="countProduct">-</span></div>
@@ -37,9 +37,9 @@
             </div>
             <div class="col-sm-12 col-md-8 col-xl-9 p-3">
                 <div class="main-card mb-3 card">
-                    <form id="formAddProductSearch">
+                    <form id="formAddProductHasExpiredBefore">
                         <div class="card-body">
-                            <h5 class="card-title text-center">Tambah Barang Dicari</h5>
+                            <h5 class="card-title text-center">Tambah Barang Pernah Kadaluarsa</h5>
                             @csrf
                             <p>Pilih salah satu</p>
                             <div class="form-group form-show-validation row select2-form-input">
@@ -73,11 +73,11 @@
         </div>
         <!-- END CARD DASHBOARD -->
 
-        <!-- FILTER Barang Dicari -->
+        <!-- FILTER Barang Pernah Kadaluarsa -->
         <div class="FilterEmptyProductSection">
             <div class="main-card mb-3 card">
                 <div class="card-body">
-                    <h5 class="card-title text-center">Filter Barang Dicari</h5>
+                    <h5 class="card-title text-center">Filter Barang Pernah Kadaluarsa</h5>
                     <form id="formFilterProduct" method="GET" onsubmit="event.preventDefault(); getProduct();">
                         @csrf
                         <div class="modal-body">
@@ -110,15 +110,17 @@
         <div class="ListProductSection">
             <div class="main-card mb-3 card">
                 <div class="card-body">
-                    <h5 class="card-title text-center">Daftar Barang (Dicari <span id="dateString"></span>)</h5>
+                    <h5 class="card-title text-center">Daftar Barang (Pernah Kadaluarsa <span id="dateString"></span>)</h5>
                     <table class="display nowrap" style="width:100%" id="tableListProduct">
                         <thead>
                             <tr>
                                 <th>No</th>
                                 <th>Barcode</th>
                                 <th>Nama Barang</th>
-                                <th>Jumlah Dicari</th>
-                                <th>Tanggal Terakhir Dicari</th>
+                                <th>Harga Pokok</th>
+                                <th>Jumlah</th>
+                                <th>Tanggal Terakhir Kadaluarsa</th>
+                                <th>Total Kerugian</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -254,7 +256,7 @@
 
             $.ajax({
                 type: "GET",
-                url: `{{ route('product.search.index.data') }}`,
+                url: `{{ route('product.has.expired.before.index.data') }}`,
                 data: $('#formFilterProduct').serialize(),
                 dataType: "json",
                 success: function(response) {
@@ -264,11 +266,13 @@
                         $.each(response.data.products, function(index, product) {
                             var rowData = [
                                 index + 1,
-                                product.product_id,
-                                product.name,
-                                product.total,
-                                moment(product.created_at).format('DD-MM-YYYY'),
-                                `<button class="btn btn-sm btn-danger" onclick="deleteProduct('${product.name}')"><i class="bi bi-trash"></i></button>`
+                                product.product.product_id,
+                                product.product.id,
+                                product.product.hargaPokok,
+                                product.quantity,
+                                moment(product.expired_date).format('DD-MM-YYYY'),
+                                product.loss,
+                                `<button class="btn btn-sm btn-danger" onclick="deleteProduct('${product.id}')"><i class="bi bi-trash"></i></button>`
                             ];
                             var rowNode = $('#tableListProduct').DataTable().row.add(rowData)
                                 .draw(
@@ -287,7 +291,7 @@
 
         }
 
-        $('#formAddProductSearch').validate({
+        $('#formAddProductHasExpiredBefore').validate({
             rules: {
                 product_id: {
                     required: function() {
@@ -368,7 +372,7 @@
             }
         })
 
-        const deleteProduct = (name) => {
+        const deleteProduct = (id) => {
             Swal.fire({
                 title: 'Hapus Produk',
                 text: `Apakah Anda yakin ingin menghapus produk?`,
@@ -392,7 +396,7 @@
 
                     $.ajax({
                         type: "DELETE",
-                        url: `{{ url('barang-dicari/${name}') }}`,
+                        url: `{{ url('barang-pernah-kadaluarsa/${id}') }}`,
                         data: {
                             _token: '{{ csrf_token() }}',
                         },

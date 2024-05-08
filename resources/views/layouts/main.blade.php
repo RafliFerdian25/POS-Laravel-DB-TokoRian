@@ -187,6 +187,14 @@
                                     Barang Dicari
                                 </a>
                             </li>
+                            <li class="">
+                                <a href="{{ route('product.has.expired.before.index') }}"
+                                    id="navbarProductHasExpiredBefore"
+                                    class="@if ($currentNav == 'productHasExpiredBefore') mm-active @endif">
+                                    <i class="metismenu-icon bi bi-calendar-minus"></i>
+                                    Pernah Kadaluarsa
+                                </a>
+                            </li>
 
                             <li class="app-sidebar__heading">Belanja</li>
                             <li>

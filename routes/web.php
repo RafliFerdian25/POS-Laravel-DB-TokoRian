@@ -7,6 +7,7 @@ use App\Http\Controllers\SaleController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\ProductHasExpiredBeforeController;
 use App\Http\Controllers\ProductSearchController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\ShoppingController;
@@ -188,4 +189,12 @@ Route::controller(BoxOpenController::class)->group(function () {
     Route::get('/buka-kardus/{boxOpen:id}/edit', 'edit')->name('box.open.edit');
     Route::put('/buka-kardus/{boxOpen:id}', 'update')->name('box.open.update');
     Route::delete('/buka-kardus/{boxOpen:id}', 'destroy')->name('box.open.destroy');
+});
+
+// Barang Pernah Kadaluarsa
+Route::controller(ProductHasExpiredBeforeController::class)->group(function () {
+    Route::get('/barang-pernah-kadaluarsa', 'index')->name('product.has.expired.before.index');
+    Route::get('/barang-pernah-kadaluarsa/data', 'indexData')->name('product.has.expired.before.index.data');
+    Route::post('/barang-pernah-kadaluarsa', 'store')->name('product.has.expired.before.store');
+    Route::delete('/barang-pernah-kadaluarsa/{name}', 'destroy')->name('product.has.expired.before.destroy');
 });

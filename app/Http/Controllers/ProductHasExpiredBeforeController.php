@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ResponseFormatter;
 use App\Models\ProductHasExpiredBefore;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ProductHasExpiredBeforeController extends Controller
@@ -14,17 +16,26 @@ class ProductHasExpiredBeforeController extends Controller
      */
     public function index()
     {
-        //
+        $title = 'POS TOKO | Barang Pernah Kadaluarsa';
+
+        $data = [
+            'title' => $title,
+            'typeReport' => 'Bulanan',
+            'currentNav' => 'productHasExpiredBefore',
+        ];
+
+        return view('product.hasExpiredBefore', $data);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function indexData(): JsonResponse
     {
-        //
+        $products = ProductHasExpiredBefore::with('product')
+            ->orderBy('expired_date', 'desc')
+            ->get();
+
+        return ResponseFormatter::success([
+            'products' => $products
+        ], 'Data berhasil diambil');
     }
 
     /**
