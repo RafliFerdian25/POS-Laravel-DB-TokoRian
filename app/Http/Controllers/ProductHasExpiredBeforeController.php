@@ -74,6 +74,11 @@ class ProductHasExpiredBeforeController extends Controller
 
             // edit stok produk
             $product->stok = $product->stok - $request->quantity;
+
+            // jika stok produk habis, maka hapus tanggal kadaluarsa produk
+            if ($product->stok == 0) {
+                $product->expDate = null;
+            }
             $product->save();
 
             // hitung kerugian
