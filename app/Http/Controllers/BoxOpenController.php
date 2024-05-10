@@ -81,7 +81,7 @@ class BoxOpenController extends Controller
             BoxOpen::create([
                 'dus_id' => $request->idProductBox,
                 'retail_id' => $request->idProductRetail,
-                'harga_pokok_retail' => $request->costOfGoodSoldRetail,
+                'harga_pokok_retail_lama' => $productRetailOpen->hargaPokok,
             ]);
             DB::commit();
             return ResponseFormatter::success([
@@ -102,15 +102,20 @@ class BoxOpenController extends Controller
             $productBoxOpen = Product::find($boxOpen->dus_id);
             $productRetailOpen = Product::find($boxOpen->retail_id);
 
-            // mengubah data stok produk
+            // mengubah data stok produk dus
             $productBoxOpen->update([
                 'stok' => $productBoxOpen->stok + 1,
             ]);
 
-            $productRetailOpen->update([
-                'stok' => $productRetailOpen->stok - $productBoxOpen->isi,
-                // 'hargaPokok' => $boxOpen->harga_pokok_retail_lama,
-            ]);
+            // mengubah data stok dan harga pokok produk retail
+            $productRetailOpen->stok = $productRetailOpen->stok - $boxOpen->isi;
+            // mengecek apakah box open yang dihapus merupakan box open terakhir
+            $lastProductRetailOpen = BoxOpen::where('retail_id', $boxOpen->retail_id)->orderBy('id', 'desc')->first();
+            if ($lastProductRetailOpen->id != $boxOpen->id) {
+                $productRetailOpen->hargaPokok = $lastProductRetailOpen->harga_pokok_retail_lama;
+            }
+
+            $productRetailOpen->save();
 
             $boxOpen->delete();
             DB::commit();
