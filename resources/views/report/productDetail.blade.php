@@ -27,7 +27,7 @@
                                     <label for="month" class="col">Bulan :</label>
                                     <input type="month" name="month" id="month" class="form-control mb-3 col"
                                         @if ($typeReport == 'Bulanan') value="{{ date('Y-m') }}" @endif
-                                        onchange="getReportProduct('bulanan')">
+                                        onchange="getReportProduct('bulanan');getProductBoxOpen('bulanan')">
                                 </div>
                             </form>
                         </div>
@@ -205,6 +205,34 @@
         </div>
         <!-- end barang terjual -->
 
+        <!-- buka kardus -->
+        <div class="productPurchaseTransactionSection">
+            <div class="main-card mb-3 card">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Riwayat Buka Kardus Barang</h5>
+                    <table class="display nowrap" style="width:100%" id="tableProductBoxOpen">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Tanggal</th>
+                                <th>Barang (Dus)</th>
+                                <th>Isi (Dus)</th>
+                                <th>Kadaluarsa (Dus)</th>
+                                <th>Barang (Retail)</th>
+                                <th>HPP Dari Box (Retail)</th>
+                                <th>HPP (Retail)</th>
+                                <th>Kadaluarsa (Retail)</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableProductBoxOpenBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- end buka kardus -->
+
     </div>
 @endsection
 
@@ -229,6 +257,7 @@
                     }
                 }]
             });
+
             initializeDataTable("tableProductPurchase", {
                 "columnDefs": [{
                     "targets": "_all",
@@ -248,7 +277,27 @@
                 }]
             });
 
+            initializeDataTable("tableProductBoxOpen", {
+                "columnDefs": [{
+                    "targets": "_all",
+                    "className": "text-center"
+                }, {
+                    // Mengatur aturan pengurutan kustom untuk kolom keempat (index 3)
+                    "targets": [6, 7],
+                    "render": function(data, type, row) {
+                        // Memeriksa tipe data, jika tampilan atau filter
+                        if (type === 'display' || type === 'filter') {
+                            // Memformat angka menggunakan fungsi formatCurrency
+                            return formatCurrency(data);
+                        }
+                        // Jika tipe data selain tampilan atau filter, kembalikan data tanpa perubahan
+                        return data;
+                    }
+                }]
+            });
+
             getReportProduct()
+            getProductBoxOpen()
         });
 
         $(function() {
@@ -299,6 +348,7 @@
                     'YYYY-MM-DD'));
                 $("#month").val(null);
                 getReportProduct('harian')
+                getProductBoxOpen('harian')
             });
             $('#daterange').on('cancel.daterangepicker', function(ev, picker) {
                 $(this).val(null);
@@ -632,5 +682,101 @@
                 }
             });
         };
+
+        const getProductBoxOpen = (typeReport) => {
+            if (typeReport == 'harian') {
+                $('#month').val(null);
+            } else if (typeReport == 'bulanan') {
+                $('#daterange').val(null);
+            }
+
+            $.ajax({
+                type: "GET",
+                url: `{{ url('buka-kardus/' . $product->IdBarang . '/data') }}`,
+                data: {
+                    daterange: $('#daterange').val(),
+                    month: $('#month').val()
+                },
+                success: function(response) {
+                    // table data pembelian barang
+                    $('#tableProductBoxOpen').DataTable().clear().draw();
+                    if (response.data.productBoxOpen.length > 0) {
+                        $.each(response.data.productBoxOpen, function(index, data) {
+                            var rowData = [
+                                index + 1,
+                                moment(data.created_at).format('DD-MM-YYYY'),
+                                data.product_box.nmBarang,
+                                data.product_box.isi,
+                                data.product_box.expDate != null ? moment(data
+                                    .product_box.expDate).format('DD-MM-YYYY') : '-',
+                                data.product_retail.nmBarang,
+                                data.product_box.hargaPokok / data.product_box.isi,
+                                data.product_retail.hargaPokok,
+                                data.product_retail.expDate != null ? moment(data
+                                    .product_retail.expDate).format('DD-MM-YYYY') : '-',
+                                // `<button class="btn btn-sm btn-warning" onclick="showEdit('${data.id}')">Detail</button>`
+                                `<button class="btn btn-sm btn-danger" onclick="deleteProductBoxOpen('${data.id}')">Hapus</button>`
+                            ];
+                            var rowNode = $('#tableProductBoxOpen').DataTable().row.add(
+                                    rowData)
+                                .draw(
+                                    false)
+                                .node();
+
+                            // $(rowNode).find('td').eq(0).addClass('text-center');
+                            // $(rowNode).find('td').eq(4).addClass('text-center text-nowrap');
+                        });
+                    } else {
+                        $('#tableProductBoxOpenBody').html(tableEmpty(9,
+                            'Riwayat Buka Kardus Barang'));
+                    }
+                }
+            });
+        };
+
+        const deleteProductBoxOpen = (id) => {
+            Swal.fire({
+                title: 'Hapus Produk Buka Kardus',
+                text: `Apakah Anda yakin ingin menghapus produk buka kardus?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Hapus',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "DELETE",
+                        url: `{{ url('pembelian/detail/${id}') }}`,
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                        },
+                        success: function(response) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil',
+                                text: 'Hapus Produk Berhasil',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                            getProduct();
+                        },
+                        error: function(xhr, ajaxOptions, thrownError) {
+                            if (xhr.responseJSON) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal',
+                                    text: `Hapus Produk Gagal. ${xhr.responseJSON.meta.message} Error: ${xhr.responseJSON.data.error}`,
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                })
+                            }
+                            return false;
+                        },
+                    });
+                }
+            })
+        }
     </script>
 @endpush

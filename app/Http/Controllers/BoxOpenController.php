@@ -18,13 +18,13 @@ class BoxOpenController extends Controller
     public function getProductBoxOpen(Product $product): JsonResponse
     {
         if (in_array($product->satuan, self::retail)) {
-            $productBoxOpen = $product->productRetailOpen;
+            $productBoxOpen = $product->productRetailOpen->load('productBox', 'productRetail');
         } else {
-            $productBoxOpen = $product->productBoxOpen;
+            $productBoxOpen = $product->productBoxOpen->load('productBox', 'productRetail');
         }
 
         return ResponseFormatter::success([
-            'product' => $productBoxOpen,
+            'productBoxOpen' => $productBoxOpen,
         ], "Data produk berhasil diambil");
     }
 

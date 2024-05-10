@@ -16,11 +16,11 @@ class BoxOpen extends Model
 
     public function productBox(): Relation
     {
-        return $this->belongsTo(Product::class, 'dus_id', 'idBarang');
+        return $this->belongsTo(Product::class, 'dus_id', 'IdBarang');
     }
 
     public function productRetail(): Relation
     {
-        return $this->belongsTo(Product::class, 'retail_id', 'idBarang');
+        return $this->belongsTo(Product::class, 'retail_id', 'IdBarang');
     }
 }
