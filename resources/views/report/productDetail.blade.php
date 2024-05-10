@@ -748,7 +748,7 @@
                 if (result.isConfirmed) {
                     $.ajax({
                         type: "DELETE",
-                        url: `{{ url('pembelian/detail/${id}') }}`,
+                        url: `{{ url('buka-kardus/${id}') }}`,
                         data: {
                             _token: '{{ csrf_token() }}',
                         },
@@ -760,7 +760,7 @@
                                 showConfirmButton: false,
                                 timer: 1500
                             })
-                            getProduct();
+                            getProductBoxOpen();
                         },
                         error: function(xhr, ajaxOptions, thrownError) {
                             if (xhr.responseJSON) {

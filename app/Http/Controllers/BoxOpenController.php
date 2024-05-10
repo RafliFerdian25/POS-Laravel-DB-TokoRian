@@ -94,4 +94,34 @@ class BoxOpenController extends Controller
             ], "Data produk gagal disimpan", 500);
         }
     }
+
+    public function destroy(BoxOpen $boxOpen): JsonResponse
+    {
+        try {
+            DB::beginTransaction();
+            $productBoxOpen = Product::find($boxOpen->dus_id);
+            $productRetailOpen = Product::find($boxOpen->retail_id);
+
+            // mengubah data stok produk
+            $productBoxOpen->update([
+                'stok' => $productBoxOpen->stok + 1,
+            ]);
+
+            $productRetailOpen->update([
+                'stok' => $productRetailOpen->stok - $productBoxOpen->isi,
+                // 'hargaPokok' => $boxOpen->harga_pokok_retail_lama,
+            ]);
+
+            $boxOpen->delete();
+            DB::commit();
+            return ResponseFormatter::success([
+                'redirect' => route('barang.index'),
+            ], "Data produk berhasil dihapus");
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return ResponseFormatter::error([
+                'message' => $e->getMessage(),
+            ], "Data produk gagal dihapus", 500);
+        }
+    }
 }
