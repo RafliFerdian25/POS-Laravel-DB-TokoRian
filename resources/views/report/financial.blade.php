@@ -389,12 +389,15 @@
             $('#tableBestSellingProducts tbody').html(tableLoader(4))
             $('#transactionByNoTransactionsBody').html(tableLoader(6))
 
+            var daterange = $('#daterange').val();
+            var month = $('#month').val();
+
             $.ajax({
                 type: "GET",
                 url: `{{ url('laporan/penjualan/data') }}`,
                 data: {
-                    daterange: $('#daterange').val(),
-                    month: $('#month').val()
+                    daterange: daterange,
+                    month: month
                 },
                 success: function(response) {
                     $('#income').text(formatCurrency(response.data.report.income));
@@ -407,7 +410,7 @@
                     $('#tableBestSellingCategories tbody').empty();
                     $('#tableBestSellingProducts tbody').empty();
 
-                    getBestSellingProduct(typeReport);
+                    getBestSellingProduct(daterange, month);
 
                     // table data barang terjual terbaik
                     response.data.bestSellingCategories.forEach((item, index) => {
@@ -688,19 +691,13 @@
             });
         };
 
-        const getBestSellingProduct = (typeReport) => {
-            if (typeReport == 'harian') {
-                $('#month').val(null);
-            } else if (typeReport == 'bulanan') {
-                $('#daterange').val(null);
-            }
-
+        const getBestSellingProduct = (daterange, month) => {
             $.ajax({
                 type: "GET",
                 url: "{{ route('best.selling.product.report.data') }}",
                 data: {
-                    daterange: $('#daterange').val(),
-                    month: $('#month').val()
+                    daterange: daterange,
+                    month: month
                 },
                 success: function(response) {
                     if (response.data.bestSellingProducts.length > 0) {
