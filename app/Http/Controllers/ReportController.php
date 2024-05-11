@@ -228,6 +228,7 @@ class ReportController extends Controller
             })
             ->orderBy('date', 'desc')
             ->groupBy('no_transaction')
+            ->limit(100)
             ->get();
 
         return ResponseFormatter::success(

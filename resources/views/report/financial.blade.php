@@ -410,61 +410,27 @@
                     $('#tableBestSellingCategories tbody').empty();
                     $('#tableBestSellingProducts tbody').empty();
 
-                    // table data barang terlaris
-                    // getBestSellingProduct(daterange, month);
+                    getBestSellingProduct(daterange, month).then((response) => {
+                        // Memanggil fungsi untuk memproses data produk terlaris
+                        const bestSellingProductData = response.data.bestSellingProducts;
+                        processDataBestSelling(bestSellingProductData, 'tableBestSellingProducts');
+                    }).catch((error) => {
+                        console.error('Error:', error);
+                    });
 
-                    // table data barang terjual terbaik
-                    // getBestSellingCategory(daterange, month);
+                    getBestSellingCategory(daterange, month).then((response) => {
+                        // Memanggil fungsi untuk memproses data kategori terlaris
+                        const bestSellingCategoryData = response.data.bestSellingCategories;
+                        processDataBestSelling(bestSellingCategoryData,
+                            'tableBestSellingCategories');
+                    }).catch((error) => {
+                        console.error('Error:', error);
+                    });
 
-                    Promise.all([getBestSellingProduct(daterange, month), getBestSellingCategory(daterange,
-                            month), getTransactionByNoTransactions(daterange, month)])
-                        .then((results) => {
-                            // Menangani hasil kedua fungsi
-                            const bestSellingProductData = results[0].data.bestSellingProducts;
-                            const bestSellingCategoryData = results[1].data.bestSellingCategories;
-
-                            // Mengelola hasil dari kedua panggilan Promise
-                            const processData = (data, tableId) => {
-                                const tableBody = $(`#${tableId} tbody`);
-                                if (data.length > 0) {
-                                    data.forEach((item, index) => {
-                                        tableBody.append(`
-                                            <tr>
-                                                <td class="text-center text-muted">${index + 1}</td>
-                                                <td>
-                                                    <div class="widget-content p-0">
-                                                        <div class="widget-content-wrapper">
-                                                            <div class="widget-content-left flex2">
-                                                                ${item.name}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td class="text-center">${item.total}</td>
-                                                <td class="text-center">
-                                                    <a href="{{ url('/laporan/barang/${item.id}') }}">
-                                                        <button type="button" id="PopoverCustomT-1" class="btn btn-primary btn-sm">
-                                                            Detail
-                                                        </button>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        `);
-                                    });
-                                } else {
-                                    tableBody.html(tableEmpty(4, 'barang terlaris'));
-                                }
-                            };
-
-                            // Memanggil fungsi untuk memproses data produk terlaris
-                            processData(bestSellingProductData, 'tableBestSellingProducts');
-
-                            // Memanggil fungsi untuk memproses data kategori terlaris
-                            processData(bestSellingCategoryData, 'tableBestSellingCategories');
-
+                    getTransactionByNoTransactions(daterange, month).then((response) => {
                             // table data barang terjual
                             $('#transactionByNoTransactions').DataTable().clear().draw();
-                            const transactionByNoTransactions = results[2].data
+                            const transactionByNoTransactions = response.data
                                 .transactionByNoTransactions;
                             if (transactionByNoTransactions.length > 0) {
                                 $.each(transactionByNoTransactions, function(index,
@@ -484,9 +450,6 @@
                                         .draw(
                                             false)
                                         .node();
-
-                                    // $(rowNode).find('td').eq(0).addClass('text-center');
-                                    // $(rowNode).find('td').eq(4).addClass('text-center text-nowrap');
                                 });
                             } else {
                                 $('#transactionByNoTransactionsBody').html(tableEmpty(6,
@@ -718,9 +681,6 @@
                             }]
                         },
                     });
-
-
-
                 }
             });
         };
@@ -757,7 +717,6 @@
                     },
                     success: function(response) {
                         resolve(response)
-
                     },
                     error: function(err) {
                         reject(err)
@@ -766,6 +725,39 @@
                 });
             });
         }
+
+        // Mengelola hasil dari kedua panggilan Promise
+        const processDataBestSelling = (data, tableId) => {
+            const tableBody = $(`#${tableId} tbody`);
+            if (data.length > 0) {
+                data.forEach((item, index) => {
+                    tableBody.append(`
+                        <tr>
+                            <td class="text-center text-muted">${index + 1}</td>
+                            <td>
+                                <div class="widget-content p-0">
+                                    <div class="widget-content-wrapper">
+                                        <div class="widget-content-left flex2">
+                                            ${item.name}
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-center">${item.total}</td>
+                            <td class="text-center">
+                                <a href="{{ url('/laporan/barang/${item.id}') }}">
+                                    <button type="button" id="PopoverCustomT-1" class="btn btn-primary btn-sm">
+                                        Detail
+                                    </button>
+                                </a>
+                            </td>
+                        </tr>
+                    `);
+                });
+            } else {
+                tableBody.html(tableEmpty(4, 'barang terlaris'));
+            }
+        };
 
         const getTransactionByNoTransactions = (daterange, month) => {
             return new Promise((resolve, reject) => {
@@ -786,8 +778,6 @@
                 });
             });
         }
-
-
 
         const getExpenses = (typeReport) => {
             if (typeReport == 'harian') {
