@@ -410,33 +410,11 @@
                     $('#tableBestSellingCategories tbody').empty();
                     $('#tableBestSellingProducts tbody').empty();
 
+                    // table data barang terlaris
                     getBestSellingProduct(daterange, month);
 
                     // table data barang terjual terbaik
-                    response.data.bestSellingCategories.forEach((item, index) => {
-                        $('#tableBestSellingCategories tbody').append(`
-                            <tr>
-                                <td class="text-center text-muted">${index + 1}</td>
-                                <td>
-                                    <div class="widget-content p-0">
-                                        <div class="widget-content-wrapper">
-                                            <div class="widget-content-left flex2">
-                                                ${item.name}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="text-center">${item.total}</td>
-                                <td class="text-center">
-                                    <a href="{{ url('/laporan/kategori/${item.id}/detail') }}">
-                                        <button type="button" id="PopoverCustomT-1" class="btn btn-primary btn-sm">
-                                            Detail
-                                        </button>
-                                    </a>
-                                </td>
-                            </tr>
-                        `);
-                    });
+                    getBestSellingCategory(daterange, month);
 
                     // dailyFinancialReportChart
                     Highcharts.chart('dailyFinancialReportChart', {
@@ -724,6 +702,51 @@
                                 </td>
                             </tr>
                         `);
+                        });
+                    } else {
+                        $('#tableBestSellingProductsBody').html(tableEmpty(4,
+                            'barang terlaris'));
+                    }
+                },
+                error: function(err) {
+                    $('#tableBestSellingProductsBody').html("Gagal memuat data");
+                }
+            });
+        }
+
+        const getBestSellingCategory = (daterange, month) => {
+            $.ajax({
+                type: "GET",
+                url: "{{ route('best.selling.category.report.data') }}",
+                data: {
+                    daterange: daterange,
+                    month: month
+                },
+                success: function(response) {
+                    if (response.data.bestSellingCategories.length > 0) {
+                        response.data.bestSellingCategories.forEach((item, index) => {
+                            $('#tableBestSellingCategories tbody').append(`
+                                <tr>
+                                    <td class="text-center text-muted">${index + 1}</td>
+                                    <td>
+                                        <div class="widget-content p-0">
+                                            <div class="widget-content-wrapper">
+                                                <div class="widget-content-left flex2">
+                                                    ${item.name}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">${item.total}</td>
+                                    <td class="text-center">
+                                        <a href="{{ url('/laporan/kategori/${item.id}/detail') }}">
+                                            <button type="button" id="PopoverCustomT-1" class="btn btn-primary btn-sm">
+                                                Detail
+                                            </button>
+                                        </a>
+                                    </td>
+                                </tr>
+                            `);
                         });
                     } else {
                         $('#tableBestSellingProductsBody').html(tableEmpty(4,

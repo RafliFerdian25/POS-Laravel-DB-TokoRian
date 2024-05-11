@@ -134,20 +134,6 @@ class ReportController extends Controller
             })
             ->first();
 
-        $bestSellingCategories = Category::selectRaw('p_jenis.ID as id, p_jenis.jenis as name, sum(t_kasir.jumlah) as total')
-            ->join('t_barang', 't_barang.jenis', '=', 'p_jenis.jenis')
-            ->join('t_kasir', 't_kasir.idBarang', '=', 't_barang.idBarang')
-            ->when($filterDate['typeReport'] == 'Bulanan', function ($query) use ($filterDate) {
-                return $query->whereMonth('tanggal', $filterDate['date']->month)
-                    ->whereYear('tanggal', $filterDate['date']->year);
-            })
-            ->when($filterDate['typeReport'] == 'Harian', function ($query) use ($filterDate) {
-                return $query->whereBetween('tanggal', [$filterDate['startDate'], $filterDate['endDate']]);
-            })
-            ->groupBy('id', 'name')
-            ->orderBy('total', 'desc')
-            ->limit(10)
-            ->get();
 
         return ResponseFormatter::success(
             [
@@ -159,7 +145,6 @@ class ReportController extends Controller
                 'transactionsByDate' => $transactionsByDate,
                 'transactionsByYear' => $transactionsByYear,
                 'transactionByNoTransactions' => $transactionByNoTransactions,
-                'bestSellingCategories' => $bestSellingCategories,
             ],
             'Data laporan berhasil diambil'
         );
@@ -211,6 +196,33 @@ class ReportController extends Controller
                 'bestSellingProducts' => $bestSellingProducts,
             ],
             'Data produk terlaris berhasil diambil'
+        );
+    }
+
+    public function getBestSellingCategory(Request $request)
+    {
+        $filterDate = $this->filterDate($request);
+
+        $bestSellingCategories = Category::selectRaw('p_jenis.ID as id, p_jenis.jenis as name, sum(t_kasir.jumlah) as total')
+            ->join('t_barang', 't_barang.jenis', '=', 'p_jenis.jenis')
+            ->join('t_kasir', 't_kasir.idBarang', '=', 't_barang.idBarang')
+            ->when($filterDate['typeReport'] == 'Bulanan', function ($query) use ($filterDate) {
+                return $query->whereMonth('tanggal', $filterDate['date']->month)
+                    ->whereYear('tanggal', $filterDate['date']->year);
+            })
+            ->when($filterDate['typeReport'] == 'Harian', function ($query) use ($filterDate) {
+                return $query->whereBetween('tanggal', [$filterDate['startDate'], $filterDate['endDate']]);
+            })
+            ->groupBy('id', 'name')
+            ->orderBy('total', 'desc')
+            ->limit(10)
+            ->get();
+
+        return ResponseFormatter::success(
+            [
+                'bestSellingCategories' => $bestSellingCategories,
+            ],
+            'Data kategori terlaris berhasil diambil'
         );
     }
 
