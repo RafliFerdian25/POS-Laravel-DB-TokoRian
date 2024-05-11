@@ -41,6 +41,7 @@ Route::controller(ReportController::class)->group(function () {
     Route::get('/laporan/penjualan/transaksi-tanggal/data', 'getSaleReportByTransactionDate')->name('sale.report.transaction.date.data');
     Route::get('/laporan/penjualan/barang-terlaris/data', 'getBestSellingProduct')->name('best.selling.product.report.data');
     Route::get('/laporan/penjualan/kategori-terlaris/data', 'getBestSellingCategory')->name('best.selling.category.report.data');
+    Route::get('/laporan/penjualan/transaksi-nomer/data', 'getSaleReportTransactionByNoTransaction')->name('sale.report.transaction.data');
     Route::get('/laporan/penjualan/kategori/data', 'getReportSaleByCategory')->name('report.sale.catgory.data');
     Route::get('/laporan/penjualan/detail', 'ReportSaleDetail')->name('report.sale.detail');
     Route::get('/laporan/penjualan/detail/data', 'getReportSaleDetail')->name('laporan.penjualan.detail.data');
