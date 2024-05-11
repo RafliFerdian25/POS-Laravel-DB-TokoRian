@@ -4,15 +4,18 @@
 detail riwayat penjualan
 pisahkan pengambilan data (berdasarkan card), atau function sendiri
 
-// CRUD tabel barang pernah kadaluarsa
-menambahkan tabel barang yang pernah kadaluarsa (id, product_id, quantity, loss, expired_date)
-read barang pernah kadaluarsa
-create barang pernah kadaluarsa
-update barang pernah kadaluarsa
-delete barang pernah kadaluarsa
-
-//
 // Jadwal Supplier
+table jadwal supplier
+read jadwal supplier
+create jadwal supplier
+update jadwal supplier
+delete jadwal supplier
+
+// Pernah kadaluarsa
+tambah keterangan (daftar barang)
+tambah keterangan (detail barang)
+tambah keterangan (belanja barang)
+tambah keterangan (habis barang)
 
 // menambahkan tabel penerimaan gas
 read penerimaan gas
@@ -148,3 +151,10 @@ Menambahkan harga jual rekomendasi (edit barang, pembelian barang)
 ✅ create Pembukaan kardus barang
 ✅ delete Pembukaan kardus barang
 ✅ form buka kardus (nama barang retail, stok sebelum - disable, isi kardus, harga pokok retail, harga jual retail)
+
+
+// CRUD tabel barang pernah kadaluarsa
+✅ menambahkan tabel barang yang pernah kadaluarsa (id, product_id, quantity, loss, expired_date)
+✅ read barang pernah kadaluarsa
+✅ create barang pernah kadaluarsa
+✅ delete barang pernah kadaluarsa

@@ -26,7 +26,7 @@
                                     <label for="month" class="col">Bulan :</label>
                                     <input type="month" name="month" id="month" class="form-control mb-3 col"
                                         @if ($typeReport == 'Bulanan') value="{{ date('Y-m') }}" @endif
-                                        onchange="getReportSale('bulanan'); getReportSaleByCategory('bulanan'); getExpenses('bulanan')">
+                                        onchange="getSaleReport('bulanan'); getSaleReportByCategory('bulanan'); getExpenses('bulanan')">
                                 </div>
                             </form>
                         </div>
@@ -221,7 +221,7 @@
                                     <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="tableBestSellingProductsBody">
                             </tbody>
                         </table>
                     </div>
@@ -313,7 +313,7 @@
                 ]
             }
             initializeDataTable("transactionByNoTransactions", configDataTable);
-            getReportSale()
+            getSaleReport()
             getExpenses()
         });
 
@@ -363,7 +363,7 @@
                 $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format(
                     'YYYY-MM-DD'));
                 $("#month").val(null);
-                getReportSale('harian');
+                getSaleReport('harian');
                 getExpenses('harian')
             });
             $('#daterange').on('cancel.daterangepicker', function(ev, picker) {
@@ -371,7 +371,7 @@
             });
         });
 
-        const getReportSale = (typeReport) => {
+        const getSaleReport = (typeReport) => {
             if (typeReport == 'harian') {
                 $('#month').val(null);
             } else if (typeReport == 'bulanan') {
@@ -407,6 +407,8 @@
                     $('#tableBestSellingCategories tbody').empty();
                     $('#tableBestSellingProducts tbody').empty();
 
+                    getBestSellingProduct(typeReport);
+
                     // table data barang terjual terbaik
                     response.data.bestSellingCategories.forEach((item, index) => {
                         $('#tableBestSellingCategories tbody').append(`
@@ -424,31 +426,6 @@
                                 <td class="text-center">${item.total}</td>
                                 <td class="text-center">
                                     <a href="{{ url('/laporan/kategori/${item.id}/detail') }}">
-                                        <button type="button" id="PopoverCustomT-1" class="btn btn-primary btn-sm">
-                                            Detail
-                                        </button>
-                                    </a>
-                                </td>
-                            </tr>
-                        `);
-                    });
-
-                    response.data.bestSellingProducts.forEach((item, index) => {
-                        $('#tableBestSellingProducts tbody').append(`
-                            <tr>
-                                <td class="text-center text-muted">${index + 1}</td>
-                                <td>
-                                    <div class="widget-content p-0">
-                                        <div class="widget-content-wrapper">
-                                            <div class="widget-content-left flex2">
-                                                ${item.name}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="text-center">${item.total}</td>
-                                <td class="text-center">
-                                    <a href="{{ url('/laporan/barang/${item.id}') }}">
                                         <button type="button" id="PopoverCustomT-1" class="btn btn-primary btn-sm">
                                             Detail
                                         </button>
@@ -711,6 +688,56 @@
             });
         };
 
+        const getBestSellingProduct = (typeReport) => {
+            if (typeReport == 'harian') {
+                $('#month').val(null);
+            } else if (typeReport == 'bulanan') {
+                $('#daterange').val(null);
+            }
+
+            $.ajax({
+                type: "GET",
+                url: "{{ route('best.selling.product.report.data') }}",
+                data: {
+                    daterange: $('#daterange').val(),
+                    month: $('#month').val()
+                },
+                success: function(response) {
+                    if (response.data.bestSellingProducts.length > 0) {
+                        response.data.bestSellingProducts.forEach((item, index) => {
+                            $('#tableBestSellingProductsBody').append(`
+                            <tr>
+                                <td class="text-center text-muted">${index + 1}</td>
+                                <td>
+                                    <div class="widget-content p-0">
+                                        <div class="widget-content-wrapper">
+                                            <div class="widget-content-left flex2">
+                                                ${item.name}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-center">${item.total}</td>
+                                <td class="text-center">
+                                    <a href="{{ url('/laporan/barang/${item.id}') }}">
+                                        <button type="button" id="PopoverCustomT-1" class="btn btn-primary btn-sm">
+                                            Detail
+                                        </button>
+                                    </a>
+                                </td>
+                            </tr>
+                        `);
+                        });
+                    } else {
+                        $('#tableBestSellingProductsBody').html(tableEmpty(4,
+                            'barang terlaris'));
+                    }
+                },
+                error: function(err) {
+                    $('#tableBestSellingProductsBody').html("Gagal memuat data");
+                }
+            });
+        }
 
         const getExpenses = (typeReport) => {
             if (typeReport == 'harian') {

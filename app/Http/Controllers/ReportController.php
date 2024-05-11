@@ -34,12 +34,16 @@ class ReportController extends Controller
         return view('report.financial', $data);
     }
 
-    public function getReportSale(Request $request)
+    /**
+     * filter tanggal laporan penjualan
+     */
+    private function filterDate(Request $request)
     {
         $typeReport = null;
         $date = null;
         $startDate = null;
         $endDate = null;
+        $daterange = null;
 
         if ($request->daterange == null && $request->month == null) {
             $date = Carbon::now();
@@ -55,56 +59,61 @@ class ReportController extends Controller
             $typeReport = "Bulanan";
         }
 
+        return [
+            'typeReport' => $typeReport,
+            'date' => $date,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'daterange' => $daterange,
+        ];
+    }
+
+    /**
+     * Mendapatkan data laporan penjualan
+     */
+    public function getReportSale(Request $request)
+    {
+        $filterDate = $this->filterDate($request);
         $transactionByNoTransactions = Kasir::selectRaw('noTransaksi as no_transaction, max(tanggal) as date, sum(total) as income, sum(laba) as profit, sum(jumlah) as total_product')
-            ->when($typeReport == 'Bulanan', function ($query) use ($date) {
-                return $query->whereMonth('tanggal', $date->month)
-                    ->whereYear('tanggal', $date->year);
+            ->when($filterDate['typeReport'] == 'Bulanan', function ($query) use ($filterDate) {
+                return $query->whereMonth('tanggal', $filterDate['date']->month)
+                    ->whereYear('tanggal', $filterDate['date']->year);
             })
-            ->when($typeReport == 'Harian', function ($query) use ($startDate, $endDate) {
-                return $query->whereBetween('tanggal', [$startDate, $endDate]);
+            ->when($filterDate['typeReport'] == 'Harian', function ($query) use ($filterDate) {
+                return $query->whereBetween('tanggal', [$filterDate['startDate'], $filterDate['endDate']]);
             })
             ->orderBy('date', 'desc')
             ->groupBy('no_transaction')
             ->get();
 
         $transactionsByDate = Kasir::selectRaw('tanggal, sum(total) as income, sum(laba) as profit, sum(jumlah) as total_product')
-            ->when($typeReport == 'Bulanan', function ($query) use ($date) {
-                return $query->whereMonth('tanggal', $date->month)
-                    ->whereYear('tanggal', $date->year);
+            ->when($filterDate['typeReport'] == 'Bulanan', function ($query) use ($filterDate) {
+                return $query->whereMonth('tanggal', $filterDate['date']->month)
+                    ->whereYear('tanggal', $filterDate['date']->year);
             })
-            ->when($typeReport == 'Harian', function ($query) use ($startDate, $endDate) {
-                return $query->whereBetween('tanggal', [$startDate, $endDate]);
+            ->when($filterDate['typeReport'] == 'Harian', function ($query) use ($filterDate) {
+                return $query->whereBetween('tanggal', [$filterDate['startDate'], $filterDate['endDate']]);
             })
             ->groupBy('tanggal')
             ->orderBy('tanggal', 'asc')
             ->get();
 
         $transactionsByYear = Kasir::selectRaw('DATE_FORMAT(tanggal, "%m-%Y") as month, sum(total) as income, sum(laba) as profit, sum(jumlah) as total_product')
-            ->when(true, function ($query) use ($date) {
-                $startOfTwoYearBefore = Carbon::parse($date->copy()->subYears(2))->startOfYear();
-                return $query->whereBetween('tanggal', [$startOfTwoYearBefore, $date->endOfMonth()]);
+            ->when(true, function ($query) use ($filterDate) {
+                $startOfTwoYearBefore = Carbon::parse($filterDate['date']->copy()->subYears(2))->startOfYear();
+                return $query->whereBetween('tanggal', [$startOfTwoYearBefore, $filterDate['date']->endOfMonth()]);
             })
             ->groupBy('month')
             ->orderByRaw('MIN(tanggal)')
             ->get();
 
         $report = Kasir::selectRaw('sum(total) as income, sum(laba) as profit, COUNT(DISTINCT noTransaksi) as total_transaction, sum(jumlah) as total_product')
-            ->when($typeReport == 'Bulanan', function ($query) use ($date) {
-                return $query->whereMonth('tanggal', $date->month)
-                    ->whereYear('tanggal', $date->year);
+            ->when($filterDate['typeReport'] == 'Bulanan', function ($query) use ($filterDate) {
+                return $query->whereMonth('tanggal', $filterDate['date']->month)
+                    ->whereYear('tanggal', $filterDate['date']->year);
             })
-            ->when($typeReport == 'Harian', function ($query) use ($startDate, $endDate) {
-                return $query->whereBetween('tanggal', [$startDate, $endDate]);
-            })
-            ->first();
-
-        $reportPurchase = Purchase::selectRaw('sum(total) as total_purchase_product, sum(amount) as purchase')
-            ->when($typeReport == 'Bulanan', function ($query) use ($date) {
-                return $query->whereMonth('created_at', $date->month)
-                    ->whereYear('created_at', $date->year);
-            })
-            ->when($typeReport == 'Harian', function ($query) use ($startDate, $endDate) {
-                return $query->whereBetween('created_at', [$startDate, $endDate]);
+            ->when($filterDate['typeReport'] == 'Harian', function ($query) use ($filterDate) {
+                return $query->whereBetween('tanggal', [$filterDate['startDate'], $filterDate['endDate']]);
             })
             ->first();
 
@@ -115,28 +124,25 @@ class ReportController extends Controller
             $report->total_transaction = 0;
         }
 
-        $bestSellingProducts = Kasir::selectRaw('nmBarang as name, sum(jumlah) as total, idBarang as id')
-            ->when($typeReport == 'Bulanan', function ($query) use ($date) {
-                return $query->whereMonth('tanggal', $date->month)
-                    ->whereYear('tanggal', $date->year);
+        $reportPurchase = Purchase::selectRaw('sum(total) as total_purchase_product, sum(amount) as purchase')
+            ->when($filterDate['typeReport'] == 'Bulanan', function ($query) use ($filterDate) {
+                return $query->whereMonth('created_at', $filterDate['date']->month)
+                    ->whereYear('created_at', $filterDate['date']->year);
             })
-            ->when($typeReport == 'Harian', function ($query) use ($startDate, $endDate) {
-                return $query->whereBetween('tanggal', [$startDate, $endDate]);
+            ->when($filterDate['typeReport'] == 'Harian', function ($query) use ($filterDate) {
+                return $query->whereBetween('created_at', [$filterDate['startDate'], $filterDate['endDate']]);
             })
-            ->groupBy('idBarang', 'name')
-            ->orderBy('total', 'desc')
-            ->limit(10)
-            ->get();
+            ->first();
 
         $bestSellingCategories = Category::selectRaw('p_jenis.ID as id, p_jenis.jenis as name, sum(t_kasir.jumlah) as total')
             ->join('t_barang', 't_barang.jenis', '=', 'p_jenis.jenis')
             ->join('t_kasir', 't_kasir.idBarang', '=', 't_barang.idBarang')
-            ->when($typeReport == 'Bulanan', function ($query) use ($date) {
-                return $query->whereMonth('tanggal', $date->month)
-                    ->whereYear('tanggal', $date->year);
+            ->when($filterDate['typeReport'] == 'Bulanan', function ($query) use ($filterDate) {
+                return $query->whereMonth('tanggal', $filterDate['date']->month)
+                    ->whereYear('tanggal', $filterDate['date']->year);
             })
-            ->when($typeReport == 'Harian', function ($query) use ($startDate, $endDate) {
-                return $query->whereBetween('tanggal', [$startDate, $endDate]);
+            ->when($filterDate['typeReport'] == 'Harian', function ($query) use ($filterDate) {
+                return $query->whereBetween('tanggal', [$filterDate['startDate'], $filterDate['endDate']]);
             })
             ->groupBy('id', 'name')
             ->orderBy('total', 'desc')
@@ -145,18 +151,66 @@ class ReportController extends Controller
 
         return ResponseFormatter::success(
             [
-                'typeReport' => $typeReport,
-                'dateString' => $typeReport == 'Bulanan' ? FormatDate::month($date->month) : $startDate->copy()->format('d M Y') . ' - ' . $endDate->copy()->format('d M Y'),
-                'date' => $typeReport == 'Bulanan' ? $date->format('Y-m') : $daterange,
+                'typeReport' => $filterDate['typeReport'],
+                'dateString' => $filterDate['typeReport'] == 'Bulanan' ? FormatDate::month($filterDate['date']->month) : $filterDate['startDate']->copy()->format('d M Y') . ' - ' . $filterDate['endDate']->copy()->format('d M Y'),
+                'date' => $filterDate['typeReport'] == 'Bulanan' ? $filterDate['date']->format('Y-m') : $filterDate['daterange'],
                 'report' => $report,
                 'reportPurchase' => $reportPurchase,
                 'transactionsByDate' => $transactionsByDate,
                 'transactionsByYear' => $transactionsByYear,
                 'transactionByNoTransactions' => $transactionByNoTransactions,
-                'bestSellingProducts' => $bestSellingProducts,
                 'bestSellingCategories' => $bestSellingCategories,
             ],
             'Data laporan berhasil diambil'
+        );
+    }
+
+    public function getSaleReportByTransactionDate(Request $request)
+    {
+        $filterDate = $this->filterDate($request);
+
+        $transactionsByDate = Kasir::selectRaw('tanggal, sum(total) as income, sum(laba) as profit, sum(jumlah) as total_product')
+            ->when($filterDate['typeReport'] == 'Bulanan', function ($query) use ($filterDate) {
+                return $query->whereMonth('tanggal', $filterDate['date']->month)
+                    ->whereYear('tanggal', $filterDate['date']->year);
+            })
+            ->when($filterDate['typeReport'] == 'Harian', function ($query) use ($filterDate) {
+                return $query->whereBetween('tanggal', [$filterDate['startDate'], $filterDate['endDate']]);
+            })
+            ->groupBy('tanggal')
+            ->orderBy('tanggal', 'asc')
+            ->get();
+
+        return ResponseFormatter::success(
+            [
+                'transactionsByDate' => $transactionsByDate,
+            ],
+            'Data laporan transaksi penjualan berdasarkan tanggal berhasil diambil'
+        );
+    }
+
+    public function getBestSellingProduct(Request $request)
+    {
+        $filterDate = $this->filterDate($request);
+
+        $bestSellingProducts = Kasir::selectRaw('nmBarang as name, sum(jumlah) as total, idBarang as id')
+            ->when($filterDate['typeReport'] == 'Bulanan', function ($query) use ($filterDate) {
+                return $query->whereMonth('tanggal', $filterDate['date']->month)
+                    ->whereYear('tanggal', $filterDate['date']->year);
+            })
+            ->when($filterDate['typeReport'] == 'Harian', function ($query) use ($filterDate) {
+                return $query->whereBetween('tanggal', [$filterDate['startDate'], $filterDate['endDate']]);
+            })
+            ->groupBy('idBarang', 'name')
+            ->orderBy('total', 'desc')
+            ->limit(10)
+            ->get();
+
+        return ResponseFormatter::success(
+            [
+                'bestSellingProducts' => $bestSellingProducts,
+            ],
+            'Data produk terlaris berhasil diambil'
         );
     }
 
