@@ -25,20 +25,33 @@
 
         <!-- CARD DASHBOARD -->
         <div class="row">
-            <!-- total pendapatan -->
+            <!-- Rekap Perhitungan Belanja -->
             <div class="col-sm-12 col-md-4 col-xl-3 p-3">
                 <div class="card mb-3 widget-content">
                     <div class="content">
                         <div class="widget-content-left mb-2">
                             <i class="pe-7s-cash col-2" style="font-size: 30px;"></i>
-                            <div class="widget-heading col-10 widget__title">Total Barang Belanja</div>
+                            <div class="widget-heading col-10 widget__title">Jumlah Barang Belanja</div>
                         </div>
                         <div class="widget-content-right">
                             <div class="widget-numbers mb-2" id="countProduct">-</div>
                         </div>
                     </div>
                 </div>
+                <div class="card mb-3 widget-content">
+                    <div class="content">
+                        <div class="widget-content-left mb-2">
+                            <i class="pe-7s-cash col-2" style="font-size: 30px;"></i>
+                            <div class="widget-heading col-10 widget__title">Total Belanja</div>
+                        </div>
+                        <div class="widget-content-right">
+                            <div class="widget-numbers mb-2" id="amount">-</div>
+                        </div>
+                    </div>
+                </div>
             </div>
+            <!-- END Rekap Perhitungan Belanja -->
+
             <div class="col-sm-12 col-md-8 col-xl-9 p-3">
                 <div class="main-card mb-3 card">
                     <form method="POST" id="formAddShoppingProduct">
@@ -155,6 +168,19 @@
                             <tbody id="tableShoppingProductBody">
                             </tbody>
                         </table>
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col">
+                                <p class="fw-bold mt-3">Keterangan:</p>
+                                <ul>
+                                    <li>1. Daftar barang yang
+                                        berwarna
+                                        merah menandakan barang
+                                        tersebut pernah kadaluarsa</li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -413,12 +439,19 @@
                 dataType: "json",
                 success: function(response) {
                     disableFormElements('formFilterProduct', false)
+                    var total = 0
+                    var totalAmount = response.data.shoppingProducts.reduce((total, product) => {
+                        return total + product.total;
+                    }, 0);
                     $('#countProduct').html(response.data.shoppingProducts.length);
+                    $('#amount').html(formatCurrency(totalAmount));
                     if (response.data.shoppingProducts.length > 0) {
                         response.data.shoppingProducts.forEach((product, index) => {
                             $('#tableShoppingProduct').DataTable().row.add([
                                 index + 1,
                                 product.IdBarang,
+                                product.product.product_has_expired_before.length > 0 ?
+                                `<span class="text-danger">${product.nmBarang}</span>` :
                                 product.nmBarang,
                                 product.product.stok,
                                 product.satuan,

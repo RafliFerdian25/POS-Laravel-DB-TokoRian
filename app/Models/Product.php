@@ -52,4 +52,9 @@ class Product extends Model
     {
         return $this->hasMany(BoxOpen::class, 'retail_id', 'IdBarang');
     }
+
+    public function productHasExpiredBefore(): Relation
+    {
+        return $this->hasMany(ProductHasExpiredBefore::class, 'product_id', 'IdBarang');
+    }
 }

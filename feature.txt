@@ -2,7 +2,6 @@
 
 // Laporan Penjualan
 detail riwayat penjualan
-pisahkan pengambilan data (berdasarkan card), atau function sendiri
 
 // Jadwal Supplier
 table jadwal supplier
@@ -102,6 +101,7 @@ Menambahkan harga jual rekomendasi (edit barang, pembelian barang)
 ✅ grafik penjualan (Pendapatan, keuntungan, barang terjual) keseluruhan
 ✅ grafik penjualan (Pendapatan, keuntungan, barang terjual) kategori
 ✅ detail barang pada barang terlaris
+✅ pisahkan pengambilan data (berdasarkan card), atau function sendiri
 
 // CRUD Pembelian (Belanja) Barang
 ✅ tabel pembelian barang (id, total, amount, supplier_id)

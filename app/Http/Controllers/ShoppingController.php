@@ -40,7 +40,14 @@ class ShoppingController extends Controller
      */
     public function indexData(Request $request)
     {
-        $shoppingProducts = Shopping::with('product:IdBarang,stok')
+        $shoppingProducts = Shopping::with(['product' => function ($query) {
+            $query->select('IdBarang', 'stok')
+                ->with(['productHasExpiredBefore' => function ($subquery) {
+                    $subquery->select('id', 'product_id', 'quantity', 'expired_date')
+                        ->where('quantity', '>', 0)
+                        ->first(); // Batasi agar hanya mengambil satu hasil
+                }]);
+        }])
             ->select('id', 'IdBarang', 'nmBarang', 'satuan', 'hargaPokok', 'jumlah', 'total')
             ->whereHas('product', function ($query) use ($request) {
                 return $query->when($request->filterProduct != null, function ($query) use ($request) {
@@ -268,7 +275,7 @@ class ShoppingController extends Controller
         } catch (\Exception $e) {
             return ResponseFormatter::error([
                 'error' => $e->getMessage()
-            ], 'Data gagal diambil', $e->getCode() != 0 ? $e->getCode() : 500);
+            ], 'Data gagal diambil', $e->getCode() < 600 ? $e->getCode() : 500);
         }
     }
 }
