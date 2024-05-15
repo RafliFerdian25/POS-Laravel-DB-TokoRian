@@ -10,8 +10,9 @@
                         <i class="pe-7s-note2 icon-gradient bg-plum-plate">
                         </i>
                     </div>
-                    <div>Laporan Barang <span class="fw-bold">{{ $product->nmBarang }}</span> <span
-                            id="typeReportTitleHeading"></span>
+                    <div>Laporan Barang <span
+                            class="fw-bold {{ count($product->productHasExpiredBefore) > 0 ? 'text-danger' : '' }}">{{ $product->nmBarang }}</span>
+                        <span id="typeReportTitleHeading"></span>
                         <div class="page-title-subheading">
                             Laporan penjualan <span class="typeReportTitleSubHeading"></span>
                             <span class="fw-bold" id="dateString"></span>

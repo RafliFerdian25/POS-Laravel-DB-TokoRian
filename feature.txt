@@ -12,7 +12,7 @@ delete jadwal supplier
 
 // Pernah kadaluarsa
 ✅ tambah keterangan (daftar barang)
-tambah keterangan (detail barang)
+✅ tambah keterangan (detail barang)
 ✅ tambah keterangan (belanja barang)
 tambah keterangan (habis barang)
 

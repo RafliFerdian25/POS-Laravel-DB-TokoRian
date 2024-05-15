@@ -652,10 +652,15 @@ class ReportController extends Controller
         $data = [
             'setting' => Toko::first(),
             'title' => 'POS TOKO | Laporan Barang',
-            'product' => $product,
+            'product' => $product->load(['productHasExpiredBefore' => function ($subquery) {
+                $subquery->select('id', 'product_id', 'quantity', 'expired_date')
+                    ->where('quantity', '>', 0)
+                    ->first(); // Batasi agar hanya mengambil satu hasil
+            }]),
             'typeReport' => 'Bulanan',
             'currentNav' => 'reportProduct',
         ];
+
         return view('report.productDetail', $data);
     }
 
