@@ -150,6 +150,19 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col">
+                            <p class="fw-bold mt-3">Keterangan:</p>
+                            <ul>
+                                <li>1. Daftar barang yang
+                                    berwarna
+                                    merah menandakan barang
+                                    tersebut pernah kadaluarsa</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <!-- end barang terjual -->
@@ -261,8 +274,10 @@
                                     false)
                                 .node();
 
-                            $(rowNode).find('td').eq(8).addClass('text-center');
-                            // $(rowNode).find('td').eq(4).addClass('text-center text-nowrap');
+
+                            if (product.product_has_expired_before.length > 0) {
+                                $(rowNode).addClass('text-danger');
+                            }
                         });
                     } else {
                         $('#tableProductBody').html(tableEmpty(13,

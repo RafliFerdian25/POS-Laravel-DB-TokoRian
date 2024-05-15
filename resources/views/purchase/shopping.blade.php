@@ -197,7 +197,7 @@
                     "targets": [3, 4, 6],
                     "className": "text-center"
                 }, {
-                    // Mengatur aturan pengurutan kustom untuk kolom keempat (index 3)
+                    // Mengatur aturan format uang pada kolom harga pokok dan total
                     "targets": [5, 7],
                     "render": function(data, type, row) {
                         // Memeriksa tipe data, jika tampilan atau filter
@@ -323,6 +323,12 @@
                     $('#submitAddProduct').prop('disabled', false);
                 }
 
+                const enableButton = () => {
+                    $('#submitAddProduct').html(
+                        'Tambah');
+                    $('#submitAddProduct').prop('disabled', false);
+                }
+
                 function showErrorMessages(error, message) {
                     if (error.responseJSON) {
                         Swal.fire({
@@ -333,9 +339,7 @@
                         });
                     }
 
-                    $('#submitAddProduct').html(
-                        'Tambah');
-                    $('#submitAddProduct').prop('disabled', false);
+                    enableButton();
                 }
 
                 // Wrap each AJAX request in a Promise
@@ -399,6 +403,8 @@
                                             showErrorMessages(error,
                                                 'Tambah Produk Online Gagal');
                                         });
+                                    } else {
+                                        enableButton();
                                     }
                                 });
                             } else {
@@ -447,11 +453,9 @@
                     $('#amount').html(formatCurrency(totalAmount));
                     if (response.data.shoppingProducts.length > 0) {
                         response.data.shoppingProducts.forEach((product, index) => {
-                            $('#tableShoppingProduct').DataTable().row.add([
+                            var rowNode = $('#tableShoppingProduct').DataTable().row.add([
                                 index + 1,
                                 product.IdBarang,
-                                product.product.product_has_expired_before.length > 0 ?
-                                `<span class="text-danger">${product.nmBarang}</span>` :
                                 product.nmBarang,
                                 product.product.stok,
                                 product.satuan,
@@ -461,6 +465,10 @@
                                 `<button class="btn btn-danger rounded-circle px-2" onclick="deleteShoppingProduct('${product.IdBarang}','${product.nmBarang}')"><i class="bi bi-trash"></i></button>
                                     <button class="btn btn-primary rounded-circle px-2" onclick="editShoppingProduct('${product.IdBarang}')"><i class="bi bi-pencil"></i></button>`
                             ]).draw(false).node();
+
+                            if (product.product.product_has_expired_before.length > 0) {
+                                $(rowNode).addClass('text-danger');
+                            }
                         });
                     } else {
                         $('#tableShoppingProductBody').html(tableEmpty(9,
