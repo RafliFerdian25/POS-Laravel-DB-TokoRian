@@ -650,7 +650,9 @@
                     },
                     cache: true, // Cache the results for better performance
                 }
-            })
+            }).on('change', function(e) {
+                $(this).removeClass('is-invalid');
+            });
             // Periksa apakah nilai id sudah ada dalam opsi saat ini
             if ($('#merk_id').find('option[value="' + merk.id + '"]').length === 0) {
                 // Jika tidak, tambahkan elemen <option> baru

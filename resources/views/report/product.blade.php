@@ -549,14 +549,18 @@
                         },
                         errorClass: "invalid-feedback",
                         highlight: function(element) {
-                            $(element).closest('.form-control').removeClass('valid')
+                            $(element).closest('.form-control').removeClass('is-valid')
                                 .addClass('is-invalid');
                         },
                         unhighlight: function(element) {
                             $(element).closest('.form-control').removeClass('is-invalid');
                         },
-                        success: function(element) {
-                            $(element).closest('.form-control').removeClass('is-invalid');
+                        errorPlacement: function(error, element) {
+                            if (element.hasClass('select2-hidden-accessible')) {
+                                error.insertAfter(element.next('.select2-container'));
+                            } else {
+                                error.insertAfter(element);
+                            }
                         },
                         submitHandler: function(form, event) {
                             event.preventDefault();
@@ -619,7 +623,6 @@
                 theme: "bootstrap-5",
                 placeholder: 'Masukkan Merk Barang',
                 width: '100%',
-                allowClear: true,
                 minimumInputLength: 1, // Minimum characters required to start searching
                 language: {
                     inputTooShort: function(args) {

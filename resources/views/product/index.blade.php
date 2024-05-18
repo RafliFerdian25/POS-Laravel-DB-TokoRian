@@ -522,12 +522,20 @@
                                 min: "Harga grosir minimal 0"
                             },
                         },
+                        errorClass: "invalid-feedback",
                         highlight: function(element) {
-                            $(element).closest('.form-group').removeClass('has-success').addClass(
-                                'has-error');
+                            $(element).closest('.form-control').removeClass('is-valid')
+                                .addClass('is-invalid');
                         },
-                        success: function(element) {
-                            $(element).closest('.form-group').removeClass('has-error');
+                        unhighlight: function(element) {
+                            $(element).closest('.form-control').removeClass('is-invalid');
+                        },
+                        errorPlacement: function(error, element) {
+                            if (element.hasClass('select2-hidden-accessible')) {
+                                error.insertAfter(element.next('.select2-container'));
+                            } else {
+                                error.insertAfter(element);
+                            }
                         },
                         submitHandler: function(form, event) {
                             event.preventDefault();
@@ -641,7 +649,9 @@
                     },
                     cache: true, // Cache the results for better performance
                 }
-            })
+            }).on('select2:select', function(e) {
+                $(this).removeClass('is-invalid');
+            });
             // Periksa apakah nilai id sudah ada dalam opsi saat ini
             if ($('#merk_id').find('option[value="' + merk.id + '"]').length === 0) {
                 // Jika tidak, tambahkan elemen <option> baru

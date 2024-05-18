@@ -242,10 +242,13 @@
                 }
             }).on('select2:select', function(e) {
                 var data = e.params.data.data;
-                console.log(data);
 
                 $('#exp_date').val(moment(data.expDate, 'YYYY-MM-DD').format('YYYY-MM-DD'));
                 $('#cost_of_good_sold').val(data.hargaPokok);
+
+                // Menghapus pesan error pada input
+                $('#product_id').removeClass('is-invalid');
+                $('#cost_of_good_sold').removeClass('is-invalid');
             })
 
             getProduct();
@@ -523,14 +526,18 @@
             },
             errorClass: "invalid-feedback",
             highlight: function(element) {
-                $(element).closest('.form-control').removeClass('valid')
+                $(element).closest('.form-control').removeClass('is-valid')
                     .addClass('is-invalid');
             },
             unhighlight: function(element) {
                 $(element).closest('.form-control').removeClass('is-invalid');
             },
-            success: function(element) {
-                $(element).closest('.form-control').removeClass('is-invalid');
+            errorPlacement: function(error, element) {
+                if (element.hasClass('select2-hidden-accessible')) {
+                    error.insertAfter(element.next('.select2-container'));
+                } else {
+                    error.insertAfter(element);
+                }
             },
             submitHandler: function(form, event) {
                 event.preventDefault();

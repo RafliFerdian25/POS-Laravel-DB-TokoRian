@@ -264,6 +264,8 @@
                     },
                     cache: true, // Cache the results for better performance
                 }
+            }).on('select2:select', function(e) {
+                $(this).removeClass('is-invalid');
             });
 
             initializationSelect2Merk('filterMerk', "{{ route('merk.search.data') }}");
@@ -271,6 +273,7 @@
         });
 
         $('#formAddShoppingProduct').validate({
+            errorClass: "invalid-feedback",
             rules: {
                 addProduct: {
                     required: true,
@@ -292,11 +295,18 @@
                 },
             },
             highlight: function(element) {
-                $(element).closest('.form-group').removeClass('has-success')
-                    .addClass('has-error');
+                $(element).closest('.form-control').removeClass('is-valid')
+                    .addClass('is-invalid');
             },
-            success: function(element) {
-                $(element).closest('.form-group').removeClass('has-error');
+            unhighlight: function(element) {
+                $(element).closest('.form-control').removeClass('is-invalid');
+            },
+            errorPlacement: function(error, element) {
+                if (element.hasClass('select2-hidden-accessible')) {
+                    error.insertAfter(element.next('.select2-container'));
+                } else {
+                    error.insertAfter(element);
+                }
             },
             submitHandler: function(form, event) {
                 event.preventDefault();

@@ -100,7 +100,9 @@
                     },
                     cache: true, // Cache the results for better performance
                 }
-            })
+            }).on('select2:select', function(e) {
+                $(this).removeClass('is-invalid');
+            });
         });
 
         $('#formAddPurchase').validate({
@@ -114,16 +116,20 @@
                     required: "Supplier harus diisi"
                 }
             },
-            errorElement: 'span',
+            errorClass: "invalid-feedback",
+            highlight: function(element) {
+                $(element).closest('.form-control').removeClass('is-valid')
+                    .addClass('is-invalid');
+            },
+            unhighlight: function(element) {
+                $(element).closest('.form-control').removeClass('is-invalid');
+            },
             errorPlacement: function(error, element) {
-                error.addClass('invalid-feedback');
-                element.closest('.form-group').append(error);
-            },
-            highlight: function(element, errorClass, validClass) {
-                $(element).addClass('is-invalid');
-            },
-            unhighlight: function(element, errorClass, validClass) {
-                $(element).removeClass('is-invalid');
+                if (element.hasClass('select2-hidden-accessible')) {
+                    error.insertAfter(element.next('.select2-container'));
+                } else {
+                    error.insertAfter(element);
+                }
             },
             submitHandler: function(form, event) {
                 event.preventDefault();
