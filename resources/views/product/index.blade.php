@@ -252,7 +252,9 @@
                             var rowData = [
                                 index + 1,
                                 product.IdBarang,
-                                product.nmBarang,
+                                product.product_has_expired_before.length > 0 ?
+                                `<div class="text-danger">${product.nmBarang}</div>` : product
+                                .nmBarang,
                                 product.satuan,
                                 product.isi,
                                 product.hargaPokok,
@@ -274,11 +276,6 @@
                                 .draw(
                                     false)
                                 .node();
-
-
-                            if (product.product_has_expired_before.length > 0) {
-                                $(rowNode).addClass('text-danger');
-                            }
                         });
                     } else {
                         $('#tableProductBody').html(tableEmpty(13,

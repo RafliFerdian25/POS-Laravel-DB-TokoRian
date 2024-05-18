@@ -466,7 +466,9 @@
                             var rowData = [
                                 index + 1,
                                 product.IdBarang,
-                                product.nmBarang,
+                                product.product.product_has_expired_before.length > 0 ?
+                                `<div class="text-danger">${product.nmBarang}</div>` : product
+                                .nmBarang,
                                 product.product.stok,
                                 product.satuan,
                                 product.hargaPokok,
@@ -479,14 +481,6 @@
                             rowNode = $('#tableShoppingProduct').DataTable().row.add(rowData)
                                 .draw()
                                 .node();
-
-                            if (product.product.product_has_expired_before.length > 0) {
-                                console.log(product.nmBarang + "   " + product.product
-                                    .product_has_expired_before.length);
-                            }
-                            $(rowNode).find('td').eq(0).addClass('text-danger');
-                            $(rowNode).find('td').eq(1).addClass('text-danger');
-                            $(rowNode).find('td').eq(2).addClass('text-danger');
                         });
                     } else {
                         $('#tableShoppingProductBody').html(tableEmpty(9,
@@ -499,20 +493,6 @@
                 }
             });
         }
-
-        // function handleInput(inputId, otherInputIds) {
-        //     return debounce(function() {
-        //         $('#' + otherInputIds.join(', #')).val(null).trigger('change');
-        //         getShoppingProduct();
-        //     }, 750);
-        // }
-
-        // $('#filterProduct').on('input', handleInput('filterProduct', ['filterCategory', 'filterMerk']));
-        // $(
-        //     '#filterCategory').on('input', handleInput('filterCategory', ['filterProduct', 'filterMerk']));
-        // $(
-        //     '#filterMerk').on('input', handleInput('filterMerk', ['filterProduct', 'filterCategory']));
-
 
         $('#filterProduct').on('input', debounce(getShoppingProduct, 750));
         $('#filterCategory').on('change', debounce(getShoppingProduct, 750));

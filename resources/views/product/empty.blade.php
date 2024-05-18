@@ -205,7 +205,9 @@
                             var rowData = [
                                 index + 1,
                                 product.IdBarang,
-                                product.nmBarang,
+                                product.product_has_expired_before.length > 0 ?
+                                `<div class="text-danger">${product.nmBarang}</div>` : product
+                                .nmBarang,
                                 product.stok,
                                 product.last_product_sold,
                                 product.total_product_sold,
@@ -216,10 +218,6 @@
                                 .draw(
                                     false)
                                 .node();
-
-                            if (product.product_has_expired_before.length > 0) {
-                                $(rowNode).addClass('text-danger');
-                            }
 
                         });
                     } else {

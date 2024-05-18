@@ -41,8 +41,7 @@ class ProductController extends Controller
     {
         $products = Product::with(['merk', 'productHasExpiredBefore' => function ($subquery) {
             $subquery->select('id', 'product_id', 'quantity', 'expired_date')
-                ->where('quantity', '>', 0)
-                ->first(); // Batasi agar hanya mengambil satu hasil
+                ->where('quantity', '>', 0);
         }])
             ->when($request->filterCategory != null, function ($query) use ($request) {
                 return $query->where('jenis',  $request->filterCategory);
