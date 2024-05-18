@@ -217,8 +217,10 @@
                                     false)
                                 .node();
 
-                            // $(rowNode).find('td').eq(0).addClass('text-center');
-                            // $(rowNode).find('td').eq(4).addClass('text-center text-nowrap');
+                            if (product.product_has_expired_before.length > 0) {
+                                $(rowNode).addClass('text-danger');
+                            }
+
                         });
                     } else {
                         $('#tableEmptyProductBody').html(tableEmpty(7,

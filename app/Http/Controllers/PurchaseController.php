@@ -233,7 +233,7 @@ class PurchaseController extends Controller
                 'product_id' => $request->product_id,
                 'quantity' =>  $request->quantity,
                 'exp_date' => $request->exp_date,
-                'exp_date_old' => $product->expDate,
+                'exp_date_old' => $product->expDate == '0000-00-00' ? null : $product->expDate,
                 'cost_of_good_sold' => $request->cost_of_good_sold,
                 'cost_of_good_sold_old' => $product->hargaPokok,
                 'sub_amount' => $request->cost_of_good_sold * $request->quantity,

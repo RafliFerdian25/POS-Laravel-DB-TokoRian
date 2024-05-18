@@ -259,11 +259,12 @@
                                 product.hargaJual,
                                 product.hargaGrosir,
                                 product.stok,
-                                product.expDate != null ? moment(product.expDate, 'YYYY-MM-DD')
+                                product.expDate != null || product.expDate != "0000-00-00" ?
+                                moment(product.expDate, 'YYYY-MM-DD')
                                 .format(
                                     'DD-MM-YYYY') : '-',
                                 product.jenis,
-                                product.merk.merk,
+                                product.merk != null ? product.merk.merk : '-',
                                 `<a href="{{ url('/laporan/barang/${product.IdBarang}') }}" class="btn btn-sm btn-primary">Laporan</a>
                                 ${!retail.includes(product.satuan) ? `<a href="{{ url('/buka-kardus/${product.IdBarang}/create') }}" class="btn btn-sm btn-success">Buka Kardus</a>`:''}
                                 <button class="btn btn-sm btn-warning" onclick="showEdit('${product.IdBarang}')">Edit</button>

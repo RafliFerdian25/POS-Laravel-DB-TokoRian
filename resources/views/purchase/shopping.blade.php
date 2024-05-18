@@ -452,8 +452,8 @@
                     $('#countProduct').html(response.data.shoppingProducts.length);
                     $('#amount').html(formatCurrency(totalAmount));
                     if (response.data.shoppingProducts.length > 0) {
-                        response.data.shoppingProducts.forEach((product, index) => {
-                            var rowNode = $('#tableShoppingProduct').DataTable().row.add([
+                        $.each(response.data.shoppingProducts, function(index, product) {
+                            var rowData = [
                                 index + 1,
                                 product.IdBarang,
                                 product.nmBarang,
@@ -464,11 +464,19 @@
                                 product.total,
                                 `<button class="btn btn-danger rounded-circle px-2" onclick="deleteShoppingProduct('${product.IdBarang}','${product.nmBarang}')"><i class="bi bi-trash"></i></button>
                                     <button class="btn btn-primary rounded-circle px-2" onclick="editShoppingProduct('${product.IdBarang}')"><i class="bi bi-pencil"></i></button>`
-                            ]).draw(false).node();
+                            ];
+
+                            rowNode = $('#tableShoppingProduct').DataTable().row.add(rowData)
+                                .draw()
+                                .node();
 
                             if (product.product.product_has_expired_before.length > 0) {
-                                $(rowNode).addClass('text-danger');
+                                console.log(product.nmBarang + "   " + product.product
+                                    .product_has_expired_before.length);
                             }
+                            $(rowNode).find('td').eq(0).addClass('text-danger');
+                            $(rowNode).find('td').eq(1).addClass('text-danger');
+                            $(rowNode).find('td').eq(2).addClass('text-danger');
                         });
                     } else {
                         $('#tableShoppingProductBody').html(tableEmpty(9,

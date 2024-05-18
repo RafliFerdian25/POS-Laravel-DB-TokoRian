@@ -40,13 +40,9 @@ class ShoppingController extends Controller
      */
     public function indexData(Request $request)
     {
-        $shoppingProducts = Shopping::with(['product' => function ($query) {
-            $query->select('IdBarang', 'stok')
-                ->with(['productHasExpiredBefore' => function ($subquery) {
-                    $subquery->select('id', 'product_id', 'quantity', 'expired_date')
-                        ->where('quantity', '>', 0)
-                        ->first(); // Batasi agar hanya mengambil satu hasil
-                }]);
+        $shoppingProducts = Shopping::with(['product:IdBarang,stok', 'product.productHasExpiredBefore' => function ($subquery) {
+            $subquery->select('id', 'product_id', 'quantity', 'expired_date')
+                ->where('quantity', '>', 0);
         }])
             ->select('id', 'IdBarang', 'nmBarang', 'satuan', 'hargaPokok', 'jumlah', 'total')
             ->whereHas('product', function ($query) use ($request) {

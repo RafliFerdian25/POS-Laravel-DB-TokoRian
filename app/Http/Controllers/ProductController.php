@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\FilterRequest;
 use App\Helpers\ResponseFormatter;
 use App\Models\Product;
 use App\Models\Barcode;
@@ -390,40 +391,25 @@ class ProductController extends Controller
      */
     public function emptyData(Request $request)
     {
-        // dd($request->all());
-        $typeReport = null;
-        $date = null;
-        $startDate = null;
-        $endDate = null;
-
-        if ($request->daterange == null && $request->month == null) {
-            $date = Carbon::now();
-            $typeReport = "Bulanan";
-        } elseif ($request->daterange != null) {
-            $daterange = explode(' - ', $request->daterange);
-            $date = Carbon::parse($daterange[1]);
-            $startDate = Carbon::parse($daterange[0]);
-            $endDate = Carbon::parse($daterange[1]);
-            $typeReport = "Harian";
-        } elseif ($request->month != null) {
-            $date = Carbon::parse($request->month);
-            $typeReport = "Bulanan";
-        }
+        $filterDate = FilterRequest::filterDate($request);
 
         $threeMonthAgo = null;
-        if ($typeReport == 'Bulanan') {
-            $threeMonthAgo = $date->copy()->subMonths(3);
+        if ($filterDate['typeReport'] == 'Bulanan') {
+            $threeMonthAgo = $filterDate['date']->copy()->subMonths(3);
         }
-        $query = Product::with('printPrice')
+        $query = Product::with(['printPrice', 'productHasExpiredBefore' => function ($subquery) {
+            $subquery->select('id', 'product_id', 'quantity', 'expired_date')
+                ->where('quantity', '>', 0);
+        }])
             ->select('t_barang.IdBarang', 't_barang.nmBarang', 'stok', DB::raw('COALESCE(SUM(t_kasir.jumlah), 0) as total_product_sold'), DB::raw('COALESCE(MAX(t_kasir.tanggal), 0) as last_product_sold'))
             ->leftJoin('t_kasir', 't_barang.IdBarang', '=', 't_kasir.idBarang')
             ->whereNotIn('t_barang.IdBarang', function ($query) {
                 $query->select('IdBarang')->from('t_belanja');
             })
-            ->when($typeReport == 'Bulanan', function ($query) use ($date, $threeMonthAgo) {
-                return $query->whereBetween('tanggal', [$threeMonthAgo->startOfMonth(), $date->copy()->endOfMonth()]);
-            }, function ($query) use ($startDate, $endDate) {
-                return $query->whereBetween('tanggal', [$startDate, $endDate]);
+            ->when($filterDate['typeReport'] == 'Bulanan', function ($query) use ($filterDate, $threeMonthAgo) {
+                return $query->whereBetween('tanggal', [$threeMonthAgo->startOfMonth(), $filterDate['date']->copy()->endOfMonth()]);
+            }, function ($query) use ($filterDate) {
+                return $query->whereBetween('tanggal', [$filterDate['startDate'], $filterDate['endDate']]);
             })
             ->when($request->filled('filterStock'), function ($query) use ($request) {
                 return $query->where('stok', '<=', $request->filterStock);
@@ -445,9 +431,9 @@ class ProductController extends Controller
 
         return ResponseFormatter::success(
             [
-                'dateString' => $typeReport == 'Bulanan' ? $threeMonthAgo->format('F Y') . " - " . $date->format('F Y') : $startDate->copy()->format('d M Y') . ' - ' . $endDate->copy()->format('d M Y'),
-                'date' => $typeReport == 'Bulanan' ? $date->format('Y-m') : $daterange,
-                'typeReport' => $typeReport,
+                'dateString' => $filterDate['typeReport'] == 'Bulanan' ? $threeMonthAgo->format('F Y') . " - " . $filterDate['date']->format('F Y') : $filterDate['startDate']->copy()->format('d M Y') . ' - ' . $filterDate['endDate']->copy()->format('d M Y'),
+                'date' => $filterDate['typeReport'] == 'Bulanan' ? $filterDate['date']->format('Y-m') : $filterDate['daterange'],
+                'typeReport' => $filterDate['typeReport'],
                 'products' => $products,
                 'countProduct' => $countProduct
             ],

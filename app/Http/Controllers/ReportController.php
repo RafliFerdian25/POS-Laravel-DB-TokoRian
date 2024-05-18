@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\FilterRequest;
 use App\Helpers\FormatDate;
 use App\Helpers\ResponseFormatter;
 use App\Models\Barang;
@@ -35,45 +36,11 @@ class ReportController extends Controller
     }
 
     /**
-     * filter tanggal laporan penjualan
-     */
-    private function filterDate(Request $request)
-    {
-        $typeReport = null;
-        $date = null;
-        $startDate = null;
-        $endDate = null;
-        $daterange = null;
-
-        if ($request->daterange == null && $request->month == null) {
-            $date = Carbon::now();
-            $typeReport = "Bulanan";
-        } elseif ($request->daterange != null) {
-            $daterange = explode(' - ', $request->daterange);
-            $date = Carbon::parse($daterange[1]);
-            $startDate = Carbon::parse($daterange[0]);
-            $endDate = Carbon::parse($daterange[1]);
-            $typeReport = "Harian";
-        } elseif ($request->month != null) {
-            $date = Carbon::parse($request->month);
-            $typeReport = "Bulanan";
-        }
-
-        return [
-            'typeReport' => $typeReport,
-            'date' => $date,
-            'startDate' => $startDate,
-            'endDate' => $endDate,
-            'daterange' => $daterange,
-        ];
-    }
-
-    /**
      * Mendapatkan data laporan penjualan
      */
     public function getReportSale(Request $request)
     {
-        $filterDate = $this->filterDate($request);
+        $filterDate = FilterRequest::filterDate($request);
 
         $transactionsByDate = Kasir::selectRaw('tanggal, sum(total) as income, sum(laba) as profit, sum(jumlah) as total_product')
             ->when($filterDate['typeReport'] == 'Bulanan', function ($query) use ($filterDate) {
@@ -140,7 +107,7 @@ class ReportController extends Controller
 
     public function getSaleReportByTransactionDate(Request $request)
     {
-        $filterDate = $this->filterDate($request);
+        $filterDate = FilterRequest::filterDate($request);
 
         $transactionsByDate = Kasir::selectRaw('tanggal, sum(total) as income, sum(laba) as profit, sum(jumlah) as total_product')
             ->when($filterDate['typeReport'] == 'Bulanan', function ($query) use ($filterDate) {
@@ -164,7 +131,7 @@ class ReportController extends Controller
 
     public function getBestSellingProduct(Request $request)
     {
-        $filterDate = $this->filterDate($request);
+        $filterDate = FilterRequest::filterDate($request);
 
         $bestSellingProducts = Kasir::selectRaw('nmBarang as name, sum(jumlah) as total, idBarang as id')
             ->when($filterDate['typeReport'] == 'Bulanan', function ($query) use ($filterDate) {
@@ -189,7 +156,7 @@ class ReportController extends Controller
 
     public function getBestSellingCategory(Request $request)
     {
-        $filterDate = $this->filterDate($request);
+        $filterDate = FilterRequest::filterDate($request);
 
         $bestSellingCategories = Category::selectRaw('p_jenis.ID as id, p_jenis.jenis as name, sum(t_kasir.jumlah) as total')
             ->join('t_barang', 't_barang.jenis', '=', 'p_jenis.jenis')
@@ -216,7 +183,7 @@ class ReportController extends Controller
 
     public function getSaleReportTransactionByNoTransaction(Request $request)
     {
-        $filterDate = $this->filterDate($request);
+        $filterDate = FilterRequest::filterDate($request);
 
         $transactionByNoTransactions = Kasir::selectRaw('noTransaksi as no_transaction, max(tanggal) as date, sum(total) as income, sum(laba) as profit, sum(jumlah) as total_product')
             ->when($filterDate['typeReport'] == 'Bulanan', function ($query) use ($filterDate) {
