@@ -9,6 +9,7 @@ use App\Models\Kasir;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Helpers\ResponseFormatter;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
 class CategoryReportController extends Controller
@@ -86,7 +87,7 @@ class CategoryReportController extends Controller
     /**
      * Mendapatkan data laporan detail kategori
      */
-    public function getCategoryDetail(Request $request, Category $category)
+    public function getCategoryDetailReport(Request $request, Category $category)
     {
         $filterDate = FilterRequest::filterDate($request);
 
@@ -109,23 +110,6 @@ class CategoryReportController extends Controller
         } else {
             $report->total_transaction = 0;
         }
-
-        $bestSellingProducts = Kasir::with('product:IdBarang,stok')
-            ->select('idBarang', 'nmBarang as name', DB::raw('COALESCE(SUM(t_kasir.jumlah), 0) as total'), DB::raw('COALESCE(SUM(t_kasir.total), 0) as income'), DB::raw('COALESCE(SUM(t_kasir.laba), 0) as profit'))
-            ->whereHas('product', function ($query) use ($category) {
-                $query->where('jenis', $category->jenis);
-            })
-            ->when($filterDate['typeReport'] == 'Bulanan', function ($query) use ($filterDate) {
-                return $query->whereMonth('tanggal', $filterDate['date']->month)
-                    ->whereYear('tanggal', $filterDate['date']->year);
-            })
-            ->when($filterDate['typeReport'] == 'Harian', function ($query) use ($filterDate) {
-                return $query->whereBetween('tanggal', [$filterDate['startDate'], $filterDate['endDate']]);
-            })
-            ->groupBy('nmBarang', 'idBarang')
-            ->orderBy('total', 'desc')
-            ->limit(50)
-            ->get();
 
         $transactionsByDate = Kasir::selectRaw('tanggal, sum(total) as income, sum(laba) as profit, sum(jumlah) as total_product')
             ->whereHas('product', function ($query) use ($category) {
@@ -161,11 +145,39 @@ class CategoryReportController extends Controller
                 'category' => $category,
                 'report' => $report,
                 'typeReport' => $filterDate['typeReport'],
-                'bestSellingProducts' => $bestSellingProducts,
                 'transactionsByDate' => $transactionsByDate,
                 'transactionsByLastYear' => $transactionsByLastYear,
             ],
             'Data kategori berhasil diambil'
+        );
+    }
+
+    public function getBestSellingProductReport(Request $request, Category $category): JsonResponse
+    {
+        $filterDate = FilterRequest::filterDate($request);
+
+        $bestSellingProducts = Kasir::with('product:IdBarang,stok')
+            ->select('idBarang', 'nmBarang as name', DB::raw('COALESCE(SUM(t_kasir.jumlah), 0) as total'), DB::raw('COALESCE(SUM(t_kasir.total), 0) as income'), DB::raw('COALESCE(SUM(t_kasir.laba), 0) as profit'))
+            ->whereHas('product', function ($query) use ($category) {
+                $query->where('jenis', $category->jenis);
+            })
+            ->when($filterDate['typeReport'] == 'Bulanan', function ($query) use ($filterDate) {
+                return $query->whereMonth('tanggal', $filterDate['date']->month)
+                    ->whereYear('tanggal', $filterDate['date']->year);
+            })
+            ->when($filterDate['typeReport'] == 'Harian', function ($query) use ($filterDate) {
+                return $query->whereBetween('tanggal', [$filterDate['startDate'], $filterDate['endDate']]);
+            })
+            ->groupBy('nmBarang', 'idBarang')
+            ->orderBy('total', 'desc')
+            ->limit(50)
+            ->get();
+
+        return ResponseFormatter::success(
+            [
+                'bestSellingProducts' => $bestSellingProducts,
+            ],
+            'Data produk terlaris berhasil diambil'
         );
     }
 }

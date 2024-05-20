@@ -57,7 +57,7 @@ Route::controller(ReportController::class)->group(function () {
 // Laporan Kategori
 Route::controller(CategoryReportController::class)->group(function () {
     Route::get('/laporan/kategori', 'categoryIndex')->name('laporan.kategori');
-    Route::get('/laporan/kategori/data', 'getCategoriesReport')->name('laporan.kategori.data');
+    Route::get('/laporan/kategori/data', 'getCategoryDetailReport')->name('laporan.kategori.data');
     Route::get('/laporan/kategori/{category:ID}/detail', 'categoryDetail')->name('report.category.detail');
     Route::get('/laporan/kategori/{category:ID}/detail/data', 'getCategoryDetail')->name('report.category.detail.data');
 });
