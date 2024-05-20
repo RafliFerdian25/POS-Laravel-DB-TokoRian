@@ -59,7 +59,8 @@ Route::controller(CategoryReportController::class)->group(function () {
     Route::get('/laporan/kategori', 'categoryIndex')->name('laporan.kategori');
     Route::get('/laporan/kategori/data', 'getCategoryDetailReport')->name('laporan.kategori.data');
     Route::get('/laporan/kategori/{category:ID}/detail', 'categoryDetail')->name('report.category.detail');
-    Route::get('/laporan/kategori/{category:ID}/detail/data', 'getCategoryDetail')->name('report.category.detail.data');
+    Route::get('/laporan/kategori/{category:ID}/detail/data', 'getCategoryDetailReport')->name('report.category.detail.data');
+    Route::get('/laporan/kategori/{category:ID}/detail/barang-terlaris/data', 'getBestSellingProductReport')->name('category.detail.best-selling-product.report.data');
 });
 
 Route::get('/laporan/{sale}/show', [SaleController::class, 'showReport'])->name('laporan.show');

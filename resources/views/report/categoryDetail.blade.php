@@ -306,28 +306,8 @@
                     $('#total_product').text(response.data.report.total_product);
 
                     $('#filterProductDate').html(response.data.dateString);
-                    if (response.data.bestSellingProducts.length > 0) {
-                        $.each(response.data.bestSellingProducts, function(index, product) {
-                            var rowData = [
-                                index + 1,
-                                product.idBarang,
-                                product.name,
-                                product.product.stok,
-                                product.total,
-                                product.income,
-                                product.profit,
-                                `<button class="btn btn-sm btn-warning" onclick="showEdit('${product.idBarang}')">Edit</button>
-                                <a href="{{ url('/laporan/barang/${product.idBarang}') }}" class="btn btn-sm btn-primary">Laporan</a>`
-                            ];
-                            var rowNode = $('#tableProduct').DataTable().row.add(rowData)
-                                .draw(
-                                    false)
-                                .node();
-                        });
-                    } else {
-                        $('#tableProductBody').html(tableEmpty(8,
-                            'barang'));
-                    }
+
+                    getBestSellingProducts(typeReport)
 
                     // dailyFinancialReportChart
                     Highcharts.chart('dailyFinancialReportChart', {
@@ -554,6 +534,49 @@
             });
         };
 
+        const getBestSellingProducts = (typeReport) => {
+            if (typeReport == 'harian') {
+                $('#month').val(null);
+            } else if (typeReport == 'bulanan') {
+                $('#daterange').val(null);
+            }
+
+            $('#tableProduct').DataTable().clear().draw();
+            $('#tableProductBody').html(tableLoader(8, `{{ asset('assets/svg/Ellipsis-2s-48px.svg') }}`));
+
+            $.ajax({
+                type: "GET",
+                url: `{{ url('laporan/kategori/' . $category->jenis . '/detail/barang-terlaris/data') }}`,
+                data: {
+                    daterange: $('#daterange').val(),
+                    month: $('#month').val()
+                },
+                success: function(response) {
+                    if (response.data.bestSellingProducts.length > 0) {
+                        $.each(response.data.bestSellingProducts, function(index, product) {
+                            var rowData = [
+                                index + 1,
+                                product.idBarang,
+                                product.name,
+                                product.product.stok,
+                                product.total,
+                                product.income,
+                                product.profit,
+                                `<button class="btn btn-sm btn-warning" onclick="showEdit('${product.idBarang}')">Edit</button>
+                                <a href="{{ url('/laporan/barang/${product.idBarang}') }}" class="btn btn-sm btn-primary">Laporan</a>`
+                            ];
+                            var rowNode = $('#tableProduct').DataTable().row.add(rowData)
+                                .draw(
+                                    false)
+                                .node();
+                        });
+                    } else {
+                        $('#tableProductBody').html(tableEmpty(8,
+                            'barang'));
+                    }
+                }
+            });
+        }
 
         function showEdit(idBarang) {
             // Mengisi konten modal dengan data yang sesuai
@@ -823,7 +846,7 @@
                                             },
                                         })
                                         .then(() => {
-                                            getReportCategory();
+                                            getBestSellingProducts();
                                             // menyembunyikan modal
                                             $('#modalEdit').modal('hide');
                                         });
