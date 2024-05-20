@@ -823,7 +823,7 @@
                                             },
                                         })
                                         .then(() => {
-                                            getProducts();
+                                            getReportCategory();
                                             // menyembunyikan modal
                                             $('#modalEdit').modal('hide');
                                         });

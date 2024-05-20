@@ -1,20 +1,11 @@
 ## BACKLOG ##
 
-// Laporan Penjualan
-detail riwayat penjualan
-
 // Jadwal Supplier
-table jadwal supplier
+table jadwal supplier (id, supplier_id, schedule, )
 read jadwal supplier
 create jadwal supplier
 update jadwal supplier
 delete jadwal supplier
-
-// Pernah kadaluarsa
-✅ tambah keterangan (belanja barang)
-✅ tambah keterangan (daftar barang)
-✅ tambah keterangan (detail barang)
-✅ tambah keterangan (habis barang)
 
 // menambahkan tabel penerimaan gas
 read penerimaan gas

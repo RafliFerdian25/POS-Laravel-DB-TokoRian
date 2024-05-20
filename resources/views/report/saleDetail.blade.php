@@ -136,8 +136,20 @@
         $(document).ready(function() {
             var configDataTable = {
                 "columnDefs": [{
-                    "targets": [0, 3, 4, 5],
+                    "targets": [0, 1, 2, 4],
                     "className": "text-center"
+                }, {
+                    // Mengatur aturan pengurutan kustom untuk kolom keempat (index 3)
+                    "targets": [3, 5, 6],
+                    "render": function(data, type, row) {
+                        // Memeriksa tipe data, jika tampilan atau filter
+                        if (type === 'display' || type === 'filter') {
+                            // Memformat angka menggunakan fungsi formatCurrency
+                            return formatCurrency(data);
+                        }
+                        // Jika tipe data selain tampilan atau filter, kembalikan data tanpa perubahan
+                        return data;
+                    }
                 }],
             }
             initializeDataTable("tableProduct", configDataTable)
