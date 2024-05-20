@@ -11,6 +11,7 @@ use App\Http\Controllers\ProductHasExpiredBeforeController;
 use App\Http\Controllers\ProductSearchController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\CategoryReportController;
+use App\Http\Controllers\ProductReportController;
 use App\Http\Controllers\ShoppingController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SupplierController;
@@ -46,14 +47,15 @@ Route::controller(ReportController::class)->group(function () {
     Route::get('/laporan/penjualan/kategori/data', 'getReportSaleByCategory')->name('report.sale.catgory.data');
     Route::get('/laporan/penjualan/detail', 'ReportSaleDetail')->name('report.sale.detail');
     Route::get('/laporan/penjualan/detail/data', 'getReportSaleDetail')->name('laporan.penjualan.detail.data');
+});
 
-    // Laporan Barang
-    Route::get('/laporan/barang', 'productReport')->name('monthly.product.report');
-    Route::get('/laporan/barang/data', 'getProductReport')->name('monthly.product.report.data');
+// Laporan Barang
+Route::controller(ProductReportController::class)->group(function () {
+    Route::get('/laporan/barang', 'productReport')->name('product.report');
+    Route::get('/laporan/barang/data', 'getProductReport')->name('product.report.data');
     Route::get('/laporan/barang/{product:idBarang}', 'productDetail')->name('report.product.detail');
     Route::get('/laporan/barang/{product:idBarang}/data', 'getProductDetail')->name('report.product.detail.data');
 });
-
 // Laporan Kategori
 Route::controller(CategoryReportController::class)->group(function () {
     Route::get('/laporan/kategori', 'categoryIndex')->name('laporan.kategori');

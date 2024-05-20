@@ -207,7 +207,7 @@
                             Barang Terlaris
                         </div>
                         <div>
-                            <a href="{{ route('monthly.product.report') }}" class="btn btn-primary"> </a>
+                            <a href="{{ route('product.report') }}" class="btn btn-primary"> </a>
                         </div>
                     </div>
                     <div class="table-responsive">

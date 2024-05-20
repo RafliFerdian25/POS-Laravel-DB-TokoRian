@@ -267,7 +267,7 @@
 
             $.ajax({
                 type: "GET",
-                url: `{{ route('monthly.product.report.data') }}`,
+                url: `{{ route('product.report.data') }}`,
                 data: {
                     token: '{{ csrf_token() }}',
                     filterProduct: $('#filterProduct').val(),
