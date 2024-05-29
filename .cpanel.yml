@@ -3,5 +3,4 @@ deployment:
   tasks:
     - DEPLOYPATH=$(pwd)
     - /bin/cp .env.example $DEPLOYPATH/.env
-    - export COMPOSER_HOME=$HOME/.composer
-    - /opt/cpanel/composer/bin/composer install --no-interaction --prefer-dist --optimize-autoloader --working-dir=$DEPLOYPATH
+    - /usr/local/bin/php /opt/cpanel/composer/bin/composer install --working-dir=$DEPLOYPATH
