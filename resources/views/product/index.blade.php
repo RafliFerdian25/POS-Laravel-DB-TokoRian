@@ -261,7 +261,7 @@
                                 product.hargaJual,
                                 product.hargaGrosir,
                                 product.stok,
-                                product.expDate != null || product.expDate != "0000-00-00" ?
+                                product.expDate != null && product.expDate != "0000-00-00" ?
                                 moment(product.expDate, 'YYYY-MM-DD')
                                 .format(
                                     'DD-MM-YYYY') : '-',

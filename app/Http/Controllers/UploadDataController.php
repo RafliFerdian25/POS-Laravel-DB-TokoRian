@@ -183,6 +183,7 @@ class UploadDataController extends Controller
                         'total' => $data['total'],
                         'Laba' => $data['Laba'],
                         'Bayar' => $data['Bayar'],
+                        'idUser' => $data['idUser'],
                     ],
                 );
             }

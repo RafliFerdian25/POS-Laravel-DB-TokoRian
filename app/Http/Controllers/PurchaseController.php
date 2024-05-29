@@ -35,7 +35,10 @@ class PurchaseController extends Controller
 
     public function indexData()
     {
-        $purchases = Purchase::with('supplier')->orderBy('id', 'desc')->get();
+        $purchases = Purchase::with('supplier')
+            ->orderBy('id', 'desc')
+            ->limit(100)
+            ->get();
         return ResponseFormatter::success(
             [
                 'purchases' => $purchases,

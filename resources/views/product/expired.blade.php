@@ -195,9 +195,9 @@
                                 product.IdBarang,
                                 product.nmBarang,
                                 product.stok,
-                                product.expDate != null ? moment(product.expDate, 'YYYY-MM-DD')
-                                .format(
-                                    'DD-MM-YYYY') : '-',
+                                product.expDate != null && product.expDate != "0000-00-00" ?
+                                moment(product.expDate, 'YYYY-MM-DD')
+                                .format('DD-MM-YYYY') : "-",
                                 `<button class="btn btn-sm btn-warning" onclick="showEdit('${product.IdBarang}')">Edit</button>
                                 <button class="btn btn-sm btn-primary" onclick="addProductExpired('${product.IdBarang}','${product.stok}','${product.expDate}')">Tambah Daftar Expired</button>`
                             ];
