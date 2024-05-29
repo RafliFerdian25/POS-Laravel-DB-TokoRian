@@ -3,4 +3,4 @@ deployment:
   tasks:
     - /bin/cp .env.example .env
     - export COMPOSER_HOME=$HOME/.composer
-    - composer install
+    - /usr/local/bin/composer install --no-interaction --prefer-dist --optimize-autoloader
