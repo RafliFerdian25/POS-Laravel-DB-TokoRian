@@ -101,7 +101,7 @@ class UploadDataCommand extends Command
         $this->info('Data Barang Mulai Di Upload');
         $products = DB::table('t_barang')->get();
 
-        $response = Http::timeout(60)->post(env('HOSTING_DOMAIN') . '/api/upload-data/product', [
+        $response = Http::timeout(600)->post(env('HOSTING_DOMAIN') . '/api/upload-data/product', [
             'products' => $products
         ]);
 
