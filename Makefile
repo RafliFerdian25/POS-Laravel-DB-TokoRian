@@ -1,7 +1,6 @@
 serve:
 	@git pull 
-	@php artisan download:data
-	@php artisan schedule:work &
+	start powershell -Command "php artisan schedule:work"
 	@php artisan serve --host=0.0.0.0
 
 ip: 
