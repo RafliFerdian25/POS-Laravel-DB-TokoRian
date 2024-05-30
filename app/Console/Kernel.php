@@ -15,8 +15,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('download:data')->hourly();
-        $schedule->command('upload:data')->hourly();
+        $schedule->command('download:data')->everyFifteenMinutes();
+        $schedule->command('upload:data')->everyFifteenMinutes();
     }
 
     /**

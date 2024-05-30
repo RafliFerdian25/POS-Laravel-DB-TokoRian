@@ -1,6 +1,6 @@
 serve:
-	@git pull 
-	start powershell -Command "php artisan schedule:work"
+	@git pull
+	@powershell -Command "Start-Process cmd -ArgumentList '/c php artisan schedule:work' -NoNewWindow"
 	@php artisan serve --host=0.0.0.0
 
 ip: 
@@ -8,6 +8,3 @@ ip:
 
 upload:
 	@php artisan upload:data
-
-coba:
-	start powershell -Command "php artisan serve --host=0.0.0.0"
