@@ -69,6 +69,7 @@
                                         <th>Kota</th>
                                         <th>Telepon</th>
                                         <th>Email</th>
+                                        <th>Jadwal</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
@@ -134,6 +135,7 @@
                                 supplier.kota,
                                 supplier.telp,
                                 supplier.email,
+                                supplier.jadwal,
                                 `<button class="btn btn-link btn-lg float-left px-0" onclick="showEdit('${supplier.IdSupplier}')"><i class="fa fa-edit"></i></button>
                                 <button class="btn btn-sm btn-danger" onclick="deleteSupplier('${supplier.IdSupplier}')"><i class="bi bi-trash"></i></button>`
                             ];

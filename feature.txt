@@ -1,11 +1,9 @@
 ## BACKLOG ##
 
-// Jadwal Supplier
-table jadwal supplier (id, supplier_id, day, week)
-read jadwal supplier
-create jadwal supplier
-update jadwal supplier
-delete jadwal supplier
+// Jadwal supplier
+✅ menambahkan kolom jadwal pada tabel supplier
+✅ menambahkan kolom jadwal pada tabel view supplier
+menambahkan input jadwal pada create dan edit supplier
 
 // menambahkan tabel penerimaan gas
 read penerimaan gas
