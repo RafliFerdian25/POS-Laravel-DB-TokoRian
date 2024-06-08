@@ -66,7 +66,8 @@ class SupplierController extends Controller
             "alamat" => "required",
             "kota" => "required|max:25",
             "telp" => "nullable|numeric|unique:t_supplier,telp",
-            "email" => "nullable|email|unique:t_supplier,email"
+            "email" => "nullable|email|unique:t_supplier,email",
+            "jadwal" => "nullable|numeric",
         ];
 
         $validated = Validator::make($request->all(), $rules);
@@ -79,20 +80,13 @@ class SupplierController extends Controller
 
         try {
             DB::beginTransaction();
-            Supplier::create([
-                "Nama" => $request->Nama,
-                "Produk" => $request->Produk,
-                "alamat" => $request->alamat,
-                "kota" => $request->kota,
-                "telp" => $request->telp,
-                "email" => $request->email
-            ]);
+            Supplier::create($request->all());
             DB::commit();
 
             return ResponseFormatter::success([
                 "message" => "Data Supplier Berhasil Ditambahkan",
                 "redirect" => route("supplier.index")
-            ], "Data berhasil ditambahkan");
+            ], "Data berhasil ditambahkan", 201);
         } catch (\Exception $e) {
             DB::rollBack();
             return ResponseFormatter::error([

@@ -55,6 +55,23 @@
                                 <input type="enail" class="form-control rounded__10" id="email" name="email">
                             </div>
                         </div>
+                        {{-- start Jadwal --}}
+                        <div class="row mb-3">
+                            <label for="jadwal" class="col-sm-2 col-form-label">Jadwal</label>
+                            <div class="col-sm-10">
+                                <select class="form-select rounded__10" id="jadwal" name="jadwal">
+                                    <option selected>Pilih hari...</option>
+                                    <option value="1">Senin</option>
+                                    <option value="2">Selasa</option>
+                                    <option value="3">Rabu</option>
+                                    <option value="4">Kamis</option>
+                                    <option value="5">Jumat</option>
+                                    <option value="6">Sabtu</option>
+                                    <option value="7">Minggu</option>
+                                </select>
+                            </div>
+                        </div>
+                        {{-- End Jadwal --}}
                         <div class="submit text-end">
                             <button type="submit" id="submitButton" class=" btn btn-primary">Simpan</button>
                         </div>
@@ -92,7 +109,7 @@
                 },
                 email: {
                     email: true
-                }
+                },
             },
             messages: {
                 Nama: {
@@ -115,7 +132,7 @@
                 },
                 email: {
                     email: "Email tidak valid"
-                }
+                },
             },
             errorClass: "invalid-feedback",
             highlight: function(element) {
