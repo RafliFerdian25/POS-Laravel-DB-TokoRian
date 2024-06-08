@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\FormatDate;
 use App\Helpers\ResponseFormatter;
 use App\Models\Merk;
 use App\Models\Supplier;
@@ -30,7 +31,11 @@ class SupplierController extends Controller
 
     public function data()
     {
-        $suppliers = Supplier::all();
+        $suppliers = Supplier::get()->map(function ($supplier) {
+            $supplier->jadwal = $supplier->jadwal ? FormatDate::day($supplier->jadwal) : null;
+            return $supplier;
+        })->toArray();
+
 
         return ResponseFormatter::success([
             "suppliers" => $suppliers
@@ -123,7 +128,8 @@ class SupplierController extends Controller
             "address" => "required",
             "city" => "required|max:25",
             "phone" => "nullable|numeric|unique:t_supplier,telp," . $supplier->IdSupplier . ",IdSupplier",
-            "email" => "nullable|email|unique:t_supplier,email," . $supplier->IdSupplier . ",IdSupplier"
+            "email" => "nullable|email|unique:t_supplier,email," . $supplier->IdSupplier . ",IdSupplier",
+            "schedule" => "nullable|numeric",
         ];
 
         $validated = Validator::make($request->all(), $rules);
@@ -140,7 +146,8 @@ class SupplierController extends Controller
             "alamat" => $request->address,
             "kota" => $request->city,
             "telp" => $request->phone,
-            "email" => $request->email
+            "email" => $request->email,
+            "jadwal" => $request->schedule
         ]);
 
         return ResponseFormatter::success([

@@ -230,6 +230,23 @@
                                         <input type="email" class="form-control rounded__10" id="email" name="email"  value="${response.data.supplier.email ?? ""}">
                                     </div>
                                 </div>
+                                {{-- start Jadwal --}}
+                                <div class="row mb-3">
+                                    <label for="schedule" class="col-sm-2 col-form-label">Jadwal</label>
+                                    <div class="col-sm-10">
+                                        <select class="form-select rounded__10" id="schedule" name="schedule">
+                                            <option ${response.data.supplier.jadwal == null? 'selected':''} value="">Pilih hari...</option>
+                                            <option value="1" ${response.data.supplier.jadwal == 1? 'selected':''}>Senin</option>
+                                            <option value="2" ${response.data.supplier.jadwal == 2? 'selected':''}>Selasa</option>
+                                            <option value="3" ${response.data.supplier.jadwal == 3? 'selected':''}>Rabu</option>
+                                            <option value="4" ${response.data.supplier.jadwal == 4? 'selected':''}>Kamis</option>
+                                            <option value="5" ${response.data.supplier.jadwal == 5? 'selected':''}>Jumat</option>
+                                            <option value="6" ${response.data.supplier.jadwal == 6? 'selected':''}>Sabtu</option>
+                                            <option value="7" ${response.data.supplier.jadwal == 7? 'selected':''}>Minggu</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                {{-- End Jadwal --}}
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>

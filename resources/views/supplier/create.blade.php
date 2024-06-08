@@ -60,7 +60,7 @@
                             <label for="jadwal" class="col-sm-2 col-form-label">Jadwal</label>
                             <div class="col-sm-10">
                                 <select class="form-select rounded__10" id="jadwal" name="jadwal">
-                                    <option selected>Pilih hari...</option>
+                                    <option selected value="">Pilih hari...</option>
                                     <option value="1">Senin</option>
                                     <option value="2">Selasa</option>
                                     <option value="3">Rabu</option>
