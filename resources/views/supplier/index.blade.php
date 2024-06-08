@@ -59,7 +59,7 @@
                     <div class="main-card mb-3 card">
                         <div class="card-body">
                             <h5 class="card-title text-center font-size-xlg">Supplier</h5>
-                            <table class="display nowrap" style="width:100%" id="tableSupplier">
+                            <table class="display" style="width:100%" id="tableSupplier">
                                 <thead>
                                     <tr>
                                         <th>ID</th>
@@ -118,7 +118,7 @@
 
         const getSuppliers = () => {
             $('#tableSupplier').DataTable().clear().draw();
-            $('#tableSupplierBody').html(tableLoader(8));
+            $('#tableSupplierBody').html(tableLoader(9));
 
             $.ajax({
                 type: "GET",
@@ -136,8 +136,8 @@
                                 supplier.telp,
                                 supplier.email,
                                 supplier.jadwal,
-                                `<button class="btn btn-link btn-lg float-left px-0" onclick="showEdit('${supplier.IdSupplier}')"><i class="fa fa-edit"></i></button>
-                                <button class="btn btn-sm btn-danger" onclick="deleteSupplier('${supplier.IdSupplier}')"><i class="bi bi-trash"></i></button>`
+                                `<button class="btn btn-primary btn-sm" onclick="showEdit('${supplier.IdSupplier}')"><i class="fa fa-edit"></i></button>
+                                <button class="btn btn-danger btn-sm ms-1" onclick="deleteSupplier('${supplier.IdSupplier}')"><i class="bi bi-trash"></i></button>`
                             ];
                             var rowNode = $('#tableSupplier').DataTable().row.add(rowData)
                                 .draw(
@@ -145,7 +145,7 @@
                                 .node();
                         });
                     } else {
-                        $('#tableSupplierBody').html(tableEmpty(8,
+                        $('#tableSupplierBody').html(tableEmpty(9,
                             'barang'));
                     }
                 }
