@@ -11777,7 +11777,7 @@ button,
 }
 
 .closed-sidebar:not(.sidebar-mobile-open) .app-sidebar:hover .scrollbar-sidebar {
-    position: absolute;
+    position: static;
     height: 100%;
     overflow-y: auto !important
 }

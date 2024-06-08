@@ -1,7 +1,7 @@
 ## BACKLOG ##
 
 // Jadwal Supplier
-table jadwal supplier (id, supplier_id, schedule, )
+table jadwal supplier (id, supplier_id, day, week)
 read jadwal supplier
 create jadwal supplier
 update jadwal supplier
