@@ -3,7 +3,7 @@
 // Jadwal supplier
 ✅ menambahkan kolom jadwal pada tabel supplier
 ✅ menambahkan kolom jadwal pada tabel view supplier
-menambahkan input jadwal pada create dan edit supplier
+✅ menambahkan input jadwal pada create dan edit supplier
 
 // menambahkan tabel penerimaan gas
 read penerimaan gas
