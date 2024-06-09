@@ -5,15 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Gas extends Model
+class GasBuyer extends Model
 {
     use HasFactory;
 
-    protected $table = 'tb_gas';
+    protected $table = 'tb_gas_buyer';
 
     protected $fillable = [
-        'date',
-        'stok',
+        'name',
+        'address',
+        'phone',
+        'nik',
     ];
 
     public $timestamps = false;
