@@ -9,12 +9,17 @@ class Gas extends Model
 {
     use HasFactory;
 
-    protected $table = 'tb_gas';
+    protected $table = 't_gas';
 
-    protected $fillable = [
-        'date',
-        'stok',
-    ];
+    protected $guarded = ['id'];
 
-    public $timestamps = false;
+    public function gasCustomers()
+    {
+        return $this->hasMany(GasCustomer::class, 'gas_id');
+    }
+
+    public function manyGasCustomers()
+    {
+        return $this->belongsToMany(Customer::class, 't_gas_pelanggan', 'gas_id', 'pelanggan_id')->withPivot('kuota');
+    }
 }

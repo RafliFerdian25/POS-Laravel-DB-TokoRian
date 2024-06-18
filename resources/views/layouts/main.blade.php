@@ -137,6 +137,8 @@
                                     Barang
                                 </a>
                             </li>
+
+                            {{-- Menu Barang --}}
                             <li class="app-sidebar__heading">Barang</li>
                             <li>
                                 <a href="{{ url('/barang') }}" id="navbar__barang"
@@ -195,7 +197,16 @@
                                     Pernah Kadaluarsa
                                 </a>
                             </li>
+                            <li class="">
+                                <a href="{{ route('gas.index') }}" id="navbarGas"
+                                    class="@if ($currentNav == 'gas') mm-active @endif">
+                                    <i class="metismenu-icon bi bi-dash-circle"></i>
+                                    Gas
+                                </a>
+                            </li>
+                            {{-- end Menu Barang --}}
 
+                            {{-- Menu Belanja --}}
                             <li class="app-sidebar__heading">Belanja</li>
                             <li>
                                 <a href="{{ route('expense.index') }}" id="navbar__expense"
@@ -220,6 +231,17 @@
                                     <i class="metismenu-icon bi bi-truck"></i>Supplier
                                 </a>
                             </li>
+                            {{-- end Menu Belanja --}}
+
+                            {{-- Menu Lainnya --}}
+                            <li class="app-sidebar__heading">Lainnya</li>
+                            <li>
+                                <a href="{{ route('customer.index') }}" id="navbar__customer"
+                                    class="@if ($currentNav == 'customer') mm-active @endif">
+                                    <i class="metismenu-icon bi bi-person"></i>Pelanggan
+                                </a>
+                            </li>
+                            {{-- end Menu Lainnya --}}
                         </ul>
                     </div>
                 </div>
@@ -284,6 +306,7 @@
     <script src="https://cdn.datatables.net/plug-ins/2.0.1/sorting/date-eu.js"></script>
     <script src="https://cdn.datatables.net/plug-ins/2.0.2/sorting/currency.js"></script>
     <script src="https://cdn.datatables.net/plug-ins/2.0.2/sorting/intl.js"></script>
+    <script src="https://cdn.datatables.net/plug-ins/2.0.8/api/sum().js"></script>
 
     {{-- toastr --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>

@@ -129,6 +129,24 @@ li {
 }
 
 /*********************************************/
+/*               TABLE                       */
+/*********************************************/
+/* Footer */
+.table-striped-footer {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.table-striped-footer th,
+.table-striped-footer td {
+    border-top: 1px solid #ddd;
+    /* Garis di atas */
+    border-bottom: 1px solid #ddd;
+    /* Garis di bawah */
+    padding: 8px;
+    /* Padding untuk ruang dalam sel */
+}
+
+/*********************************************/
 /*               INDEX                       */
 /*********************************************/
 /* Card dsahboard */

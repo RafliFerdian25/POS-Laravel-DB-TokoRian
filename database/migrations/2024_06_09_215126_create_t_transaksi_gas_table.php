@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('gas_buyers', function (Blueprint $table) {
+        Schema::create('t_transaksi_gas', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 50)->unique();
-            $table->text('address');
-            $table->string('phone', 14);
-            $table->string('nik', 16)->unique();
+            $table->bigInteger('gas_pelanggan_id')->unsigned();
+            $table->foreign('gas_pelanggan_id')->references('id')->on('t_gas_pelanggan');
+            $table->integer('bayar_tabung');
+            $table->integer('tabung_kosong');
+            $table->integer('ambil_tabung');
             $table->timestamps();
         });
     }
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('gas_buyers');
+        Schema::dropIfExists('t_transaksi_gas');
     }
 };

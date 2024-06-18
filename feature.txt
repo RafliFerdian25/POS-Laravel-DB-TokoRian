@@ -5,17 +5,21 @@
 ✅ menambahkan kolom jadwal pada tabel view supplier
 ✅ menambahkan input jadwal pada create dan edit supplier
 
-// menambahkan tabel penerimaan gas
-read penerimaan gas
-create penerimaan gas
-update penerimaan gas
-delete penerimaan gas
+// menambahkan tabel gas
+read gas
+create gas
+update gas
+delete gas
 
-// menambahkan tabel penjualan gas
-read penjualan gas
-create penjualan gas
-update penjualan gas
-delete penjualan gas
+// menambahkan tabel pelanggan
+read pelanggan
+create pelanggan
+update pelanggan
+delete pelanggan
+
+// menambahkan tabel gas pelanggan 
+
+// menambahkan tabel transaksi gas
 
 // Laporan Barang
 Compare laporan beberapa barang

@@ -11,13 +11,15 @@ use App\Http\Controllers\ProductHasExpiredBeforeController;
 use App\Http\Controllers\ProductSearchController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\CategoryReportController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\GasController;
+use App\Http\Controllers\GasCustomerController;
+use App\Http\Controllers\GasTransactionController;
 use App\Http\Controllers\ProductReportController;
 use App\Http\Controllers\ShoppingController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\SaleDetailController;
-use App\Models\Product;
-use App\Models\ProductSearch;
 
 /*
 |--------------------------------------------------------------------------
@@ -209,4 +211,38 @@ Route::controller(ProductHasExpiredBeforeController::class)->group(function () {
     Route::get('/barang-pernah-kadaluarsa/data', 'indexData')->name('product.has.expired.before.index.data');
     Route::post('/barang-pernah-kadaluarsa/{product:idBarang}', 'store')->name('product.has.expired.before.store');
     Route::delete('/barang-pernah-kadaluarsa/{productHasExpiredBefore:id}', 'destroy')->name('product.has.expired.before.destroy');
+});
+
+// Gas
+Route::controller(GasController::class)->group(function () {
+    Route::get('/gas', 'index')->name('gas.index');
+    Route::get('/gas/data', 'getGases')->name('gas.data');
+    Route::post('/gas', 'store')->name('gas.store');
+    Route::get('/gas/{gas:id}', 'show')->name('gas.show');
+    Route::get('/gas/{gas:id}/tersisa/data', 'getRemainingGas')->name('gas.remaining.data');
+    Route::put('/gas/{gas:id}', 'update')->name('gas.update');
+    Route::delete('/gas/{gas:id}', 'destroy')->name('gas.destroy');
+});
+
+// Pelanggan
+Route::controller(CustomerController::class)->group(function () {
+    Route::get('/pelanggan', 'index')->name('customer.index');
+    Route::get('/pelanggan/data', 'getCustomers')->name('customer.data');
+    Route::post('/pelanggan', 'store')->name('customer.store');
+    Route::put('/pelanggan/{customer:id}', 'update')->name('customer.update');
+    Route::delete('/pelanggan/{customer:id}', 'destroy')->name('customer.destroy');
+});
+
+Route::controller(GasCustomerController::class)->group(function () {
+    Route::post('/gas-pelanggan', 'store')->name('gas.customer.store');
+    Route::get('/gas-pelanggan/{gasID}/data', 'getGasCustomers')->name('gas.customer.data');
+    Route::put('/gas-pelanggan/{gasCustomer:id}', 'update')->name('gas.customer.update');
+    Route::delete('/gas-pelanggan/{gasCustomer:id}', 'destroy')->name('gas.customer.destroy');
+});
+
+Route::controller(GasTransactionController::class)->group(function () {
+    Route::post('/gas-transaksi', 'store')->name('gas.transaction.store');
+    Route::put('/gas-transaksi/{gasTransaction:id}', 'update')->name('gas.transaction.update');
+    Route::get('/gas-transaksi/{gasID}/data', 'getGasTransactions')->name('gas.transaction.data');
+    Route::delete('/gas-transaksi/{gasTransaction:id}', 'destroy')->name('gas.transaction.destroy');
 });

@@ -9,17 +9,12 @@ class GasTransaction extends Model
 {
     use HasFactory;
 
-    protected $table = 'tb_gas_transaction';
+    protected $table = 't_transaksi_gas';
 
-    protected $fillable = [
-        'gas_id',
-        'gas_buyer_id',
-        'pay',
-        'empty_gas',
-        'take',
-        'quota',
-        'created_at',
-    ];
+    protected $guarded = ['id'];
 
-    const UPDATED_AT = null;
+    public function gasCustomer()
+    {
+        return $this->belongsTo(GasCustomer::class, 'gas_pelanggan_id', 'id');
+    }
 }
