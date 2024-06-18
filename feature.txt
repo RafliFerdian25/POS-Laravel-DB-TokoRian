@@ -1,26 +1,4 @@
 ## BACKLOG ##
-
-// Jadwal supplier
-✅ menambahkan kolom jadwal pada tabel supplier
-✅ menambahkan kolom jadwal pada tabel view supplier
-✅ menambahkan input jadwal pada create dan edit supplier
-
-// menambahkan tabel gas
-read gas
-create gas
-update gas
-delete gas
-
-// menambahkan tabel pelanggan
-read pelanggan
-create pelanggan
-update pelanggan
-delete pelanggan
-
-// menambahkan tabel gas pelanggan 
-
-// menambahkan tabel transaksi gas
-
 // Laporan Barang
 Compare laporan beberapa barang
 
@@ -151,3 +129,33 @@ Menambahkan harga jual rekomendasi (edit barang, pembelian barang)
 ✅ read barang pernah kadaluarsa
 ✅ create barang pernah kadaluarsa
 ✅ delete barang pernah kadaluarsa
+
+
+// Jadwal supplier
+✅ menambahkan kolom jadwal pada tabel supplier
+✅ menambahkan kolom jadwal pada tabel view supplier
+✅ menambahkan input jadwal pada create dan edit supplier
+
+// menambahkan tabel gas
+✅ read gas
+✅ create gas
+✅ update gas
+✅ delete gas
+
+// menambahkan tabel pelanggan
+✅ read pelanggan
+✅ create pelanggan
+✅ update pelanggan
+✅ delete pelanggan
+
+// menambahkan tabel gas pelanggan 
+✅ read gas pelanggan
+✅ create gas pelanggan
+✅ update gas pelanggan
+✅ delete gas pelanggan
+
+// menambahkan tabel transaksi gas
+✅ read gas transaksi pelanggan
+✅ create gas transaksi pelanggan
+✅ update gas transaksi pelanggan
+✅ delete gas transaksi pelanggan
